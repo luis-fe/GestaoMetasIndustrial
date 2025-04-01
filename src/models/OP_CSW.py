@@ -1,7 +1,6 @@
 import gc
-
 import pandas as pd
-from connection import ConexaoBanco
+from src.connection import ConexaoERP
 
 
 class OP_CSW():
@@ -36,7 +35,7 @@ class OP_CSW():
                 and op.situacao = 3 """
 
 
-        with ConexaoBanco.ConexaoInternoMPL() as conn:
+        with ConexaoERP.ConexaoInternoMPL() as conn:
             with conn.cursor() as cursor_csw:
                 # Executa a primeira consulta e armazena os resultados
                 cursor_csw.execute(sqlOrdemAbertoCsw)
@@ -81,7 +80,7 @@ class OP_CSW():
                     and op.codFaseAtual not in (1, 401))
         """
 
-        with ConexaoBanco.ConexaoInternoMPL() as conn:
+        with ConexaoERP.ConexaoInternoMPL() as conn:
             with conn.cursor() as cursor_csw:
                 # Executa a primeira consulta e armazena os resultados
                 cursor_csw.execute(sqlCsw)
@@ -99,7 +98,7 @@ class OP_CSW():
         sql = """Select codLote, descricao as nomeLote from tcl.lote where codEmpresa= """ + str(
             self.codEmpresa) + """ and codLote =""" + "'" + str(self.codLote) + "'"
 
-        with ConexaoBanco.Conexao2() as conn:
+        with ConexaoERP.Conexao2() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(sql)
                 colunas = [desc[0] for desc in cursor.description]
@@ -129,6 +128,15 @@ class OP_CSW():
         WHERE 
             f.codEmpresa = 1 
         """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor_csw:
+                # Executa a primeira consulta e armazena os resultados
+                cursor_csw.execute(sql_nomeFases)
+                colunas = [desc[0] for desc in cursor_csw.description]
+                rows = cursor_csw.fetchall()
+                sql_nomeFases = pd.DataFrame(rows, columns=colunas)
+                del rows
 
 
         return sql_nomeFases
