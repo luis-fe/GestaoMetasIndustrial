@@ -139,7 +139,7 @@ class MetaFases():
 
             # 6 Analisando se esta no periodo de faturamento
             diaAtual = datetime.strptime(self.obterDiaAtual(), '%Y-%m-%d')
-            plano = PlanoClass.Plano()
+            plano = PlanoClass.Plano(self.codPlano)
             IniFat = plano.iniFat
             IniFat = datetime.strptime(IniFat['inicoFat'][0], '%Y-%m-%d')
 
