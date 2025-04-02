@@ -16,7 +16,7 @@ if __name__ == '__main__':
     env_path = configApp.localProjeto
     # Carregar variáveis de ambiente do arquivo .env
     load_dotenv(f'{env_path}/_ambiente.env')
-    db_name = os.getenv('POSTGRES_DB')
+    user = os.getenv('CSW_USER')
 
-    print(db_name)
+    print(user)
     app.run(host='0.0.0.0', port=port)

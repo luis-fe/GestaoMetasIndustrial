@@ -29,7 +29,7 @@ def ConexaoInternoMPL():
         conn = jaydebeapi.connect(
             'com.intersys.jdbc.CacheDriver',
             f'jdbc:Cache://{host}:1972/CONSISTEM',
-            {'user': user, 'password': password},
+            {'user': f'{user}', 'password': f'{password}'},
             f'{env_path}/src/connection/CacheDB.jar'
         )
         yield conn
