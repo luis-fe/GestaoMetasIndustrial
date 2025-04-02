@@ -104,6 +104,7 @@ class MetaFases():
 
 
             # 3 - Obter o faturamento de um determinado plano e aplicar ao calculo
+            produto.relacao_Partes_Pai()
             consultaPartes = produto.relacaoPartes
             faturado = FaturamentoClass.Faturamento(None,None,None,self.codPlano, consultaPartes)
             faturadoPeriodo = faturado.faturamentoPeriodo_Plano()
