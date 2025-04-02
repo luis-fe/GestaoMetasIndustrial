@@ -17,6 +17,8 @@ if __name__ == '__main__':
     # Carregar variáveis de ambiente do arquivo .env
     load_dotenv(f'{env_path}/_ambiente.env')
     user = os.getenv('CSW_USER')
+    password = os.getenv('CSW_PASSWORD')
+    host = os.getenv('CSW_HOST')
 
-    print(user)
+    print(f'{user}-{host}-{password}')
     app.run(host='0.0.0.0', port=port)
