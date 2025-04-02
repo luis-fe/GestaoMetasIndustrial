@@ -1,10 +1,9 @@
-import gc
 from datetime import datetime
 import numpy as np
 import pandas as pd
 from src.connection import ConexaoPostgre
 import pytz
-from src.models import Cronograma
+from src.models import Cronograma, OrdemProd
 
 
 class ProducaoFases():
@@ -30,6 +29,7 @@ class ProducaoFases():
         '''Método que retona o realizado por fase de acordo com o periodo informado'''
 
         realizado = self.__sqlRealizadoPeriodo() # realiza a consulta sql no banco postgre do realizado
+        ordemProd = OrdemProd.OrdemProd()
 
         # 1 - verfica se existe tipo de ops a serem excluidos da analise
         if self.arraytipoOPExluir is not None and isinstance(self.arraytipoOPExluir, list):
@@ -37,7 +37,7 @@ class ProducaoFases():
 
         # 2 - verfica o arrayTipoProducao com os tipo de ordens de producao que desejo consultar
         if self.arrayTipoProducao != None:
-            agrupamentoOP = TipoOPClass.TipoOP().agrupado_x_tipoOP()
+            agrupamentoOP = ordemProd.agrupado_x_tipoOP()
             dataFrameTipoProducao = pd.DataFrame({'Agrupado': self.arrayTipoProducao})
             dataFrameTipoProducao = pd.merge(agrupamentoOP,dataFrameTipoProducao, on='Agrupado')
             realizado = pd.merge(realizado,dataFrameTipoProducao, on='codtipoop')
@@ -45,7 +45,7 @@ class ProducaoFases():
 
         else:
             self.arrayTipoProducao = ['Producao']
-            agrupamentoOP = TipoOPClass.TipoOP().agrupado_x_tipoOP()
+            agrupamentoOP = ordemProd.agrupado_x_tipoOP()
             dataFrameTipoProducao = pd.DataFrame({'Agrupado': self.arrayTipoProducao})
             dataFrameTipoProducao = pd.merge(agrupamentoOP,dataFrameTipoProducao, on='Agrupado')
             realizado['codtipoop'] = realizado['codtipoop'].astype(str)

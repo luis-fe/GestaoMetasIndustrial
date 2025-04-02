@@ -1,4 +1,5 @@
 import gc
+
 import pandas as pd
 from src.connection import ConexaoERP
 
@@ -98,7 +99,7 @@ class OP_CSW():
         sql = """Select codLote, descricao as nomeLote from tcl.lote where codEmpresa= """ + str(
             self.codEmpresa) + """ and codLote =""" + "'" + str(self.codLote) + "'"
 
-        with ConexaoERP.Conexao2() as conn:
+        with ConexaoERP.ConexaoInternoMPL() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(sql)
                 colunas = [desc[0] for desc in cursor.description]
@@ -130,16 +131,48 @@ class OP_CSW():
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
-            with conn.cursor() as cursor_csw:
-                # Executa a primeira consulta e armazena os resultados
-                cursor_csw.execute(sql_nomeFases)
-                colunas = [desc[0] for desc in cursor_csw.description]
-                rows = cursor_csw.fetchall()
+            with conn.cursor() as cursor:
+                cursor.execute(sql_nomeFases)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
                 sql_nomeFases = pd.DataFrame(rows, columns=colunas)
-                del rows
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
 
 
         return sql_nomeFases
+
+
+
+
+    def obterTiposOPCSW(self):
+        '''Metodo qe busca no ERP CSW todos os tipo de OPS'''
+
+        sql = """
+            SELECT
+        	t.codTipo || '-' || t.nome as tipoOP
+        FROM
+        	tcp.TipoOP t
+        WHERE
+        	t.Empresa = 1 and t.codTipo not in (7, 13, 14, 15, 19, 21, 23, 61,24,25,26, 11, 20, 28)
+        order by
+        	codTipo asc
+            """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                tipoOP = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+
+        return tipoOP
 
 
 
