@@ -45,7 +45,7 @@ load_dotenv(f'{env_path}/_ambiente.env')
 user = os.getenv('CSW_USER')
 password = os.getenv('CSW_PASSWORD')
 host = os.getenv('CSW_HOST')
-print(f'Teste variavel {host}')
+print(f'Teste variavel {host}/{password}/')
 try:
     teste = OP_CSW.OP_CSW().obterTiposOPCSW()
     print(f' {teste}')
