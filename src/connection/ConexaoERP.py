@@ -31,8 +31,11 @@ def ConexaoInternoMPL():
             'com.intersys.jdbc.CacheDriver',
             f'jdbc:Cache://{host}:1972/CONSISTEM',
             {'user': f'{user}', 'password': f'{password}'},
-            f'{env_path}/src/connection/CacheDB.jar'
+            f'{env_path}/src/connection/CacheD.jar'
         )
+
+
+
         yield conn
     finally:
         if conn:  # Verifica se a conexão foi estabelecida antes de tentar fechar
