@@ -20,25 +20,16 @@ def ConexaoInternoMPL():
     password = os.getenv('CSW_PASSWORD')
     host = os.getenv('CSW_HOST')
 
-    # Verificar se variáveis foram carregadas corretamente
-    if not all([user, password, host]):
-        raise ValueError("Erro: Variáveis de ambiente ausentes ou não carregadas corretamente.")
-
-    conn = None  # Inicializa a variável antes do bloco try
-
     try:
         conn = jaydebeapi.connect(
             'com.intersys.jdbc.CacheDriver',
-            f'jdbc:Cache://{host}/CONSISTEM',
-            {'user': f'{user}', 'password': f'{password}'},
+            'jdbc:Cache://192.168.0.25:1972/CONSISTEM',
+            {'user': '_system', 'password': 'ccscache'},
             f'./src/connection/CacheDB.jar'
         )
-
-
-
         yield conn
     finally:
-        if conn:  # Verifica se a conexão foi estabelecida antes de tentar fechar
+        if conn is not None:
             conn.close()
 
 ####### TESTE NO INICIO DA APLICACAO,
