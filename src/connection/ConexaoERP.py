@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 
 from src.configApp import configApp
+from src.models import OP_CSW
 
 
 @contextmanager
@@ -37,5 +38,17 @@ def ConexaoInternoMPL():
         if conn:  # Verifica se a conexão foi estabelecida antes de tentar fechar
             conn.close()
 
-
+####### TESTE NO INICIO DA APLICACAO,
+env_path = configApp.localProjeto
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv(f'{env_path}/_ambiente.env')
+user = os.getenv('CSW_USER')
+password = os.getenv('CSW_PASSWORD')
+host = os.getenv('CSW_HOST')
+print(f'Teste variavel {host}')
+try:
+    teste = OP_CSW.OP_CSW().obterTiposOPCSW()
+    print(f' {teste}')
+except:
+    print('caiu a conexao')
 
