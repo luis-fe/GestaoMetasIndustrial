@@ -3,7 +3,7 @@ import os
 from src.routes import routes_blueprint  # Certifique-se de que 'routes.py' está na mesma pasta
 
 app = Flask(__name__)
-port = int(os.environ.get('PORT', 5001))
+port = int(os.environ.get('PORT', 5000))
 
 # Registrar o Blueprint corretamente
 app.register_blueprint(routes_blueprint)
