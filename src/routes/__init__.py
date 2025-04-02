@@ -1,5 +1,6 @@
 from flask import Blueprint
 # Crie um Blueprint para as rotas
+
 routes_blueprint = Blueprint('routes', __name__)
 
 
