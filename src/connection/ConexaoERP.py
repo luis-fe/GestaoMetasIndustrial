@@ -23,7 +23,7 @@ def ConexaoInternoMPL():
     try:
         conn = jaydebeapi.connect(
             'com.intersys.jdbc.CacheDriver',
-            'jdbc:Cache://192.168.0.25:1972/CONSISTEM',
+            f'jdbc:Cache://{"192.168.0.25:1972"}/CONSISTEM',
             {'user': '_system', 'password': 'ccscache'},
             f'./src/connection/CacheDB.jar'
         )
@@ -40,7 +40,6 @@ user = os.getenv('CSW_USER')
 password = os.getenv('CSW_PASSWORD')
 host = os.getenv('CSW_HOST')
 print(f'Teste variavel {host}/{password}/')
-teste = OP_CSW.OP_CSW().obterTiposOPCSW()
 try:
     teste = OP_CSW.OP_CSW().obterTiposOPCSW()
     print(f' {teste}')
