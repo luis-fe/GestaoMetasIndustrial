@@ -13,11 +13,18 @@ OBJETIVO DO PROJETO
 
 INICIALIZACAO
     
-    1 - Configurar variavéis de ambiente (ocultas) para Conexao
+    1 - Configurar o projeto para o funcionamento: 
+        1.1 variavéis de ambiente (ocultas) para Conexao: 
+            criar arquivo _ambiente.env no diretorio PAI do projeto
+        1.2 modificar a variavel global com o nome do local em ./src/configAPP,
+            arquivo configApp.py 
+        
     2 - Deploy da Aplicacao: 
         requeriments.txt
         app_run.py ("class main do projeto")
-    2.1 - Alternativa via Docker
+    
+    2.1 - Alternativa via Docker: Dockerfile 
+    
 
 DETALHAMENTO DO DIAGRAMA
 

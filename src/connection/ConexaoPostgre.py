@@ -3,9 +3,11 @@ import os
 from dotenv import load_dotenv
 import psycopg2
 from sqlalchemy import create_engine
+from src.configApp import configApp
 
-# Carregando as variáveis de ambiente do arquivo .env
-load_dotenv()
+env_path = configApp.localProjeto
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv(env_path)
 
 def conexaoEngine():
     db_name = os.getenv('POSTGRES_DB')

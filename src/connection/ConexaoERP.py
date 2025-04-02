@@ -3,12 +3,14 @@ from contextlib import contextmanager
 from dotenv import load_dotenv
 import os
 
+from src.configApp import configApp
+
 
 @contextmanager
 def ConexaoInternoMPL():
     """ Gerencia a conexão com o banco de dados usando JayDeBeApi """
 
-    env_path = r"C:\Users\luis.fernando\Desktop\PROJETOS MPL\ModuloGestaoMetasIndustrialMPL\_ambiente.env"
+    env_path = configApp.localProjeto
     # Carregar variáveis de ambiente do arquivo .env
     load_dotenv(env_path)
 
