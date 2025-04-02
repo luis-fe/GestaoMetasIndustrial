@@ -14,10 +14,31 @@ OBJETIVO DO PROJETO
 INICIALIZACAO
     
     1 - Configurar o projeto para o funcionamento: 
-        1.1 variavéis de ambiente (ocultas) para Conexao: 
+        
+    1.1 variavéis de ambiente (ocultas) para Conexao: 
             criar arquivo _ambiente.env no diretorio PAI do projeto
-        1.2 modificar a variavel global com o nome do local em ./src/configAPP,
-            arquivo configApp.py 
+    
+    <Modelo ambiente_env:>
+
+      POSTGRES_PASSWORD_SRV1=xxxx
+      POSTGRES_PASSWORD_SRV2=xxxx
+      POSTGRES_DB=xxxx
+      POSTGRES_USER=xxxx
+      POSTGRES_HOST_SRV1=xxx.xxx.x.xxx
+      POSTGRES_HOST_SRV2=xxx.xxx.x.xxx
+      POSTGRES_PORT = xxxx
+      CSW_USER=xxxx
+      CSW_PASSWORD=xxxx
+      CSW_HOST=xxx.xxx.x.xxx
+      CAMINHO_PARQUET_FAT=/xxxx/xxxx/xxxx/xxxx
+
+    1.2 modificar a variavel global com o nome do local em ./src/configAPP,
+    
+    arquivo <configApp.py> :
+        
+        localProjeto = "xxxx/xxxx/xxxx"
+    
+    
         
     2 - Deploy da Aplicacao: 
         requeriments.txt
