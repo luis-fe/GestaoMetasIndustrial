@@ -7,7 +7,7 @@ from src.configApp import configApp
 
 env_path = configApp.localProjeto
 # Carregar variáveis de ambiente do arquivo .env
-load_dotenv(env_path)
+load_dotenv(f'{env_path}/_ambiente.env')
 
 def conexaoEngine():
     db_name = os.getenv('POSTGRES_DB')

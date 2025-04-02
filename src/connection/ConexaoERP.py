@@ -12,7 +12,7 @@ def ConexaoInternoMPL():
 
     env_path = configApp.localProjeto
     # Carregar variáveis de ambiente do arquivo .env
-    load_dotenv(env_path)
+    load_dotenv(f'{env_path}/_ambiente.env')
 
     # Obter valores das variáveis
     caminho_absoluto = os.getenv('CAMINHO')
