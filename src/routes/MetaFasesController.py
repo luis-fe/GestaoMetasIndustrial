@@ -55,3 +55,72 @@ def pOST_MetasFases():
             op_dict[column_name] = row[column_name]
         OP_data.append(op_dict)
     return jsonify(OP_data)
+
+
+@MetasFases_routes.route('/pcp/api/previsaoCategoriaFase', methods=['GET'])
+@token_required
+def get_previsaoCategoriaFase():
+    nomeFase = request.args.get('nomeFase', '-')
+
+    meta = MetaFases.MetaFases('','',nomeFase)
+
+    dados = meta.previsao_categoria_fase()
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+
+@MetasFases_routes.route('/pcp/api/faltaProgcategoria_fase', methods=['GET'])
+@token_required
+def get_faltaProgcategoria_fase():
+    nomeFase = request.args.get('nomeFase', '-')
+
+    meta = MetaFases.MetaFases('','',nomeFase)
+
+    dados = meta.faltaProgcategoria_fase()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+
+@MetasFases_routes.route('/pcp/api/FaltaProduzircategoria_fase', methods=['GET'])
+@token_required
+def get_FaltaProduzircategoria_fase():
+    nomeFase = request.args.get('nomeFase', '-')
+    codPlano = request.args.get('codPlano', '-')
+
+    meta = MetaFases.MetaFases(codPlano,'',nomeFase)
+
+    dados = meta.faltaProduzirCategoriaFase()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
