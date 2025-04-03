@@ -11,7 +11,6 @@ class Cronograma():
 
         self.codPlano = codPlano # atributo codPlano
         self.codEmpresa = codEmpresa # atributo codEmpresa
-        self.feriados = pd.DataFrame()
 
     def get_cronogramaFases(self):
 
