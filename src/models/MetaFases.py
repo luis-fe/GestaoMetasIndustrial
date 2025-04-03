@@ -471,29 +471,25 @@ class MetaFases():
         for codLote in self.arrayCodLoteCsw:
             lote = OrdemProd.OrdemProd(self.codEmpresa, codLote)
 
-            try:
-                descricaoLote = lote.consultaNomeLote()
+            descricaoLote = lote.consultaNomeLote()
 
-                if 'INVERNO' in descricaoLote:
-                    nome = 'INVERNO' + ' ' + self._extrair_ano(descricaoLote)
-                    colecoes.append(nome)
-                elif 'PRI' in descricaoLote:
-                    nome = 'VERAO' + ' ' + self._extrair_ano(descricaoLote)
-                    colecoes.append(nome)
-                elif 'ALT' in descricaoLote:
-                    nome = 'ALTO VERAO' + ' ' + self._extrair_ano(descricaoLote)
-                    colecoes.append(nome)
-
-                elif 'VER' in descricaoLote:
-                    nome = 'VERAO' + ' ' + self._extrair_ano(descricaoLote)
-                    colecoes.append(nome)
-                else:
-                    nome = 'ENCOMENDAS' + ' ' + self._extrair_ano(descricaoLote)
-                    colecoes.append(nome)
-            except:
-                nome = 'teste'
+            if 'INVERNO' in descricaoLote:
+                nome = 'INVERNO' + ' ' + self._extrair_ano(descricaoLote)
                 colecoes.append(nome)
-                print(f'erro no tratamentoInformaColecao:codLote= {codLote}, empresa = {self.codEmpresa}')
+            elif 'PRI' in descricaoLote:
+                nome = 'VERAO' + ' ' + self._extrair_ano(descricaoLote)
+                colecoes.append(nome)
+            elif 'ALT' in descricaoLote:
+                nome = 'ALTO VERAO' + ' ' + self._extrair_ano(descricaoLote)
+                colecoes.append(nome)
+
+            elif 'VER' in descricaoLote:
+                nome = 'VERAO' + ' ' + self._extrair_ano(descricaoLote)
+                colecoes.append(nome)
+            else:
+                nome = 'ENCOMENDAS' + ' ' + self._extrair_ano(descricaoLote)
+                colecoes.append(nome)
+
 
         return colecoes
 

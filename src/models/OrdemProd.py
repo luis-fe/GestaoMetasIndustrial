@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+
+from src.configApp import configApp
 from src.connection import ConexaoPostgre
 from src.models import OP_CSW
 import re
@@ -210,8 +212,7 @@ class OrdemProd():
         def backupsCsv(self, dataFrame, nome):
             '''Metodo que faz o backup em csv da analise do falta a programar'''
 
-            load_dotenv('db.env')
-            caminhoAbsoluto = os.getenv('CAMINHO')
+            caminhoAbsoluto = configApp.localProjeto
             dataFrame.to_csv(f'{caminhoAbsoluto}/dados/{nome}.csv')
 
         def apresentacao_Fases(self):
