@@ -1,6 +1,5 @@
 import numpy as np
 import pytz
-
 from src.configApp import configApp
 from src.connection import ConexaoPostgre
 import pandas as pd
@@ -214,7 +213,9 @@ class MetaFases():
 
 
             # 15 - Importando o cronograma das fases
-            cronogramaS = Cronograma.Cronograma(self.codPlano)
+            cronograma = Cronograma.Cronograma(self.codPlano)
+            cronogramaS = cronograma.get_cronogramaFases()
+
             Meta = pd.merge(Meta, cronogramaS, on='codFase', how='left')
 
 
