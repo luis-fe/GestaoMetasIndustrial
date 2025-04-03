@@ -11,6 +11,10 @@ class Cronograma():
 
         self.codPlano = codPlano # atributo codPlano
         self.codEmpresa = codEmpresa # atributo codEmpresa
+        self.feriados = None
+
+    def feriadosIntervalado(self, dataInicio, dataFim):
+        self.feriados = self.tabela_feriados_EntreDatas(dataInicio, dataFim)
 
     def get_cronogramaFases(self):
 
@@ -50,7 +54,10 @@ class Cronograma():
     def calcular_dias_uteis(self, dataInicio, dataFim):
         # Obtendo a data atual
         dataHoje = self.obterdiaAtual()
-        feriados = self.feriados
+        if self.feriados == None:
+            feriados = self.feriadosIntervalado(dataInicio, dataFim)
+        else:
+            feriados = self.feriados
 
         # Convertendo as datas para o tipo datetime, se necessário
         if not isinstance(dataInicio, pd.Timestamp):
