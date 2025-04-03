@@ -9,10 +9,10 @@
         Um microserviço backend que conecta-se ao ERP da Empresa 
     e ao banco de dados Postgre vinculado a aplicação produzindo Api's com informações sobre Metas de Produção para Industria: 
 
-        definições: 
-        Fase = setor ou célula industial
-
-        - Calculo de demanda de produção fase a fase;
+* definições:
+  
+      Fase = setor ou célula industial
+      Calculo de demanda de produção fase a fase;
         - Carga da Fase;
         - Fila da Fase;
         - Cronograma de produção fase a fase ( dias úteis);
