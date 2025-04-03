@@ -45,7 +45,7 @@ def pOST_MetasFases():
     meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas)
     dados = meta.loteIN
 
-    dados = pd.DataFrame({'teste':f'{dados}','status':'1'})
+    dados = pd.DataFrame([{'teste':f'{dados}','status':'1'}])
 
     column_names = dados.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
