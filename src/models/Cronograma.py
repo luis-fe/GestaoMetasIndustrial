@@ -28,6 +28,8 @@ class Cronograma():
         conn = ConexaoPostgre.conexaoEngine()
         cronograma = pd.read_sql(sql, conn, params=(self.codPlano,))
 
+        self.feriados = self.tabela_feriados_EntreDatas(cronograma['dataInicio'][0], cronograma['dataFim'][0])
+
         # Convertendo as colunas de data para o tipo datetime
         cronograma['dataInicio'] = pd.to_datetime(cronograma['dataInicio'])
         cronograma['dataFim'] = pd.to_datetime(cronograma['dataFim'])
@@ -48,7 +50,7 @@ class Cronograma():
     def calcular_dias_uteis(self, dataInicio, dataFim):
         # Obtendo a data atual
         dataHoje = self.obterdiaAtual()
-        feriados = self.tabela_feriados_EntreDatas(dataInicio, dataFim)
+        feriados = self.feriados
 
         # Convertendo as datas para o tipo datetime, se necessário
         if not isinstance(dataInicio, pd.Timestamp):
