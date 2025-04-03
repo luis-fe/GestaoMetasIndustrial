@@ -521,7 +521,7 @@ class MetaFases():
                 columns={'Meta Dia':'Meta Anterior'},
                 inplace=True)
         except:
-            dataFrame = pd.DataFrame([{'Meta Dia':0,'nomeFase':''}])
+            dataFrame = pd.DataFrame([{'Meta Anterior':0,'nomeFase':''}])
 
 
         return dataFrame
