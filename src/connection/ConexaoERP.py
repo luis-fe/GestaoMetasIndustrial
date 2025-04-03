@@ -42,7 +42,7 @@ host = os.getenv('CSW_HOST')
 print(f'Teste variavel {host}/{password}/')
 try:
     teste = OP_CSW.OP_CSW().obterTiposOPCSW()
-    print(f' {teste}')
+    print(f' {teste["tipoOP"][0]}')
 except:
     print('caiu a conexao')
 
