@@ -23,7 +23,7 @@ def dayAtual():
     day = agora.strftime('%Y-%m-%d')
     return day
 
-@MetasFases_routes.route('/pcp/api/MetasFases3', methods=['POST'])
+@MetasFases_routes.route('/pcp/api/MetasFases', methods=['POST'])
 @token_required
 def pOST_MetasFases():
 
