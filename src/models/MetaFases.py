@@ -116,6 +116,7 @@ class MetaFases():
 
             # 3.2 - concatenando com o DataFrame das metas o faturmento:
             sqlMetas = pd.merge(sqlMetas,faturadoPeriodo,on='codItem',how='left')
+            self.backupsCsv(sqlMetas, 'analiseEtapa3.2')
 
 
             # 4 - Aplicando os estoques ao calculo
