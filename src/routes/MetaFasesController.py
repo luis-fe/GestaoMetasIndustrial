@@ -57,6 +57,40 @@ def pOST_MetasFases():
         OP_data.append(op_dict)
     return jsonify(OP_data)
 
+@MetasFases_routes.route('/pcp/api/MetasFasesPorVendido', methods=['POST'])
+@token_required
+def pOST_MetasFases():
+
+    data = request.get_json()
+    dia = dayAtual()
+    codigoPlano = data.get('codigoPlano')
+    arrayCodLoteCsw = data.get('arrayCodLoteCsw', '-')
+    dataMovFaseIni = data.get('dataMovFaseIni', dia)
+    dataMovFaseFim = data.get('dataMovFaseFim', dia)
+    congelado = data.get('congelado', False)
+    dataBackupMetas = data.get('dataBackupMetas', '2025-03-26')
+    modeloAnalise = data.get('modeloAnalise', 'Vendas')
+
+    print(data)
+    if congelado =='' or congelado == '-':
+        congelado = False
+    else:
+        congelado = congelado
+
+    meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas,modeloAnalise )
+    dados = meta.metasFase()
+
+
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    return jsonify(OP_data)
+
 
 @MetasFases_routes.route('/pcp/api/previsaoCategoriaFase', methods=['GET'])
 @token_required

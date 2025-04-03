@@ -103,6 +103,7 @@ class Faturamento():
             pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
             pedidos = pedidos.groupby("codItem").agg({"qtdePedida": "sum"}).reset_index()
             pedidos = pedidos.sort_values(by=['qtdePedida'], ascending=False)
+            pedidos.rename(columns={'qtdePedida': 'previsao'}, inplace=True)
 
             return pedidos
 
