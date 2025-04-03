@@ -48,6 +48,8 @@ class Cronograma():
     def calcular_dias_uteis(self, dataInicio, dataFim):
         # Obtendo a data atual
         dataHoje = self.obterdiaAtual()
+        feriados = self.tabela_feriados_EntreDatas(dataInicio, dataFim)
+
         # Convertendo as datas para o tipo datetime, se necessário
         if not isinstance(dataInicio, pd.Timestamp):
             dataInicio = pd.to_datetime(dataInicio)
@@ -65,7 +67,6 @@ class Cronograma():
         data_atual = dataInicio
 
         # Obtendo os feriados entre as datas
-        feriados = self.tabela_feriados_EntreDatas(dataInicio, dataFim)
         # Convertendo a coluna "data" para datetime, caso necessário
         feriados['data'] = pd.to_datetime(feriados['data'])
 
