@@ -93,7 +93,7 @@ class Plano():
         '''Metodo que obtem a DataInicial de faturamento do plano'''
 
 
-        sql = """SELECT p."inicoFat" FROM pcp."Plano" p where codigo = %s"""
+        sql = """SELECT p."inicoFat"::varchar FROM pcp."Plano" p where codigo = %s"""
         conn = ConexaoPostgre.conexaoEngine()
         dataInicial =  pd.read_sql(sql,conn, params=(str(self.codPlano),))
 
