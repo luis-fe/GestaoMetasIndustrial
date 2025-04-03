@@ -59,7 +59,7 @@ def pOST_MetasFases():
 
 @MetasFases_routes.route('/pcp/api/MetasFasesPorVendido', methods=['POST'])
 @token_required
-def pOST_MetasFases():
+def pOST_MetasFasesPorVendido():
 
     data = request.get_json()
     dia = dayAtual()
