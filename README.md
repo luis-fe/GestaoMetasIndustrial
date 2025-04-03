@@ -6,9 +6,19 @@
     
 ## Objetivo do Projeto
     
-    Conectar os dados do ERP a essa aplicação, e desenvolver api's
-    para desenvolvimento de dashborads e aplicações de planejamento e controle
-    de Metas Industriais para a Empresa.
+        Um microserviço backend que conecta-se ao ERP da Empresa 
+    e ao banco de dados Postgre vinculado a aplicação produzindo Api's com informações sobre Metas de Produção para Industria: 
+
+        definições: 
+        Fase = setor ou célula industial
+
+        - Calculo de demanda de produção fase a fase;
+        - Carga da Fase;
+        - Fila da Fase;
+        - Cronograma de produção fase a fase ( dias úteis);
+        - Dias disponviel de produção;
+        - Meta Total e Diaria  de cada fase;
+        - Metas a nível de fase/ Categoria;
 
 ## Inicializando o app
     
