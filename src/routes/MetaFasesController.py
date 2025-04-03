@@ -43,8 +43,7 @@ def pOST_MetasFases():
         congelado = congelado
 
     meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas)
-    print(meta.loteIN)
-    dados = meta.metas_Lote()
+    dados = meta.metasFase()
 
 
     column_names = dados.columns
