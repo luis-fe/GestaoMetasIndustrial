@@ -36,7 +36,7 @@ class Cronograma():
         cronograma['dataFim'] = pd.to_datetime(cronograma['dataFim'])
 
         # Calculando a diferença entre as datas em dias úteis (excluindo domingos) e adicionando como nova coluna
-        cronograma['dias'] = cronograma.apply(lambda row: self.calcular_dias_uteis(row['dataInicio'], row['dataFim']),
+        cronograma['dias'] = cronograma.apply(lambda row: self.calcular_dias_uteis(row['dataInicio'], row['dataFim'],False),
                                               axis=1)
 
         # Convertendo codFase para inteiro
@@ -48,10 +48,10 @@ class Cronograma():
 
         return cronograma
 
-    def calcular_dias_uteis(self, dataInicio, dataFim):
+    def calcular_dias_uteis(self, dataInicio, dataFim, recalculaFeriado = True):
         # Obtendo a data atual
         dataHoje = self.obterdiaAtual()
-        if self.feriados.empty:
+        if recalculaFeriado == True:
             feriados = self.tabela_feriados_EntreDatas(dataInicio, dataFim)
         else:
             feriados = self.feriados

@@ -64,7 +64,7 @@ class ProducaoFases():
         realizado = realizado.groupby(["codFase"]).agg({"Realizado": "sum"}).reset_index()
 
         cronograma = Cronograma.Cronograma()
-        diasUteis = cronograma.calcular_dias_uteis(self.periodoInicio, self.periodoFinal)
+        diasUteis = cronograma.calcular_dias_uteis(self.periodoInicio, self.periodoFinal,True)
 
         # Evitar divisão por zero ou infinito
         realizado['Realizado'] = np.where(diasUteis == 0, 0, realizado['Realizado'] / diasUteis)
