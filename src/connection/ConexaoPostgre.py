@@ -12,7 +12,7 @@ env_path = configApp.localProjeto
 load_dotenv(f'{env_path}/_ambiente.env')
 
 def conexaoEngine():
-    db_name = os.getenv('POSTGRES_DB')
+    db_name = os.getenv('POSTGRES_DB2')
     db_user = os.getenv('POSTGRES_USER')
     db_password = os.getenv('POSTGRES_PASSWORD_SRV1')
     db_host = os.getenv('POSTGRES_HOST_SRV1')
