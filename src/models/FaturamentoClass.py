@@ -68,6 +68,42 @@ class Faturamento():
             pedidos = pedidos.groupby("codItem").agg({"qtdeFaturada": "sum"}).reset_index()
             pedidos = pedidos.sort_values(by=['qtdeFaturada'], ascending=False)
             pedidos = pedidos[pedidos['qtdeFaturada'] > 0].reset_index()
+
+            return pedidos
+
+    def vendasPeriodo_Plano(self):
+        '''Metodo para obter as Vebdas de um determinado plano de acordo com o intervalo das datas de Prev de faturamento
+        return:
+        Dataframe [{'codPedido', 'codProduto', 'qtdePedida', 'qtdeFaturada', 'qtdeCancelada', 'qtdeSugerida',
+                       'PrecoLiquido', 'codTipoNota'}]
+        '''
+
+        if self.codigoPlano == None:
+            return pd.Dataframe([{'status': False, 'Mensagem': 'Plano nao encontrado'}])
+        else:
+            plano = PlanoClass.Plano(self.codigoPlano)
+
+            # Obtendo a dataInicial e dataFinal do Plano
+            self.dataInicial = plano.obterDataInicioFatPlano()
+            self.dataFinal = plano.obterDataFinalFatPlano()
+
+            pedidos = self.consultaArquivoFastVendas()
+
+            pedidos['status'] = True
+            # 3 - Filtrando os pedidos aprovados
+            pedidos = pd.merge(pedidos, self._pedidosBloqueados, on='codPedido', how='left')
+            pedidos['situacaobloq'].fillna('Liberado', inplace=True)
+            pedidos = pedidos[pedidos['situacaobloq'] == 'Liberado']
+
+            # 4 Filtrando somente os tipo de notas desejados
+
+            tipoNotas = plano.pesquisarTipoNotasPlano()
+
+            pedidos = pd.merge(pedidos, tipoNotas, on='codTipoNota')
+            pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
+            pedidos = pedidos.groupby("codItem").agg({"qtdePedida": "sum"}).reset_index()
+            pedidos = pedidos.sort_values(by=['qtdePedida'], ascending=False)
+
             return pedidos
 
     def consultaArquivoFastVendas(self):
@@ -138,4 +174,24 @@ class Faturamento():
 
 
         return faturamentoPartes
+
+
+    def vendasPeriodo_Plano_PartesPeca(self):
+        '''Metodo para obter o faturamento no periodo do plano , convertido em partes de peças (SEMIACABADOS)'''
+
+
+
+
+        vendas = self.vendasPeriodo_Plano()
+
+        vendasPartes = pd.merge(vendas,self.relacaoPartes,on='codItem')
+        # Drop do codProduto
+        vendasPartes.drop('codItem', axis=1, inplace=True)
+
+        # Rename do redParte para codProduto
+        vendasPartes.rename(columns={'redParte': 'codItem'}, inplace=True)
+        vendasPartes.drop(['codProduto','codSeqTamanho','codSortimento'], axis=1, inplace=True)
+
+
+        return vendasPartes
 

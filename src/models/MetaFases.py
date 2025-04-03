@@ -13,7 +13,7 @@ class MetaFases():
     '''Classe utilizada para construcao das metas por fase a nivel departamental '''
 
     def __init__(self, codPlano = None, codLote = None, nomeFase =None, dt_inicioRealizado = None, dt_fimRealizado = None, analiseCongelada = False, arrayCodLoteCsw = None,
-                 codEmpresa = '1', dataBackupMetas = None):
+                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao'):
         '''Construtor da classe'''
 
         self.codPlano = codPlano # codigo do Plano criado
@@ -25,6 +25,7 @@ class MetaFases():
         self.arrayCodLoteCsw = arrayCodLoteCsw # Array com o codigo do lote
         self.codEmpresa = codEmpresa
         self.dataBackupMetas = dataBackupMetas
+        self.modeloAnalise = modeloAnalise # Modelo da Analise: Vendas x LoteProducao
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
             self.loteIN = self.transformaando_codLote_clausulaIN() # funcao inicial que defini o loteIN
@@ -70,22 +71,38 @@ class MetaFases():
 
 
 
-
     def metasFase(self):
         '''Metodo que consulta as meta por fase'''
 
         ordemProd = OrdemProd.OrdemProd()
 
+
         # 1.0 - Verificando se o usuario está analisando em congelamento , CASE NAO:
         if self.analiseCongelada == False:
 
+            produto = Produtos.Produtos()
+            produto.relacao_Partes_Pai()
+            consultaPartes = produto.relacaoPartes
+            faturado = FaturamentoClass.Faturamento(None,None,None,self.codPlano, consultaPartes)
+
+
+
+
+
             # 2.1 pesquisar a previsao a nivel de cor e tam, de acordo com o lote escolhido:
-            sqlMetas = self.metas_Lote()
-            self.backupsCsv(sqlMetas, 'analiseEtapa2.1')
+            #2.2 if para verificar se o usuario quer a previsao baseado em lote ou baseado em vendas
+
+            if self.modeloAnalise == 'LoteProducao':
+                sqlMetas = self.metas_Lote()
+            else:
+                sqlMetas = faturado.vendasPeriodo_Plano()
+                vendasPeriodoPartes = faturado.vendasPeriodo_Plano_PartesPeca()
+                sqlMetas = pd.concat([sqlMetas, vendasPeriodoPartes], ignore_index=True)
+
 
 
             # 2.2 - obtem os roteiros das engenharias
-            produto = Produtos.Produtos()
+
             sqlRoteiro = produto.roteiro_Engenharias()
 
             # 2.3 obtem a ordem de apresentacao de cada fase
@@ -100,15 +117,16 @@ class MetaFases():
             consulta['codEngenharia'] = np.where(mask, '0' + consulta['codItemPai'] + '-0', consulta['codItemPai'] + '-0')
 
             # 2.6 Merge entre os produtos tam e cor e as metas , para descobrir o codigo reduzido (codItem)  dos produtos projetados
-            sqlMetas = pd.merge(sqlMetas, consulta, on=["codEngenharia", "codSeqTamanho", "codSortimento"], how='left')
-            sqlMetas['codItem'].fillna('-', inplace=True)
+            if self.modeloAnalise == 'LoteProducao':
+                sqlMetas = pd.merge(sqlMetas, consulta, on=["codEngenharia", "codSeqTamanho", "codSortimento"], how='left')
+                sqlMetas['codItem'].fillna('-', inplace=True)
+            else:
+                sqlMetas = pd.merge(sqlMetas, consulta, on=["codItem"], how='left')
+
 
 
 
             # 3 - Obter o faturamento de um determinado plano e aplicar ao calculo
-            produto.relacao_Partes_Pai()
-            consultaPartes = produto.relacaoPartes
-            faturado = FaturamentoClass.Faturamento(None,None,None,self.codPlano, consultaPartes)
             faturadoPeriodo = faturado.faturamentoPeriodo_Plano()
 
 
