@@ -514,12 +514,14 @@ class MetaFases():
         nome = f'meta_{plano}_{lote}_{data}.csv'
         caminhoAbsoluto = configApp.localProjeto
 
-        dataFrame = pd.read_csv(f'{caminhoAbsoluto}/dados/backup/{nome}')
-        dataFrame = dataFrame.loc[:, ['Meta Dia', 'nomeFase']].reset_index()
-        dataFrame.rename(
-            columns={'Meta Dia':'Meta Anterior'},
-            inplace=True)
-
+        try:
+            dataFrame = pd.read_csv(f'{caminhoAbsoluto}/dados/backup/{nome}')
+            dataFrame = dataFrame.loc[:, ['Meta Dia', 'nomeFase']].reset_index()
+            dataFrame.rename(
+                columns={'Meta Dia':'Meta Anterior'},
+                inplace=True)
+        except:
+            dataFrame = pd.DataFrame([{'Meta Dia':0,'nomeFase':''}])
 
 
         return dataFrame
