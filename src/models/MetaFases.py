@@ -82,6 +82,8 @@ class MetaFases():
 
             # 2.1 pesquisar a previsao a nivel de cor e tam, de acordo com o lote escolhido:
             sqlMetas = self.metas_Lote()
+            self.backupsCsv(sqlMetas, 'analiseEtapa2.1')
+
 
             # 2.2 - obtem os roteiros das engenharias
             produto = Produtos.Produtos()
@@ -101,7 +103,6 @@ class MetaFases():
             # 2.6 Merge entre os produtos tam e cor e as metas , para descobrir o codigo reduzido (codItem)  dos produtos projetados
             sqlMetas = pd.merge(sqlMetas, consulta, on=["codEngenharia", "codSeqTamanho", "codSortimento"], how='left')
             sqlMetas['codItem'].fillna('-', inplace=True)
-            self.backupsCsv(sqlMetas, 'analiseEtapa2.6')
 
 
 
