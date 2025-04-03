@@ -238,7 +238,8 @@ class MetaFases():
 
 
             #16 - Obtendo a Colecao do Lote
-            colecoes = self.__tratamentoInformacaoColecao()
+            if self.modeloAnalise == 'LoteProducao':
+                colecoes = self.__tratamentoInformacaoColecao()
 
             # 17 - Consultando o Fila das fases
             filaFase = ordemProd.filaFases()
