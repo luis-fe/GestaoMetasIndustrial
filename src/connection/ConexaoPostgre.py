@@ -113,7 +113,17 @@ def Funcao_InserirBackup (df_tags, tamanho,tabela, metodo):
         df_tags.iloc[i:i + chunksize].to_sql(tabela, engine, if_exists=metodo, index=False , schema='backup')
 
 
-sql = """SELECT p."inicoFat" FROM pcp."Plano" p where codigo = %s"""
+sql = """            SELECT 
+                "codLote", 
+                "Empresa", 
+                "codEngenharia", 
+                "codSeqTamanho", 
+                "codSortimento", 
+                previsao
+            FROM 
+                "PCP".pcp.lote_itens li
+            WHERE 
+                "codLote" IN ('25M24A') """
 conn = conexaoEngine()
 dataInicial =  pd.read_sql(sql,conn, params=(str(2),))
 
