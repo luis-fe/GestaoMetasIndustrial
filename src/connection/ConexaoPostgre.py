@@ -1,5 +1,7 @@
 '''Arquivo para chamar a conexao de banco com o postgre'''
 import os
+
+import pandas as pd
 from dotenv import load_dotenv
 import psycopg2
 from sqlalchemy import create_engine
@@ -109,3 +111,10 @@ def Funcao_InserirBackup (df_tags, tamanho,tabela, metodo):
     chunksize = tamanho
     for i in range(0, len(df_tags), chunksize):
         df_tags.iloc[i:i + chunksize].to_sql(tabela, engine, if_exists=metodo, index=False , schema='backup')
+
+
+sql = """SELECT p."inicoFat" FROM pcp."Plano" p where codigo = %s"""
+conn = conexaoEngine()
+dataInicial =  pd.read_sql(sql,conn, params=(str(2),))
+
+print(dataInicial)
