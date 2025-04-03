@@ -101,6 +101,8 @@ class MetaFases():
             # 2.6 Merge entre os produtos tam e cor e as metas , para descobrir o codigo reduzido (codItem)  dos produtos projetados
             sqlMetas = pd.merge(sqlMetas, consulta, on=["codEngenharia", "codSeqTamanho", "codSortimento"], how='left')
             sqlMetas['codItem'].fillna('-', inplace=True)
+            self.backupsCsv(sqlMetas, 'analiseEtapa2.6')
+
 
 
             # 3 - Obter o faturamento de um determinado plano e aplicar ao calculo
@@ -116,7 +118,6 @@ class MetaFases():
 
             # 3.2 - concatenando com o DataFrame das metas o faturmento:
             sqlMetas = pd.merge(sqlMetas,faturadoPeriodo,on='codItem',how='left')
-            self.backupsCsv(sqlMetas, 'analiseEtapa3.2')
 
 
             # 4 - Aplicando os estoques ao calculo
