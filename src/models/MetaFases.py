@@ -466,9 +466,10 @@ class MetaFases():
         '''Método privado que trata a informacao do nome da colecao'''
 
         colecoes = []
-        lote = OrdemProd.OrdemProd(self.codEmpresa)
+
 
         for codLote in self.arrayCodLoteCsw:
+            lote = OrdemProd.OrdemProd(self.codEmpresa)
             lote.codLote = codLote
             descricaoLote = lote.consultaNomeLote()
 
