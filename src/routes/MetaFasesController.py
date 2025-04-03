@@ -1,3 +1,4 @@
+import pandas as pd
 from flask import Blueprint, jsonify, request
 from functools import wraps
 from src.models import MetaFases
@@ -42,7 +43,9 @@ def pOST_MetasFases():
         congelado = congelado
 
     meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas)
-    dados = meta.metasFase()
+    dados = meta.loteIN
+
+    dados = pd.DataFrame({'teste':f'{dados}'})
 
     column_names = dados.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
