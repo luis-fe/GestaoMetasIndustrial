@@ -61,11 +61,11 @@ class MetaFases():
             FROM 
                 "PCP".pcp.lote_itens li
             WHERE 
-                "codLote" IN (%s) 
+                "codLote" IN ("""+ self.loteIN +""") 
                 and "Empresa" = %s
         """
 
-        sqlMetas = pd.read_sql(sqlMetas, conn, params=(self.loteIN, self.codEmpresa))
+        sqlMetas = pd.read_sql(sqlMetas, conn, params=(self.codEmpresa,))
 
         return sqlMetas
 
