@@ -1,17 +1,26 @@
-PROJETO BACKEND - GESTAO DE METAS INDUSTRIAL 
-
+# PROJETO BACKEND - Gestão de Metas Industriais 
     Cliente: Grupo MPL
     Framework: Flask - python
     Criador: Luís Fernando Gonçalves de Lima Machado
     Versao Produção: 1.0 /Homologado 01-04-2025
     
-OBJETIVO DO PROJETO
+## Objetivo do Projeto
     
-    Conectar os dados do ERP a essa aplicação, e desenvolver api's
-    para desenvolvimento de dashborads e aplicações de planejamento e controle
-    de Metas Industriais para a Empresa.
+        Um microserviço backend que conecta-se ao ERP da Empresa 
+    e ao banco de dados Postgre vinculado a aplicação produzindo Api's com informações sobre Metas de Produção para Industria: 
 
-INICIALIZACAO
+* definições:
+  
+      Fase = setor ou célula industial
+      Calculo de demanda de produção fase a fase;
+        - Carga da Fase;
+        - Fila da Fase;
+        - Cronograma de produção fase a fase ( dias úteis);
+        - Dias disponviel de produção;
+        - Meta Total e Diaria  de cada fase;
+        - Metas a nível de fase/ Categoria;
+
+## Inicializando o app
     
     1 - Configurar o projeto para o funcionamento: 
         
@@ -47,7 +56,7 @@ INICIALIZACAO
     2.1 - Alternativa via Docker: Dockerfile 
     
 
-DETALHAMENTO DO DIAGRAMA
+## Detalhamento do Diagrama de Classes
 
 ![Diagrama de Classes](docsProject/ModeloUML_ModuloGestaoMetas.png)
 
