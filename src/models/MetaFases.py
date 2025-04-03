@@ -324,9 +324,19 @@ class MetaFases():
         caminhoAbsoluto = configApp.localProjeto
 
         if backupMetas == False:
-            dataFrame.to_csv(f'{caminhoAbsoluto}/dados/{nome}.csv')
+
+            if self.modeloAnalise == 'LoteProducao'  :
+                dataFrame.to_csv(f'{caminhoAbsoluto}/dados/{nome}.csv')
+            else:
+                dataFrame.to_csv(f'{caminhoAbsoluto}/dados/Vendido{nome}.csv')
+
         else:
-            dataFrame.to_csv(f'{caminhoAbsoluto}/dados/backup/{nome}.csv')
+            if self.modeloAnalise == 'LoteProducao'  :
+
+                dataFrame.to_csv(f'{caminhoAbsoluto}/dados/backup/{nome}.csv')
+            else:
+                dataFrame.to_csv(f'{caminhoAbsoluto}/dados/Vendido{nome}.csv')
+
 
 
 
