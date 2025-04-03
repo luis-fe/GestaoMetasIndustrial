@@ -469,8 +469,8 @@ class MetaFases():
 
 
         for codLote in self.arrayCodLoteCsw:
-            lote = OrdemProd.OrdemProd(self.codEmpresa)
-            lote.codLote = codLote
+            lote = OrdemProd.OrdemProd(self.codEmpresa, codLote)
+
             try:
                 descricaoLote = lote.consultaNomeLote()
 
