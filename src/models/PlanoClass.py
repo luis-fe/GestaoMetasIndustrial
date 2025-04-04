@@ -99,6 +99,26 @@ class Plano():
 
         return dataInicial['inicoFat'][0]
 
+    def obterDataInicioVendoPlano(self):
+        '''Metodo que obtem a DataInicial de faturamento do plano'''
+
+
+        sql = """SELECT p."inicioVenda"::varchar FROM pcp."Plano" p where codigo = %s"""
+        conn = ConexaoPostgre.conexaoEngine()
+        dataInicial =  pd.read_sql(sql,conn, params=(str(self.codPlano),))
+
+        return dataInicial['inicioVenda'][0]
+
+    def obterDataFimVendoPlano(self):
+        '''Metodo que obtem a DataInicial de faturamento do plano'''
+
+
+        sql = """SELECT p."FimVenda"::varchar FROM pcp."Plano" p where codigo = %s"""
+        conn = ConexaoPostgre.conexaoEngine()
+        dataInicial =  pd.read_sql(sql,conn, params=(str(self.codPlano),))
+
+        return dataInicial['FimVenda'][0]
+
     def obterDataFinalFatPlano(self):
         sql = """SELECT p."finalFat" FROM pcp."Plano" p where codigo = %s"""
         conn = ConexaoPostgre.conexaoEngine()

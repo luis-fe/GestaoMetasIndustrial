@@ -45,8 +45,8 @@ class Faturamento():
             plano = PlanoClass.Plano(self.codigoPlano)
 
             #Obtendo a dataInicial e dataFinal do Plano
-            self.dataInicial = plano.obterDataInicioFatPlano()
-            self.dataFinal = plano.obterDataFinalFatPlano()
+            self.dataInicial = plano.obterDataInicioVendoPlano()
+            self.dataFinal = plano.obterDataFimVendoPlano()
 
 
 
