@@ -179,7 +179,9 @@ class MetaFases():
             sqlMetas['FaltaProgramar'] = np.where(sqlMetas['FaltaProgramar1'] > 0, sqlMetas['FaltaProgramar1'], 0)
 
             # 8 - Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku
-            self.backupsCsv(sqlMetas, 'analise')
+            data = self.__obterdiaAtual()
+
+            self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}_{data}')
 
             print('excutando a etata 8:Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku')
             # __________________________________________________________________________________________________________________
@@ -271,7 +273,6 @@ class MetaFases():
             Meta['Realizado'].fillna(0, inplace=True)
             Meta.fillna('-', inplace=True)
             Meta = Meta[Meta['apresentacao'] != '-']
-            data = self.__obterdiaAtual()
 
             # 21 - backup das metas levantadas
             self.backupsCsv(Meta, f'meta_{str(self.codPlano)}_{str(self.loteIN )}_{str(data)}',True)

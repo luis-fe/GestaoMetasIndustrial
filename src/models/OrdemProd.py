@@ -43,7 +43,7 @@ class OrdemProd():
 
             return carga
 
-        def carga_porReduzido_addEquivParte(self, Df_relacaoPartes):
+        def carga_porReduzido_addEquivParte(self, Df_relacaoPartes, filro):
             '''Método que adiciona na consulta de carga o equivalente das partes'''
 
             # 1 - Consultando a cargaPai

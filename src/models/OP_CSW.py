@@ -156,7 +156,7 @@ class OP_CSW():
         FROM
         	tcp.TipoOP t
         WHERE
-        	t.Empresa = 1 and t.codTipo not in (7, 13, 14, 15, 19, 21, 23, 61,24,25,26, 11, 20, 28)
+        	t.Empresa = 1
         order by
         	codTipo asc
             """
