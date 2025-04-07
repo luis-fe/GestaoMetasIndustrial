@@ -181,8 +181,15 @@ class MetaFases():
             # 8 - Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku
             data = self.__obterdiaAtual()
 
-            self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}_{data}')
-            self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}')
+            if self.modeloAnalise == 'LoteProducao':
+
+
+                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}_{data}')
+                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}')
+            else:
+                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{"Vendido"}_{data}')
+                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{"Vendido"}')
+
 
             print('excutando a etata 8:Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku')
             # __________________________________________________________________________________________________________________
