@@ -182,6 +182,7 @@ class MetaFases():
             data = self.__obterdiaAtual()
 
             self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}_{data}')
+            self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}')
 
             print('excutando a etata 8:Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku')
             # __________________________________________________________________________________________________________________
