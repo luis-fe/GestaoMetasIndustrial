@@ -230,8 +230,12 @@ class MetaFases():
             filtro_comb4 = fase_441 & nao_comeca_com_0
             # Aplicar o filtro invertido
             Meta = Meta[~(filtro_comb | filtro_comb2 | filtro_comb3 | filtro_comb4)]
-            self.backupsCsv(Meta, f'analiseFaltaProgrFases')
 
+            if self.modeloAnalise == 'LoteProducao':
+
+                self.backupsCsv(Meta, f'analiseFaltaProgrFases_{self.codPlano}_{self.loteIN}')
+            else:
+                self.backupsCsv(Meta, f'analiseFaltaProgrFases_{"Vendido"}')
 
             # 14 criando o dataFrame das Metas a nivel de fase PREVISAO + FALTAPROGRAMAR
             Meta = Meta.groupby(["codFase", "nomeFase"]).agg({"previsao": "sum", "FaltaProgramar": "sum"}).reset_index()
@@ -572,9 +576,14 @@ class MetaFases():
         return agora
 
 
+    def obterPedidosAbertoPlano_por_sku(self):
+        '''Metodo que obtem os pedidos em abertos para um determinado codigoReduzido para checagem'''
 
 
 
+
+    def faltaProgramarFaseCategoria(self):
+        '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias '''
 
 
 
