@@ -184,11 +184,11 @@ class MetaFases():
             if self.modeloAnalise == 'LoteProducao':
 
 
-                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}_{data}')
-                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{self.loteIN}')
+                self.backupsCsv(sqlMetas, f'analise_{self.codPlano}_{self.loteIN}_{data}')
+                self.backupsCsv(sqlMetas, f'analise_{self.codPlano}_{self.loteIN}')
             else:
-                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{"Vendido"}_{data}')
-                self.backupsCsv(sqlMetas, f'/backup/analise_{self.codPlano}_{"Vendido"}')
+                self.backupsCsv(sqlMetas, f'analise_{self.codPlano}_{"Vendido"}_{data}')
+                self.backupsCsv(sqlMetas, f'analise_{self.codPlano}_{"Vendido"}')
 
 
             print('excutando a etata 8:Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku')
@@ -341,7 +341,7 @@ class MetaFases():
             if self.modeloAnalise == 'LoteProducao'  :
                 dataFrame.to_csv(f'{caminhoAbsoluto}/dados/{nome}.csv')
             else:
-                dataFrame.to_csv(f'{caminhoAbsoluto}/dados/Vendido{nome}.csv')
+                dataFrame.to_csv(f'{caminhoAbsoluto}/dados/{nome}.csv')
 
         else:
             if self.modeloAnalise == 'LoteProducao'  :
