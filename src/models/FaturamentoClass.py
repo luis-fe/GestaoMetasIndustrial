@@ -7,7 +7,7 @@ import os
 
 class Faturamento():
     '''Classe que interagem com o faturamento'''
-    def __init__(self, dataInicial = None, dataFinal = None, tipoNotas = None, codigoPlano = None, relacaoPartes = None):
+    def __init__(self, dataInicial = None, dataFinal = None, tipoNotas = None, codigoPlano = None, relacaoPartes = None, codsku = None):
         '''Construtor da classe'''
 
         self.dataInicial = dataInicial # dataInicial de faturamento
@@ -19,6 +19,7 @@ class Faturamento():
         self.pedidoCsw = Pedidos_CSW.Pedidos_CSW()
 
         self.pedidosBloqueados()
+        self.codsku = codsku
 
     def pedidosBloqueados(self):
         '''Metodo que busca os pedidos bloqueados e retorna em um DataFrame '''
@@ -132,6 +133,7 @@ class Faturamento():
 
 
 
+
         # Aplicar o filtro
         df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
         # Selecionar colunas relevantes
@@ -195,4 +197,52 @@ class Faturamento():
 
 
         return vendasPartes
+
+    def consultaArquivoFastVendasSku(self):
+        '''Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame '''
+
+        env_path = configApp.localProjeto
+        # Carregar variáveis de ambiente do arquivo .env
+        load_dotenv(env_path)
+        caminho_absoluto = os.getenv('CAMINHO_PARQUET_FAT')
+
+        parquet_file = fp.ParquetFile(f'{caminho_absoluto}/pedidos.parquet')
+
+        # Converter para DataFrame do Pandas
+        df_loaded = parquet_file.to_pandas()
+        # Converter 'dataEmissao' para datetime
+        df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
+
+        # Convertendo a string para datetime
+        dataFatIni = pd.to_datetime(self.dataInicial)
+        dataFatFinal = pd.to_datetime(self.dataFinal)
+
+        # Filtrar as datas
+        df_loaded['codProduto'] = df_loaded[df_loaded['codProduto']==self.codsku].reset_index
+        df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
+
+        # Aplicar o filtro
+        df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
+        plano = PlanoClass.Plano(self.codigoPlano)
+
+        tipoNotas = plano.pesquisarTipoNotasPlano()
+
+        pedidos = pd.merge(df_filtered, tipoNotas, on='codTipoNota')
+        pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
+
+        # 3 - Filtrando os pedidos aprovados
+        pedidos = pd.merge(pedidos, self._pedidosBloqueados, on='codPedido', how='left')
+        pedidos['situacaobloq'].fillna('Liberado', inplace=True)
+        pedidos = pedidos[pedidos['situacaobloq'] == 'Liberado']
+
+
+
+        return pedidos
+
+
+    def obterPedidosAbertoPlano_por_sku(self):
+        '''Metodo que obtem os pedidos em abertos para um determinado codigoReduzido para checagem'''
+
+        consulta = self.consultaArquivoFastVendasSku()
+
 

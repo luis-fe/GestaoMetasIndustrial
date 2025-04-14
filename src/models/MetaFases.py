@@ -576,8 +576,6 @@ class MetaFases():
         return agora
 
 
-    def obterPedidosAbertoPlano_por_sku(self):
-        '''Metodo que obtem os pedidos em abertos para um determinado codigoReduzido para checagem'''
 
 
 
