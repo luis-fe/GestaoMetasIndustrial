@@ -152,7 +152,7 @@ def get_faltaProgcategoria_fase():
     codigoPlano = data.get('codigoPlano')
     arrayCodLoteCsw = data.get('arrayCodLoteCsw', '-')
 
-    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','',arrayCodLoteCsw)
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','',arrayCodLoteCsw)
 
     dados = meta.faltaProgcategoria_fase()
     #controle.salvarStatus(rotina, ip, datainicio)
