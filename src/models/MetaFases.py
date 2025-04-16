@@ -271,7 +271,9 @@ class MetaFases():
             #18 - obtendo a Meta diaria das fases:
 
             Meta['dias'].fillna(1, inplace=True)
-            Meta['Meta Dia'] = Meta['Falta Produzir'] / Meta['dias']
+            Meta['Meta Dia'] = np.where(Meta['dias'] == 0, Meta['Falta Produzir'],
+                                        Meta['Falta Produzir'] / Meta['dias'])
+
             Meta['Meta Dia'] = Meta['Meta Dia'].round(0)
 
             # 19 Ponto de Congelamento do lote:
