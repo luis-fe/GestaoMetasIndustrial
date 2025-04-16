@@ -194,13 +194,17 @@ def get_faltaProgcategoria_fase_vendido():
     del dados
     return jsonify(OP_data)
 
-@MetasFases_routes.route('/pcp/api/FaltaProduzircategoria_fase', methods=['GET'])
+@MetasFases_routes.route('/pcp/api/FaltaProduzircategoria_fase', methods=['POST'])
 @token_required
 def get_FaltaProduzircategoria_fase():
-    nomeFase = request.args.get('nomeFase', '-')
-    codPlano = request.args.get('codPlano', '-')
+    data = request.get_json()
 
-    meta = MetaFases.MetaFases(codPlano,'',nomeFase)
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+    arrayCodLoteCsw = data.get('arrayCodLoteCsw', '-')
+
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','',arrayCodLoteCsw)
+
 
     dados = meta.faltaProduzirCategoriaFase()
     #controle.salvarStatus(rotina, ip, datainicio)
