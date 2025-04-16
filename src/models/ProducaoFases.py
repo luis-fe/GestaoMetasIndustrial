@@ -29,6 +29,7 @@ class ProducaoFases():
         '''Método que retona o realizado por fase de acordo com o periodo informado'''
 
         realizado = self.__sqlRealizadoPeriodo() # realiza a consulta sql no banco postgre do realizado
+
         ordemProd = OrdemProd.OrdemProd()
 
         # 1 - verfica se existe tipo de ops a serem excluidos da analise
@@ -37,6 +38,7 @@ class ProducaoFases():
 
         # 2 - verfica o arrayTipoProducao com os tipo de ordens de producao que desejo consultar
         if self.arrayTipoProducao != None:
+
             agrupamentoOP = ordemProd.agrupado_x_tipoOP()
             dataFrameTipoProducao = pd.DataFrame({'Agrupado': self.arrayTipoProducao})
             dataFrameTipoProducao = pd.merge(agrupamentoOP,dataFrameTipoProducao, on='Agrupado')
@@ -64,12 +66,12 @@ class ProducaoFases():
         realizado = realizado.groupby(["codFase"]).agg({"Realizado": "sum"}).reset_index()
 
         cronograma = Cronograma.Cronograma()
-        diasUteis = cronograma.calcular_dias_uteis(self.periodoInicio, self.periodoFinal,True)
+        diasUteis = cronograma.calcular_dias_uteis(self.periodoInicio, self.periodoFinal,True, False)
 
         # Evitar divisão por zero ou infinito
         realizado['Realizado'] = np.where(diasUteis == 0, 0, realizado['Realizado'] / diasUteis)
         #print(f'dias uteis {diasUteis}')
-
+        realizado['diasUteis'] = diasUteis
         return realizado
 
     def __sqlRealizadoPeriodo(self):
