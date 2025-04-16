@@ -92,12 +92,14 @@ def pOST_MetasFasesPorVendido():
     return jsonify(OP_data)
 
 
-@MetasFases_routes.route('/pcp/api/previsaoCategoriaFase', methods=['GET'])
+@MetasFases_routes.route('/pcp/api/previsaoCategoriaFase', methods=['POST'])
 @token_required
 def get_previsaoCategoriaFase():
     nomeFase = request.args.get('nomeFase', '-')
+    codigoPlano = request.args.get('codigoPlano')
+    arrayCodLoteCsw = request.args.get('arrayCodLoteCsw', '-')
 
-    meta = MetaFases.MetaFases('','',nomeFase)
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','',arrayCodLoteCsw)
 
     dados = meta.previsao_categoria_fase()
 
