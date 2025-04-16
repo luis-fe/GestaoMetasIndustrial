@@ -414,7 +414,7 @@ class MetaFases():
 
 
         previsao = previsao[previsao['nomeFase'] == self.nomeFase].reset_index()
-        previsao = previsao.groupby(["categoria"]).agg({"previsao":"sum"}).reset_index()
+        previsao = previsao.groupby(["categoria"]).agg({"FaltaProgramar":"sum"}).reset_index()
 
         previsao = previsao.sort_values(by=['FaltaProgramar'], ascending=False)  # escolher como deseja classificar
 
