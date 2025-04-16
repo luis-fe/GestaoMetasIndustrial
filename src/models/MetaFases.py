@@ -293,6 +293,7 @@ class MetaFases():
             # 21 Carregando o Saldo COLECAO ANTERIOR
             dataFrame2 = self.backupMetasAnteriores()
             Meta = pd.merge(Meta, dataFrame2, on='nomeFase', how='left')
+            Meta['Realizado'].fillna(0, inplace=True)
             Meta.fillna('-',inplace=True)
             dados = {
                 '0-Previcao Pçs': f'{totalPc} pcs',
