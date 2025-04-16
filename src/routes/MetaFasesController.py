@@ -169,6 +169,30 @@ def get_faltaProgcategoria_fase():
     del dados
     return jsonify(OP_data)
 
+@MetasFases_routes.route('/pcp/api/faltaProgcategoria_fase_Vendido', methods=['POST'])
+@token_required
+def get_faltaProgcategoria_fase_vendido():
+    data = request.get_json()
+
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','')
+
+    dados = meta.faltaProgcategoria_faseVendido()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
 
 @MetasFases_routes.route('/pcp/api/FaltaProduzircategoria_fase', methods=['GET'])
 @token_required
