@@ -117,6 +117,54 @@ def get_previsaoCategoriaFase():
     del dados
     return jsonify(OP_data)
 
+@MetasFases_routes.route('/pcp/api/previsaoCategoriaFase', methods=['POST'])
+@token_required
+def get_previsaoCategoriaFase():
+    data = request.get_json()
+
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+    arrayCodLoteCsw = data.get('arrayCodLoteCsw', '-')
+
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','',arrayCodLoteCsw)
+
+    dados = meta.previsao_categoria_fase()
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+@MetasFases_routes.route('/pcp/api/previsaoCategoriaFase_peloVendido', methods=['POST'])
+@token_required
+def get_previsaoCategoriaFase_peloVendido():
+    data = request.get_json()
+
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase)
+    dados = meta.previsao_categoria_faseVendido()
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
 
 @MetasFases_routes.route('/pcp/api/faltaProgcategoria_fase', methods=['GET'])
 @token_required

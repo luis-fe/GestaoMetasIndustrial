@@ -235,7 +235,7 @@ class MetaFases():
 
                 self.backupsCsv(Meta, f'analiseFaltaProgrFases_{self.codPlano}_{self.loteIN}')
             else:
-                self.backupsCsv(Meta, f'analiseFaltaProgrFases_{"Vendido"}')
+                self.backupsCsv(Meta, f'analiseFaltaProgrFases_{self.codPlano}_{"Vendido"}')
 
             # 14 criando o dataFrame das Metas a nivel de fase PREVISAO + FALTAPROGRAMAR
             Meta = Meta.groupby(["codFase", "nomeFase"]).agg({"previsao": "sum", "FaltaProgramar": "sum"}).reset_index()
@@ -371,6 +371,19 @@ class MetaFases():
         caminhoAbsoluto = configApp.localProjeto
 
         previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases_{self.codPlano}_{self.loteIN}.csv')
+
+        previsao = previsao[previsao['nomeFase'] == self.nomeFase].reset_index()
+        previsao = previsao.groupby(["categoria"]).agg({"previsao":"sum"}).reset_index()
+
+        previsao = previsao.sort_values(by=['previsao'], ascending=False)  # escolher como deseja classificar
+
+        return previsao
+
+    def previsao_categoria_faseVendido(self):
+        '''Metodo que obtem o previsto em cada fase por categoria ( apenas Vendido) '''
+        caminhoAbsoluto = configApp.localProjeto
+
+        previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases_{self.codPlano}_{"Vendido"}.csv')
 
         previsao = previsao[previsao['nomeFase'] == self.nomeFase].reset_index()
         previsao = previsao.groupby(["categoria"]).agg({"previsao":"sum"}).reset_index()
