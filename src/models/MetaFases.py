@@ -397,10 +397,24 @@ class MetaFases():
         '''Metodo que obtem o previsto em cada fase por categoria '''
         caminhoAbsoluto = configApp.localProjeto
 
-        previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases.csv')
+        previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases_{self.codPlano}_{self.loteIN}.csv')
 
         previsao = previsao[previsao['nomeFase'] == self.nomeFase].reset_index()
         previsao = previsao.groupby(["categoria"]).agg({"FaltaProgramar":"sum"}).reset_index()
+
+        previsao = previsao.sort_values(by=['FaltaProgramar'], ascending=False)  # escolher como deseja classificar
+
+        return previsao
+
+
+    def faltaProgcategoria_faseVendido(self):
+        '''Metodo que obtem o previsto em cada fase por categoria '''
+        caminhoAbsoluto = configApp.localProjeto
+        previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases_{self.codPlano}_{"Vendido"}.csv')
+
+
+        previsao = previsao[previsao['nomeFase'] == self.nomeFase].reset_index()
+        previsao = previsao.groupby(["categoria"]).agg({"previsao":"sum"}).reset_index()
 
         previsao = previsao.sort_values(by=['FaltaProgramar'], ascending=False)  # escolher como deseja classificar
 

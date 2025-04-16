@@ -143,12 +143,16 @@ def get_previsaoCategoriaFase_peloVendido():
     return jsonify(OP_data)
 
 
-@MetasFases_routes.route('/pcp/api/faltaProgcategoria_fase', methods=['GET'])
+@MetasFases_routes.route('/pcp/api/faltaProgcategoria_fase', methods=['POST'])
 @token_required
 def get_faltaProgcategoria_fase():
-    nomeFase = request.args.get('nomeFase', '-')
+    data = request.get_json()
 
-    meta = MetaFases.MetaFases('','',nomeFase)
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+    arrayCodLoteCsw = data.get('arrayCodLoteCsw', '-')
+
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','',arrayCodLoteCsw)
 
     dados = meta.faltaProgcategoria_fase()
     #controle.salvarStatus(rotina, ip, datainicio)
