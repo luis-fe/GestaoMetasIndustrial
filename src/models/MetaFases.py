@@ -527,7 +527,8 @@ class MetaFases():
 
         faltaProduzir['metaDiaria'] = faltaProduzir['faltaProduzir'] / dia_util
         faltaProduzir['dias'] = dia_util
-        faltaProduzir['metaDiaria'] = faltaProduzir['metaDiaria'].astype(int).round()
+
+       # faltaProduzir['metaDiaria'] = faltaProduzir['metaDiaria'].astype(int).round()
         return faltaProduzir
 
 
