@@ -534,6 +534,46 @@ class MetaFases():
         return faltaProduzir
 
 
+    def faltaProduzirCategoriaFaseVendido(self):
+        '''Metodo que consulta o falta produzir a nivel de categoria'''
+
+        # 1 - Levantando o falta programar
+        faltaProgramar = self.faltaProgcategoria_faseVendido()
+
+        # 2 - Carga
+        carga = self.cargaProgcategoria_fase()
+
+        faltaProduzir = pd.merge(faltaProgramar,carga, on ='categoria',how='outer')
+
+        # 3 - Fila
+        fila = self.obterRoteirosFila()
+        faltaProduzir = pd.merge(faltaProduzir,fila, on ='categoria',how='outer')
+
+        faltaProduzir.fillna(0, inplace = True)
+        faltaProduzir['faltaProduzir'] = faltaProduzir['FaltaProgramar'] + faltaProduzir['Carga']+ faltaProduzir['Fila']
+
+
+        cronogramaS =Cronograma.Cronograma(self.codPlano)
+        cronogramaS = cronogramaS.get_cronogramaFases()
+        codFase = self.__obterCodFase()
+
+        cronogramaS = cronogramaS[cronogramaS['codFase'] == int(codFase)].reset_index()
+        print(cronogramaS)
+
+        if not cronogramaS.empty:
+            dia_util = cronogramaS['dias'][0]
+        else:
+            dia_util = 1
+
+        faltaProduzir['dias'] = dia_util
+
+        if dia_util == 0:
+            dia_util =1
+        faltaProduzir['metaDiaria'] = faltaProduzir['faltaProduzir'] / dia_util
+        faltaProduzir['metaDiaria'] = faltaProduzir['metaDiaria'].astype(int).round()
+        return faltaProduzir
+
+
 
 
 
