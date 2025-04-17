@@ -13,7 +13,7 @@ class MetaFases():
     '''Classe utilizada para construcao das metas por fase a nivel departamental '''
 
     def __init__(self, codPlano = None, codLote = None, nomeFase =None, dt_inicioRealizado = None, dt_fimRealizado = None, analiseCongelada = False, arrayCodLoteCsw = None,
-                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao'):
+                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao',categoria = None):
         '''Construtor da classe'''
 
         self.codPlano = codPlano # codigo do Plano criado
@@ -26,6 +26,7 @@ class MetaFases():
         self.codEmpresa = codEmpresa
         self.dataBackupMetas = dataBackupMetas
         self.modeloAnalise = modeloAnalise # Modelo da Analise: Vendas x LoteProducao
+        self.categoria = categoria
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
             self.loteIN = self.transformaando_codLote_clausulaIN() # funcao inicial que defini o loteIN
@@ -406,9 +407,27 @@ class MetaFases():
 
         return previsao
 
+    def faltaProgEngenharias_categoria_fase_(self):
+        '''Metodo que obtem o previsto em cada fase por categoria '''
+        caminhoAbsoluto = configApp.localProjeto
+
+        previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases_{self.codPlano}_{self.loteIN}.csv')
+
+        previsao = previsao[previsao['nomeFase'] == self.nomeFase].reset_index()
+        previsao = previsao[previsao['categoria'] == self.categoria].reset_index()
+
+        previsao = previsao.groupby(["codEngenharia"]).agg({"FaltaProgramar":"sum"}).reset_index()
+
+        previsao = previsao.sort_values(by=['FaltaProgramar'], ascending=False)  # escolher como deseja classificar
+
+        return previsao
+
+
+
 
     def faltaProgcategoria_faseVendido(self):
         '''Metodo que obtem o previsto em cada fase por categoria '''
+
         caminhoAbsoluto = configApp.localProjeto
         previsao = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseFaltaProgrFases_{self.codPlano}_{"Vendido"}.csv')
 
@@ -655,6 +674,7 @@ class MetaFases():
 
     def faltaProgramarFaseCategoria(self):
         '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias '''
+
 
 
 
