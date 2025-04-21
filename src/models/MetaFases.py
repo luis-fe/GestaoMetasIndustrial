@@ -198,7 +198,7 @@ class MetaFases():
 
             # 9 - Obtendo o falta Programar a por sku, considerando so os PRODUTOS PAI
             Meta = sqlMetas.groupby(["codEngenharia", "codSeqTamanho", "codSortimento", "categoria"]).agg(
-                {"previsao": "sum", "FaltaProgramar": "sum"}).reset_index()
+                {"previsao": "sum", "FaltaProgramar": "sum","codItem":'first'}).reset_index()
             filtro = Meta[Meta['codEngenharia'].str.startswith('0')]
             totalPc = filtro['previsao'].sum()
             totalFaltaProgramar = filtro['FaltaProgramar'].sum()
