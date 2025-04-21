@@ -212,14 +212,15 @@ class Faturamento():
         df_loaded = parquet_file.to_pandas()
         # Converter 'dataEmissao' para datetime
         df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
-        print(df_loaded)
 
         # Convertendo a string para datetime
         dataFatIni = pd.to_datetime(self.dataInicial)
         dataFatFinal = pd.to_datetime(self.dataFinal)
 
         # Filtrar as datas
-        #df_loaded['codProduto'] = df_loaded[df_loaded['codProduto']==self.codsku].reset_index
+        df_loaded['codProduto'] = df_loaded[df_loaded['codProduto']==self.codsku].reset_index
+        print(df_loaded)
+
         df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
 
         # Aplicar o filtro
