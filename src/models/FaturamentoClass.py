@@ -218,7 +218,7 @@ class Faturamento():
         dataFatFinal = pd.to_datetime(self.dataFinal)
 
         # Filtrar as datas
-        df_loaded['codProduto'] = df_loaded[df_loaded['codProduto']==str(self.codsku)].reset_index()
+        df_loaded = df_loaded[df_loaded['codProduto']==str(self.codsku)].reset_index()
         print(df_loaded)
 
         df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
