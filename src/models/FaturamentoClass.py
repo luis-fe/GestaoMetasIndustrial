@@ -245,4 +245,6 @@ class Faturamento():
 
         consulta = self.consultaArquivoFastVendasSku()
 
+        return consulta
+
 
