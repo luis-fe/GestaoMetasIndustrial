@@ -237,7 +237,7 @@ class Faturamento():
 
 
 
-        return pedidos
+        return df_filtered
 
 
     def obterPedidosAbertoPlano_por_sku(self):
