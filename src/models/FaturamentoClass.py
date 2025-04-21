@@ -210,6 +210,7 @@ class Faturamento():
 
         # Converter para DataFrame do Pandas
         df_loaded = parquet_file.to_pandas()
+        print(df_loaded)
         # Converter 'dataEmissao' para datetime
         df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
 
@@ -237,7 +238,7 @@ class Faturamento():
 
 
 
-        return df_filtered
+        return pedidos
 
 
     def obterPedidosAbertoPlano_por_sku(self):
