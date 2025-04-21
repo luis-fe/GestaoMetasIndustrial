@@ -210,9 +210,9 @@ class Faturamento():
 
         # Converter para DataFrame do Pandas
         df_loaded = parquet_file.to_pandas()
-        print(df_loaded)
         # Converter 'dataEmissao' para datetime
         df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
+        print(df_loaded)
 
         # Convertendo a string para datetime
         dataFatIni = pd.to_datetime(self.dataInicial)
