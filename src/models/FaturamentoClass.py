@@ -228,8 +228,7 @@ class Faturamento():
         df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
         # Aplicar o filtro
         df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
-        print(df_loaded)
-
+        df_filtered.fillna(0,inplace=True)
 
         pedidos = pd.merge(df_filtered, tipoNotas, on='codTipoNota')
         pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
