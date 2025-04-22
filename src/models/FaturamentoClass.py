@@ -213,21 +213,23 @@ class Faturamento():
         # Converter 'dataEmissao' para datetime
         df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
 
+        plano = PlanoClass.Plano(self.codigoPlano)
+
+        tipoNotas = plano.pesquisarTipoNotasPlano()
+        self.dataInicial, self.dataFinal = plano.pesquisarInicioFimFat()
+
         # Convertendo a string para datetime
         dataFatIni = pd.to_datetime(self.dataInicial)
         dataFatFinal = pd.to_datetime(self.dataFinal)
 
         # Filtrar as datas
         df_loaded = df_loaded[df_loaded['codProduto']==str(self.codsku)].reset_index()
-        print(df_loaded)
 
         df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
-
         # Aplicar o filtro
         df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
-        plano = PlanoClass.Plano(self.codigoPlano)
+        print(df_loaded)
 
-        tipoNotas = plano.pesquisarTipoNotasPlano()
 
         pedidos = pd.merge(df_filtered, tipoNotas, on='codTipoNota')
         pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
