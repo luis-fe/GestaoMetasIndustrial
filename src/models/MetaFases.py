@@ -174,7 +174,7 @@ class MetaFases():
             else:
                 faturadoAnterior = faturado.consultaArquivoFastVendasAnteriores()
                 sqlMetas = pd.merge(sqlMetas, faturadoAnterior, on ="codItem", how='left')
-                sqlMetas['saldoPedidoAnt'].fillna(0,inplace=True)
+                sqlMetas.fillna(0,inplace=True)
                 sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - sqlMetas['saldoPedidoAnt']
                 sqlMetas['FaltaProgramar1'] = sqlMetas['previsao'] - (sqlMetas['estoque-saldoAnt'] + sqlMetas['carga'])
 
