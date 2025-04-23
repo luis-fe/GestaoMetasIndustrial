@@ -263,10 +263,12 @@ class Faturamento():
             #Obtendo a dataInicial e dataFinal do Plano
             self.dataInicial = plano.obterDataInicioFatPlano()
 
-            load_dotenv('db.env')
-            caminhoAbsoluto = os.getenv('CAMINHO')
-            # Carregar o arquivo Parquet
-            parquet_file = fp.ParquetFile(f'{caminhoAbsoluto}/dados/pedidos.parquet')
+            env_path = configApp.localProjeto
+            # Carregar variáveis de ambiente do arquivo .env
+            load_dotenv(env_path)
+            caminho_absoluto = os.getenv('CAMINHO_PARQUET_FAT')
+
+            parquet_file = fp.ParquetFile(f'{caminho_absoluto}/pedidos.parquet')
 
             # Converter para DataFrame do Pandas
             df_loaded = parquet_file.to_pandas()
