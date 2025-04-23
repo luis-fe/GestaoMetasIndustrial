@@ -171,7 +171,10 @@ class MetaFases():
 
             # 6.2 caso o faturamento da colecao atual nao tenha iniciado
             else:
-                sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - sqlMetas['saldo']
+                faturadoAnterior = faturado.consultaArquivoFastVendasAnteriores()
+                sqlMetas = pd.merge(sqlMetas, faturadoAnterior)
+
+                sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - sqlMetas['saldoPedidoAnt']
                 sqlMetas['FaltaProgramar1'] = sqlMetas['previsao'] - (sqlMetas['estoque-saldoAnt'] + sqlMetas['carga'])
 
             # ----------------------------------------------------------------------------------------------------------------
@@ -293,7 +296,6 @@ class MetaFases():
             self.backupsCsv(Meta, f'meta_{str(self.codPlano)}_{str(self.loteIN )}_{str(data)}',True)
 
 
-            # 21 Carregando o Saldo COLECAO ANTERIOR
             dataFrame2 = self.backupMetasAnteriores()
             Meta = pd.merge(Meta, dataFrame2, on='nomeFase', how='left')
             Meta['Realizado'].fillna(0, inplace=True)
@@ -674,6 +676,10 @@ class MetaFases():
 
     def faltaProgramarFaseCategoria(self):
         '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias '''
+
+
+
+
 
 
 

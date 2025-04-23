@@ -251,3 +251,88 @@ class Faturamento():
         return consulta
 
 
+    def consultaArquivoFastVendasAnteriores(self):
+        '''Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame, retornando um DataFrame com as vendas
+         nos 300 dias anteriores ao periodo de faturamento do plano atual'''
+
+
+        if self.codigoPlano == None:
+            return pd.Dataframe([{'status':False, 'Mensagem':'Plano nao encontrado' }])
+        else:
+            plano = PlanoClass.Plano(self.codigoPlano)
+            #Obtendo a dataInicial e dataFinal do Plano
+            self.dataInicial = plano.obterDataInicioFatPlano()
+
+            load_dotenv('db.env')
+            caminhoAbsoluto = os.getenv('CAMINHO')
+            # Carregar o arquivo Parquet
+            parquet_file = fp.ParquetFile(f'{caminhoAbsoluto}/dados/pedidos.parquet')
+
+            # Converter para DataFrame do Pandas
+            df_loaded = parquet_file.to_pandas()
+            # Converter 'dataEmissao' para datetime
+            df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
+
+            # Convertendo a string para datetime
+            dataFatIni = pd.to_datetime(self.dataInicial) - pd.Timedelta(days=300)
+            dataFatFinal = pd.to_datetime(self.dataInicial)- pd.Timedelta(days=15)
+
+            # Filtrar as datas
+            df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
+
+
+
+
+            # Aplicar o filtro
+            df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
+            # Selecionar colunas relevantes
+            df_filtered = df_filtered.loc[:,
+                          ['codPedido', 'codProduto', 'qtdePedida', 'qtdeFaturada', 'qtdeCancelada', 'qtdeSugerida',
+                           'PrecoLiquido', 'codTipoNota']]
+
+            # Convertendo colunas para numérico
+            df_filtered['qtdeSugerida'] = pd.to_numeric(df_filtered['qtdeSugerida'], errors='coerce').fillna(0)
+            df_filtered['qtdePedida'] = pd.to_numeric(df_filtered['qtdePedida'], errors='coerce').fillna(0)
+            df_filtered['qtdeFaturada'] = pd.to_numeric(df_filtered['qtdeFaturada'], errors='coerce').fillna(0)
+            df_filtered['qtdeCancelada'] = pd.to_numeric(df_filtered['qtdeCancelada'], errors='coerce').fillna(0)
+
+            # Adicionando coluna 'codItem'
+            df_filtered['codItem'] = df_filtered['codProduto']
+
+            # Calculando saldo
+            df_filtered['saldoPedido'] = df_filtered["qtdePedida"] - df_filtered["qtdeFaturada"] - df_filtered[
+                "qtdeCancelada"]
+            pedidos = df_filtered
+            pedidos['status'] = True
+            # 3 - Filtrando os pedidos aprovados
+            pedidos = pd.merge(pedidos, self._pedidosBloqueados, on='codPedido', how='left')
+            pedidos['situacaobloq'].fillna('Liberado', inplace=True)
+            pedidos = pedidos[pedidos['situacaobloq'] == 'Liberado']
+
+            # 4 Filtrando somente os tipo de notas desejados
+
+            tipoNotas = plano.pesquisarTipoNotasPlano()
+
+            pedidos = pd.merge(pedidos, tipoNotas, on='codTipoNota')
+            pedidos = pedidos.groupby("codItem").agg({"qtdeFaturada": "sum", "qtdePedida": "sum","saldoPedido":'sum'}).reset_index()
+            pedidos = pedidos.sort_values(by=['qtdeFaturada'], ascending=False)
+            pedidos = pedidos[pedidos['qtdeFaturada'] > 0].reset_index()
+
+            pedidos.rename(
+                columns={'codProduto': 'codProdutoAnt', "qtdePedida": "qtdePedidaAnt", "qtdeFaturada": "qtdeFaturadaAnt",
+                         "qtdeCancelada": "qtdeCanceladaAnt", "qtdeSugerida": "qtdeSugeridaAnt","saldoPedido" : "saldoPedidoAnt"
+                         }, inplace=True)
+
+
+            pedidosPartes = pd.merge(pedidos, self.relacaoPartes, on='codItem')
+            pedidosPartes.drop('codItem', axis=1, inplace=True)
+            pedidosPartes.rename(columns={'redParte': 'codItem'}, inplace=True)
+            pedidosPartes.drop(['codProduto', 'codSeqTamanho', 'codSortimento'], axis=1, inplace=True)
+
+            pedidos = pd.concat([pedidos, pedidosPartes], ignore_index=True)
+
+            return pedidos
+
+
+
+
