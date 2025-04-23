@@ -231,7 +231,6 @@ class Faturamento():
         df_filtered.fillna(0,inplace=True)
 
         pedidos = pd.merge(df_filtered, tipoNotas, on='codTipoNota')
-        pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
 
         # 3 - Filtrando os pedidos aprovados
         pedidos = pd.merge(pedidos, self._pedidosBloqueados, on='codPedido', how='left')
@@ -318,7 +317,6 @@ class Faturamento():
             pedidos = pd.merge(pedidos, tipoNotas, on='codTipoNota')
             pedidos = pedidos.groupby("codItem").agg({"qtdeFaturada": "sum", "qtdePedida": "sum","saldoPedido":'sum'}).reset_index()
             pedidos = pedidos.sort_values(by=['qtdeFaturada'], ascending=False)
-            pedidos = pedidos[pedidos['qtdeFaturada'] > 0].reset_index()
 
             pedidos.rename(
                 columns={'codProduto': 'codProdutoAnt', "qtdePedida": "qtdePedidaAnt", "qtdeFaturada": "qtdeFaturadaAnt",
