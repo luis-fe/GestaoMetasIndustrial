@@ -101,7 +101,7 @@ class Faturamento():
             tipoNotas = plano.pesquisarTipoNotasPlano()
 
             pedidos = pd.merge(pedidos, tipoNotas, on='codTipoNota')
-            pedidos['qtdePedida'] = pedidos['qtdePedida'] - pedidos['qtdeCancelada']
+            pedidos['qtdePedida'] = pedidos['qtdePedida']
             pedidos = pedidos.groupby("codItem").agg({"qtdePedida": "sum"}).reset_index()
             pedidos = pedidos.sort_values(by=['qtdePedida'], ascending=False)
             pedidos.rename(columns={'qtdePedida': 'previsao'}, inplace=True)
