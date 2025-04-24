@@ -4,30 +4,36 @@
     Criador: Luís Fernando Gonçalves de Lima Machado
     Versao Produção: 1.1 /Homologado 23-04-2025
     
-## Objetivo do Projeto
+## 1 Objetivo do Projeto
     
         Um microserviço backend que conecta-se ao ERP da Empresa 
     e ao banco de dados Postgre que está vinculado a aplicação, 
     produzindo Api's com informações sobre Metas de Produção Industrial. 
 
-### definições:
+### 1.1 definições:
       
       Aqui esta algumas definições utilizadas no projeto:
-          * Fase = setor/célula industrial que compartilha processos semelhantes
+      
+      Conceito de Fase:
+         setor/célula industrial que compartilha processos semelhantes
 
       Conceito de Plano: 
-            É o nome da coleção a ser planejada em uma linha de tempo,
-             cadastrada em outro microserviço que complementa esse projeto
+          É o nome da coleção a ser planejada em uma linha de tempo,
+      cadastrada em outro microserviço que complementa esse projeto
   
-      Calculo das Metas  de produção, projetadas  fase a fase de acordo com um determinado Plano;
+      Calculo das Metas  de produção:
         - Carga da Fase; ***qtd de pçs que se encontra na fase
+
         - Fila da Fase;  ***qtd de pçs a "chegar" na proxima fase
+
         - Cronograma de produção fase a fase ( dias úteis); 
         *** dias uteis disponivel para a fase produzir o que foi planejado;
-        - Meta Total e Diaria  de cada fase; ***qtd de peças que o setor deve produzir diariamente para atender ao plano
+
+        - Meta Total e Diaria  de cada fase; 
+        ***qtd de peças que o setor deve produzir diariamente para atender ao plano
   
 
-## Inicializando o app
+## 2 Inicializando o app
     
     1 - Configurar o projeto para o funcionamento: 
         
@@ -63,7 +69,7 @@
     2.1 - Alternativa via Docker: Dockerfile 
     
 
-## Detalhamento do Diagrama de Classes
+## 3 Detalhamento do Diagrama de Classes
 
 ![Diagrama de Classes](docsProject/ModeloUML_ModuloGestaoMetas.png)
 
