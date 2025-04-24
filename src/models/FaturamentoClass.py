@@ -26,12 +26,6 @@ class Faturamento():
 
         self._pedidosBloqueados = self.pedidoCsw.pedidosBloqueados()
 
-
-
-
-
-
-
     def faturamentoPeriodo_Plano(self):
         '''Metodo para obter o faturamento de um determinado plano
         return:
@@ -156,9 +150,6 @@ class Faturamento():
 
         return df_filtered
 
-
-
-
     def faturamentoPeriodo_Plano_PartesPeca(self):
         '''Metodo para obter o faturamento no periodo do plano , convertido em partes de peças (SEMIACABADOS)'''
 
@@ -177,7 +168,6 @@ class Faturamento():
 
 
         return faturamentoPartes
-
 
     def vendasPeriodo_Plano_PartesPeca(self):
         '''Metodo para obter o faturamento no periodo do plano , convertido em partes de peças (SEMIACABADOS)'''
@@ -241,14 +231,12 @@ class Faturamento():
 
         return pedidos
 
-
     def obterPedidosAbertoPlano_por_sku(self):
         '''Metodo que obtem os pedidos em abertos para um determinado codigoReduzido para checagem'''
 
         consulta = self.consultaArquivoFastVendasSku()
 
         return consulta
-
 
     def consultaArquivoFastVendasAnteriores(self):
         '''Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame, retornando um DataFrame com as vendas

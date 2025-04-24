@@ -91,7 +91,8 @@ class MetaFases():
 
 
             # 2.1 pesquisar a previsao a nivel de cor e tam, de acordo com o lote escolhido:
-            #2.2 if para verificar se o usuario quer a previsao baseado em lote ou baseado em vendas
+
+                #2.2 if para verificar se o usuario quer a previsao baseado em lote ou baseado em vendas
 
             if self.modeloAnalise == 'LoteProducao':
                 sqlMetas = self.metas_Lote()
