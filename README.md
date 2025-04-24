@@ -10,7 +10,7 @@
     e ao banco de dados Postgre que está vinculado a aplicação, 
     produzindo Api's com informações sobre Metas de Produção Industrial. 
 
-* definições:
+### definições:
       
       Aqui esta algumas definições utilizadas no projeto:
           * Fase = setor/célula industrial que compartilha processos semelhantes
@@ -20,9 +20,10 @@
              cadastrada em outro microserviço que complementa esse projeto
   
       Calculo das Metas  de produção, projetadas  fase a fase de acordo com um determinado Plano;
-        - Carga da Fase; ***qtd de peças que se encontra na fase
-        - Fila da Fase;  ***qtd de peças a "chegar" na proxima fase
-        - Cronograma de produção fase a fase ( dias úteis); *** dias uteis disponivel para a fase produzir o que foi planejado;
+        - Carga da Fase; ***qtd de pçs que se encontra na fase
+        - Fila da Fase;  ***qtd de pçs a "chegar" na proxima fase
+        - Cronograma de produção fase a fase ( dias úteis); 
+        *** dias uteis disponivel para a fase produzir o que foi planejado;
         - Meta Total e Diaria  de cada fase; ***qtd de peças que o setor deve produzir diariamente para atender ao plano
   
 
