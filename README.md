@@ -6,9 +6,9 @@
     
 ## Objetivo do Projeto
     
-    Um microserviço backend que conecta-se ao ERP da Empresa 
-    e ao banco de dados Postgre que está vinculado a aplicação. 
-    Produzindo Api's com informações sobre Metas de Produção para Industria: 
+        Um microserviço backend que conecta-se ao ERP da Empresa 
+    e ao banco de dados Postgre que está vinculado a aplicação, 
+    produzindo Api's com informações sobre Metas de Produção Industrial. 
 
 * definições:
       
