@@ -6,8 +6,9 @@
     
 ## Objetivo do Projeto
     
-        Um microserviço backend que conecta-se ao ERP da Empresa 
-    e ao banco de dados Postgre que está vinculado a aplicação. Produzindo Api's com informações sobre Metas de Produção para Industria: 
+    Um microserviço backend que conecta-se ao ERP da Empresa 
+    e ao banco de dados Postgre que está vinculado a aplicação. 
+    Produzindo Api's com informações sobre Metas de Produção para Industria: 
 
 * definições:
       
@@ -15,7 +16,8 @@
           * Fase = setor/célula industrial que compartilha processos semelhantes
 
       Conceito de Plano: 
-            É o nome da coleção a ser planejada em uma linha de tempo, cadastrada em outro microserviço que complementa esse projeto
+            É o nome da coleção a ser planejada em uma linha de tempo,
+             cadastrada em outro microserviço que complementa esse projeto
   
       Calculo das Metas  de produção, projetadas  fase a fase de acordo com um determinado Plano;
         - Carga da Fase; ***qtd de peças que se encontra na fase
