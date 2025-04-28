@@ -516,3 +516,28 @@ class Plano():
 
         return consulta
 
+    def get_FaltaProg_PCP(self):
+        '''Método que consulta se um determinado lote vinculado a um plano esta como True em :  Considera PCP como falta Programar
+         (caso que se aplica somente se o momento da venda da colecao estiver encerrado e o PCP ja programaou tudo)'''
+
+
+        sql = """
+        select
+            "cons_Pcp_faltaProg"
+        from
+            "PCP".pcp."LoteporPlano" lp
+        where
+            plano = %s
+            and lote = %s
+            and "cons_Pcp_faltaProg" = true
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(sql, conn, params=(self.codPlano,))
+
+
+
+
+
+
+

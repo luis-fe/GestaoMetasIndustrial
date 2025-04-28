@@ -300,6 +300,7 @@ class MetaFases():
 
             dataFrame2 = self.backupMetasAnteriores()
             Meta = pd.merge(Meta, dataFrame2, on='nomeFase', how='left')
+            Meta['Meta Anterior'].fillna('-',inplace=True)
             Meta['Realizado'].fillna(0, inplace=True)
             Meta.fillna('-',inplace=True)
             dados = {
@@ -328,6 +329,8 @@ class MetaFases():
             dataFrame2 = self.backupMetasAnteriores()
 
             Meta = pd.merge(Meta, dataFrame2, on='nomeFase', how='left')
+            Meta['Meta Anterior'].fillna('-',inplace=True)
+
 
             dados = {
                 '0-Previcao Pçs': f'{totalPc} pcs',
