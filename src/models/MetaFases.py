@@ -477,7 +477,7 @@ class MetaFases():
         caminhoAbsoluto = configApp.localProjeto
 
         cargaAtual = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
-        print(self.nomeFase)
+        print(f'{self.nomeFase} nome da fase')
         cargaAtual = cargaAtual[cargaAtual['fase']==self.nomeFase].reset_index()
 
 
