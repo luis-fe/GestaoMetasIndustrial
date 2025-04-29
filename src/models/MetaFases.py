@@ -530,6 +530,7 @@ class MetaFases():
         carga = self.cargaProgcategoria_fase()
 
         faltaProduzir = pd.merge(faltaProgramar,carga, on ='categoria',how='outer')
+        print(faltaProduzir)
 
         # 3 - Fila
         fila = self.obterRoteirosFila()
