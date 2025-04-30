@@ -51,9 +51,10 @@ class OP_CSW():
     def roteiro_ordemProd_csw_aberto(self):
         ''' metodo utilizado para obter no csw o roteiro das ops em aberto'''
 
-        sqlCsw = """
+        sqlCsw = f"""
             SELECT
-                numeroOP ,
+            	tcp.descricao,
+                r.numeroOP ,
                 codSeqRoteiro,
                 codFase,
                 (
@@ -62,21 +63,27 @@ class OP_CSW():
                 from
                     tco.OrdemProd o
                 WHERE
-                    o.codempresa = """+self.codEmpresa+""" 
+                    o.codempresa = {self.codEmpresa} 
                     and o.numeroop = r.numeroOP
                 ) as tipoOP
             FROM
                 tco.RoteiroOP r
+            inner join 
+            	tco.OrdemProd tco on tco.numeroOP = r.numeroOP 
+            	and tco.codEmpresa = r.codEmpresa 
+            inner join 
+            	tcp.Engenharia tcp on tcp.codEngenharia = tco.codProduto 
+            	and tcp.codEmpresa = 1 
             WHERE
-                r.codEmpresa = """+self.codEmpresa+""" 
+                r.codEmpresa = {self.codEmpresa} 
                 and 
-            numeroOP in (
+            r.numeroOP in (
                 SELECT
-                    numeroOP
+                    r.numeroOP
                 from
                     tco.OrdemProd op
                 WHERE
-                    op.codempresa = """+self.codEmpresa+""" 
+                    op.codempresa = {self.codEmpresa} 
                     and op.situacao = 3
                     and op.codFaseAtual not in (1, 401))
         """

@@ -86,11 +86,12 @@ class OrdemProd():
             select 
                 o.numeroop as "numeroOP", 
                 categoria, 
+                "codProduto",
                 sum(o.total_pcs) as pcs 
             from 
                 pcp.ordemprod o 
             group by 
-                numeroop, categoria
+                numeroop, categoria, "codProduto"
             """
 
             conn = ConexaoPostgre.conexaoEngine()
