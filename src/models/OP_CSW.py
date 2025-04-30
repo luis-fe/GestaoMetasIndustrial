@@ -53,6 +53,7 @@ class OP_CSW():
 
         sqlCsw = f"""
             SELECT
+            	pri.descricao as prioridade,
             	tcp.descricao,
                 r.numeroOP ,
                 codSeqRoteiro,
@@ -68,14 +69,15 @@ class OP_CSW():
 	                ) as tipoOP
             FROM
                 tco.RoteiroOP r
-            inner join 
+            left join 
             	tco.OrdemProd tco on tco.numeroOP = r.numeroOP 
-            	and tco.codEmpresa = {self.codEmpresa} 
-            inner join 
+            	and tco.codEmpresa = {self.codEmpresa}  
+            left join 
             	tcp.Engenharia tcp on tcp.codEngenharia = tco.codProduto 
-            	and tcp.codEmpresa = {self.codEmpresa} 
+            	and tcp.codEmpresa = {self.codEmpresa}  
+            left join tcp.PrioridadeOP pri on pri.Empresa = {self.codEmpresa}  and pri.codPrioridadeOP = tco.codPrioridadeOP 
             WHERE
-                r.codEmpresa = {self.codEmpresa}
+                r.codEmpresa = {self.codEmpresa}  
                 and 
             r.numeroOP in (
 			                SELECT
@@ -83,7 +85,7 @@ class OP_CSW():
 			                from
 			                    tco.OrdemProd op
 			                WHERE
-			                    op.codempresa = {self.codEmpresa}
+			                    op.codempresa = {self.codEmpresa} 
 			                    and op.situacao = 3
 			                    and op.codFaseAtual not in (1, 401)
 			               )
@@ -97,6 +99,8 @@ class OP_CSW():
                 rows = cursor_csw.fetchall()
                 consulta = pd.DataFrame(rows, columns=colunas)
                 del rows
+
+        consulta['prioridade'].fillna('NORMAL',inplace=True)
 
         return consulta
 
