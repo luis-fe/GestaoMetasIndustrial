@@ -58,34 +58,35 @@ class OP_CSW():
                 codSeqRoteiro,
                 codFase,
                 (
-                SELECT
-                    codtipoop
-                from
-                    tco.OrdemProd o
-                WHERE
-                    o.codempresa = {self.codEmpresa} 
-                    and o.numeroop = r.numeroOP
-                ) as tipoOP
+	                SELECT
+	                    codtipoop
+	                from
+	                    tco.OrdemProd o
+	                WHERE
+	                    o.codempresa = {self.codEmpresa} 
+	                    and o.numeroop = r.numeroOP
+	                ) as tipoOP
             FROM
                 tco.RoteiroOP r
             inner join 
             	tco.OrdemProd tco on tco.numeroOP = r.numeroOP 
-            	and tco.codEmpresa = r.codEmpresa 
+            	and tco.codEmpresa = {self.codEmpresa} 
             inner join 
             	tcp.Engenharia tcp on tcp.codEngenharia = tco.codProduto 
-            	and tcp.codEmpresa = 1 
+            	and tcp.codEmpresa = {self.codEmpresa} 
             WHERE
-                r.codEmpresa = {self.codEmpresa} 
+                r.codEmpresa = {self.codEmpresa}
                 and 
             r.numeroOP in (
-                SELECT
-                    r.numeroOP
-                from
-                    tco.OrdemProd op
-                WHERE
-                    op.codempresa = {self.codEmpresa} 
-                    and op.situacao = 3
-                    and op.codFaseAtual not in (1, 401))
+			                SELECT
+			                    op.numeroOP
+			                from
+			                    tco.OrdemProd op
+			                WHERE
+			                    op.codempresa = {self.codEmpresa}
+			                    and op.situacao = 3
+			                    and op.codFaseAtual not in (1, 401)
+			               )
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
