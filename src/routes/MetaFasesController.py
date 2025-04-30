@@ -246,3 +246,29 @@ def FaltaProduzircategoria_fase_Vendido():
         OP_data.append(op_dict)
     del dados
     return jsonify(OP_data)
+
+@MetasFases_routes.route('/pcp/api/cargaOP_fase', methods=['POST'])
+@token_required
+def post_cargaOP_fase():
+    data = request.get_json()
+
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','')
+
+
+    dados = meta.cargaOP_fase()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)

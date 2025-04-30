@@ -2,7 +2,10 @@
     Cliente: Grupo MPL
     Framework: Flask - python
     Criador: Luís Fernando Gonçalves de Lima Machado
-    Versao Produção: 1.1 /Homologado 23-04-2025
+    Versao Produção: 1.2 /Homologado 01-05-2025
+
+### Path 1.2
+    Atualizado a opção de detalhar, a nivel de OP, a carga por fase ao clicar em carga no modal "Falta Produzir".
     
 ## 1 Objetivo do Projeto
     
