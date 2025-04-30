@@ -5,8 +5,12 @@
     Versao Produção: 1.2 /Homologado 01-05-2025
 
 ### Path 1.2
-    Atualizado a opção de detalhar, a nivel de OP, a carga por fase ao clicar em carga no modal "Falta Produzir".
-    
+    Atualizado a opção de detalhar, a nivel de OP, a carga por fase ao clicar em carga no modal "Metas Fases".
+    Atualizado a opção de detalhar, a nivel de OP, a carga por fase/categoria ao clicar em carga no modal "Falta Produzir".
+    Atualizado a opção de detalhar, a nivel de OP, a fila resumuda por fase ao clicar em carga no modal "Metas Fases".
+
+
+
 ## 1 Objetivo do Projeto
     
         Um microserviço backend que conecta-se ao ERP da Empresa 

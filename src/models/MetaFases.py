@@ -498,7 +498,27 @@ class MetaFases():
 
 
         cargaAtual = cargaAtual[cargaAtual['Situacao']=='em processo'].reset_index()
-        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first"}).reset_index()
+        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first", "COLECAO":"first"}).reset_index()
+        cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
+        cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
+
+
+
+        return cargaAtual
+
+
+    def cargaOP_faseCategoria(self):
+        '''Metodo que obtem a carga em cada fase por categoria '''
+        caminhoAbsoluto = configApp.localProjeto
+
+        cargaAtual = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+        print(f'{self.nomeFase} nome da fase')
+        cargaAtual = cargaAtual[cargaAtual['fase']==self.nomeFase].reset_index()
+        cargaAtual = cargaAtual[cargaAtual['categoria']==self.categoria].reset_index()
+
+
+        cargaAtual = cargaAtual[cargaAtual['Situacao']=='em processo'].reset_index()
+        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first", "COLECAO":"first"}).reset_index()
         cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
 
