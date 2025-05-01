@@ -169,6 +169,7 @@ class OrdemProd():
             fila['COLECAO'] = fila['COLECAO'] + ' ' + fila['desLote'].apply(self.__extrair_ano)
             fila['COLECAO'].fillna('ENCOMENDAS/OUTRAS', inplace=True)
             fila.fillna('-', inplace=True)
+            fila['Tipo Producao'] = fila['COLECAO']
 
 
 
@@ -275,7 +276,6 @@ class OrdemProd():
             caminhoAbsoluto = configApp.localProjeto
 
             filtro = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
-            filtro['Tipo Producao'] = filtro['COLECAO']
             filtro = filtro.drop_duplicates(subset=['Tipo Producao']).copy()
 
 
