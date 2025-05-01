@@ -47,6 +47,37 @@ class OP_CSW():
 
         return consulta
 
+    def dataEntradaFases_emAberto_Csw(self):
+
+        sql = f"""
+            SELECT 
+                movto.numeroOP as numeroOP, 
+                movto.dataBaixa AS EntFase,
+                ABS(DATEDIFF(DAY, CAST(GETDATE() AS DATE), CAST(movto.dataBaixa AS DATE))) DiasFase
+            FROM 
+                tco.MovimentacaoOPFase movto
+            INNER JOIN 
+                tco.OrdemProd op 
+                ON op.codEmpresa = movto.codEmpresa 
+                AND op.numeroOP = movto.numeroOP 
+                AND op.codSeqRoteiroAtual - 1 = movto.seqRoteiro 
+            WHERE 
+                movto.codEmpresa = {self.codEmpresa}
+                AND op.codEmpresa = {self.codEmpresa}
+                AND op.situacao = 3;
+            """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor_csw:
+                # Executa a primeira consulta e armazena os resultados
+                cursor_csw.execute(sql)
+                colunas = [desc[0] for desc in cursor_csw.description]
+                rows = cursor_csw.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+                del rows
+
+        return consulta
+
 
     def roteiro_ordemProd_csw_aberto(self):
         ''' metodo utilizado para obter no csw o roteiro das ops em aberto'''

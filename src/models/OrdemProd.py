@@ -97,7 +97,20 @@ class OrdemProd():
             conn = ConexaoPostgre.conexaoEngine()
             consulta = pd.read_sql(consulta, conn)
 
+            consulta2 = self.buscandoDataEntradaOPFase()
+
+            consulta = pd.merge(consulta, consulta2, on='numeroOP')
+
             return consulta
+
+        def buscandoDataEntradaOPFase(self):
+            '''Metdo que busca a data da entrada da OP na Fase'''
+
+            datas = self.opCsw.dataEntradaFases_emAberto_Csw()
+
+            return datas
+
+
 
         def filaFases(self):
             '''Metodo que consulta a fila das fases e retorna um DataFrame com a informacao da fila'''
