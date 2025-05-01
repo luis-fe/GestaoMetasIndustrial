@@ -274,9 +274,9 @@ class OrdemProd():
             caminhoAbsoluto = configApp.localProjeto
 
             filtro = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
-            filtro = filtro.groupby(["COLECAO"]).agg({"COLECAO": "first"}).reset_index()
-            filtro = filtro.drop_duplicates(subset=["COLECAO"]).copy()
-            filtro.rename(columns={'COLECAO': 'Tipo Producao'}, inplace=True)
+            filtro['Tipo Producao'] = filtro['COLECAO']
+            filtro = filtro.groupby(["Tipo Producao"]).agg({"Tipo Producao": "first"}).reset_index()
+            filtro = filtro.drop_duplicates(subset=["Tipo Producao"]).copy()
 
             return filtro
 
