@@ -266,18 +266,17 @@ class OrdemProd():
 
             return tipoOP
 
-
         def filtroProdutivo(self):
-
-            '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias'''
+            '''Método que busca o que falta programar por fase e categoria, retornando uma lista de referências distintas de Tipo Producao'''
 
             caminhoAbsoluto = configApp.localProjeto
 
             filtro = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
             filtro['Tipo Producao'] = filtro['COLECAO']
-            filtro = filtro.drop_duplicates(subset=["Tipo Producao"]).copy()
+            filtro = filtro.drop_duplicates(subset=['Tipo Producao']).copy()
 
-            return filtro
+            return filtro[['Tipo Producao']]
+
 
 
 
