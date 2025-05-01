@@ -167,6 +167,7 @@ class OrdemProd():
             # 8 - acrescentando a colecao e o ano de cada Ordem de Producao
             fila['COLECAO'] = fila['desLote'].apply(self.__tratamentoInformacaoColecao)
             fila['COLECAO'] = fila['COLECAO'] + ' ' + fila['desLote'].apply(self.__extrair_ano)
+            fila['COLECAO'].fillna('ENCOMENDAS/OUTRAS')
             fila.fillna('-', inplace=True)
 
             # 9 - realizando backup em csv dos dados
