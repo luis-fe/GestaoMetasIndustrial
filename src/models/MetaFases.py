@@ -510,6 +510,11 @@ class MetaFases():
         cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
 
+        # 17.2 Transformando o array em dataFrame
+
+        df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+        cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
+
 
 
         return cargaAtual
