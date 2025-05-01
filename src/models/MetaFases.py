@@ -78,7 +78,7 @@ class MetaFases():
     def metasFase(self):
         '''Metodo que consulta as meta por fase'''
 
-        ordemProd = OrdemProd.OrdemProd()
+        ordemProd = OrdemProd.OrdemProd(self.codEmpresa, self.codLote, self.arrayTipoProducao)
 
 
         # 1.0 - Verificando se o usuario está analisando em congelamento , CASE NAO:
@@ -266,13 +266,11 @@ class MetaFases():
 
             # 17 - Consultando o Fila das fases
             filaFase = ordemProd.filaFases()
+
             filaFase = filaFase.loc[:,
                        ['codFase', 'Carga Atual', 'Fila']]
 
-            # 18 Transformando o array em dataFrame
 
-            df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
-            filaFase = pd.merge(filaFase, df , on = 'Tipo Producao')
             Meta = pd.merge(Meta, filaFase, on='codFase', how='left')
 
             # 17- formatando erros de validacao nos valores dos atributos

@@ -11,10 +11,14 @@ import os
 class OrdemProd():
         '''classe criada para a gestao de OPs da Producao '''
 
-        def __init__(self, codEmpresa = '1', codLote = '', ArrayTipoProducao = ''):
+        def __init__(self, codEmpresa = '1', codLote = '', arrayTipoProducao = ''):
             '''Construtor da Classe '''
             self.codEmpresa = codEmpresa # Atributo de empresa
             self.codLote = codLote # atributo com o codLote
+
+            self.arrayTipoProducao = arrayTipoProducao
+            if self.arrayTipoProducao == '':
+                self.arrayTipoProducao = ['']
 
             self.opCsw = OP_CSW.OP_CSW(self.codEmpresa, self.codLote)
 
@@ -175,9 +179,15 @@ class OrdemProd():
 
             # 9 - realizando backup em csv dos dados
             self.backupsCsv(fila,'filaroteiroOP')
+            # 17.2 Transformando o array em dataFrame
+
+            df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+            fila = pd.merge(fila, df, on='Tipo Producao')
 
             #10 - separando as fases que estao na situacao em processo e obtendo a sua respectiva carga
             fila_carga_atual = fila[fila['Situacao'] == 'em processo'].reset_index()
+
+
             fila_carga_atual = fila_carga_atual.groupby('codFase').agg({"pcs": 'sum'}).reset_index()
             fila_carga_atual.rename(columns={'pcs': 'Carga Atual'}, inplace=True)
 
