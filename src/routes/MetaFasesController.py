@@ -255,8 +255,10 @@ def post_cargaOP_fase():
 
     nomeFase = data.get('nomeFase', '-')
     codigoPlano = data.get('codigoPlano')
+    ArrayTipoProducao = data.get('ArrayTipoProducao', '')
+    ArrayTipoProducao = ["VERAO 2025"]
 
-    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','')
+    meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','','','','','','',ArrayTipoProducao)
 
 
     dados = meta.cargaOP_fase()
