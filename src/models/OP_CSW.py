@@ -64,7 +64,7 @@ class OP_CSW():
             WHERE 
                 movto.codEmpresa = {self.codEmpresa}
                 AND op.codEmpresa = {self.codEmpresa}
-                AND op.situacao = 3;
+                AND op.situacao = 3
             """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
