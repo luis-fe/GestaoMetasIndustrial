@@ -718,13 +718,19 @@ class MetaFases():
 
         return agora
 
-
-
-
-
-
     def faltaProgramarFaseCategoria(self):
-        '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias '''
+        '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias'''
+
+        caminhoAbsoluto = configApp.localProjeto
+
+        filtro = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+        filtro = filtro.drop_duplicates(subset=["COLECAO"]).copy()
+        filtro.rename(columns={'COLECAO': 'Tipo Producao'}, inplace=True)
+
+        return filtro
+
+
+
 
 
 

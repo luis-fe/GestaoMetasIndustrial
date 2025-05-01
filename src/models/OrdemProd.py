@@ -267,6 +267,10 @@ class OrdemProd():
             return tipoOP
 
 
+        def filtroProdutivo(self):
+            '''Metodo que retorna o filtro produtivo'''
+
+
 
 
 
