@@ -275,7 +275,6 @@ class OrdemProd():
 
             filtro = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
             filtro['Tipo Producao'] = filtro['COLECAO']
-            filtro = filtro.groupby(["Tipo Producao"]).agg({"Tipo Producao": "first"}).reset_index()
             filtro = filtro.drop_duplicates(subset=["Tipo Producao"]).copy()
 
             return filtro
