@@ -13,7 +13,7 @@ class MetaFases():
     '''Classe utilizada para construcao das metas por fase a nivel departamental '''
 
     def __init__(self, codPlano = None, codLote = None, nomeFase =None, dt_inicioRealizado = None, dt_fimRealizado = None, analiseCongelada = False, arrayCodLoteCsw = None,
-                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao',categoria = None):
+                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao',categoria = None, arrayTipoProducao = ''):
         '''Construtor da classe'''
 
         self.codPlano = codPlano # codigo do Plano criado
@@ -27,6 +27,9 @@ class MetaFases():
         self.dataBackupMetas = dataBackupMetas
         self.modeloAnalise = modeloAnalise # Modelo da Analise: Vendas x LoteProducao
         self.categoria = categoria
+        self.arrayTipoProducao = arrayTipoProducao
+        if self.arrayTipoProducao == '':
+            self.arrayTipoProducao = ['']
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
             self.loteIN = self.transformaando_codLote_clausulaIN() # funcao inicial que defini o loteIN
@@ -266,6 +269,10 @@ class MetaFases():
             filaFase = filaFase.loc[:,
                        ['codFase', 'Carga Atual', 'Fila']]
 
+            # 18 Transformando o array em dataFrame
+
+            df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+            filaFase = pd.merge(filaFase, df , on = 'Tipo Producao')
             Meta = pd.merge(Meta, filaFase, on='codFase', how='left')
 
             # 17- formatando erros de validacao nos valores dos atributos

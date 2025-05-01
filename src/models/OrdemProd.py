@@ -11,7 +11,7 @@ import os
 class OrdemProd():
         '''classe criada para a gestao de OPs da Producao '''
 
-        def __init__(self, codEmpresa = '1', codLote = ''):
+        def __init__(self, codEmpresa = '1', codLote = '', ArrayTipoProducao = ''):
             '''Construtor da Classe '''
             self.codEmpresa = codEmpresa # Atributo de empresa
             self.codLote = codLote # atributo com o codLote
@@ -167,8 +167,10 @@ class OrdemProd():
             # 8 - acrescentando a colecao e o ano de cada Ordem de Producao
             fila['COLECAO'] = fila['desLote'].apply(self.__tratamentoInformacaoColecao)
             fila['COLECAO'] = fila['COLECAO'] + ' ' + fila['desLote'].apply(self.__extrair_ano)
-            fila['COLECAO'].fillna('ENCOMENDAS/OUTRAS')
+            fila['COLECAO'].fillna('ENCOMENDAS/OUTRAS', inplace=True)
             fila.fillna('-', inplace=True)
+
+
 
             # 9 - realizando backup em csv dos dados
             self.backupsCsv(fila,'filaroteiroOP')
