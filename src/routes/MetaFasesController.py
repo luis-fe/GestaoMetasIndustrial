@@ -44,7 +44,7 @@ def pOST_MetasFases():
     else:
         congelado = congelado
 
-    meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas,modeloAnalise,'',ArrayTipoProducao )
+    meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas,modeloAnalise,'',["VERAO 2025"] )
     dados = meta.metasFase()
 
 
