@@ -296,7 +296,7 @@ class Faturamento():
             # 3 - Filtrando os pedidos aprovados
             pedidos = pd.merge(pedidos, self._pedidosBloqueados, on='codPedido', how='left')
             pedidos['situacaobloq'].fillna('Liberado', inplace=True)
-            #pedidos = pedidos[pedidos['situacaobloq'] == 'Liberado']
+            pedidos = pedidos[pedidos['situacaobloq'] == 'Liberado']
 
             # 4 Filtrando somente os tipo de notas desejados
 
