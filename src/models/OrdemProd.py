@@ -275,6 +275,7 @@ class OrdemProd():
             filtro['Tipo Producao'] = filtro['COLECAO']
             filtro = filtro.drop_duplicates(subset=['Tipo Producao']).copy()
 
+
             return filtro[['Tipo Producao']]
 
 
