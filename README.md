@@ -8,7 +8,7 @@
     Atualizado a opção de detalhar, a nivel de OP, a carga por fase ao clicar em carga no modal "Metas Fases".
     Atualizado a opção de detalhar, a nivel de OP, a carga por fase/categoria ao clicar em carga no modal "Falta Produzir".
     Atualizado a opção de detalhar, a nivel de OP, a fila resumuda por fase ao clicar em carga no modal "Metas Fases".
-    Construiu uma api chamada filtroProdutivo que retorna as colecoes em adamento para filtragens no sistema 
+    Construiu uma api chamada filtroProdutivo que retorna as colecoes em adamento para filtragens no sistema !
     Construiu o metodo que faz a filtragem dinamica por parametro na carga e fila , de acordo com o filtroProdutivo escolhido.
     Tratando a COLECAO nao reconhecida como Encomenda/Outras !
     Definindo integracao com a coluna COLECAO PADRAO DEFAUT no modulo PCP

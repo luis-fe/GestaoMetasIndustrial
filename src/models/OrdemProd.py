@@ -105,6 +105,11 @@ class OrdemProd():
 
             consulta = pd.merge(consulta, consulta2, on='numeroOP')
 
+            # Buscando a Data de start do PCP para a OP
+            consulta3 = self.dataStartPCP()
+            consulta['OPSemTraco'] = consulta['numeroOP'].str.split('-').str[0]
+            consulta = pd.merge(consulta, consulta3, on='OPSemTraco', how='left')
+
             return consulta
 
         def buscandoDataEntradaOPFase(self):
@@ -113,6 +118,12 @@ class OrdemProd():
             datas = self.opCsw.dataEntradaFases_emAberto_Csw()
 
             return datas
+        def dataStartPCP(self):
+            '''Metodo que busca a data de Start da OP realizado pelo PCP'''
+
+            consulta = self.opCsw.obterDataMvtoPCP()
+
+            return consulta
 
 
 

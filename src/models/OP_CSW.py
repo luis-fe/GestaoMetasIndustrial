@@ -217,6 +217,44 @@ class OP_CSW():
 
         return tipoOP
 
+    def obterDataMvtoPCP(self):
+        '''Metodo que obtem do ERP CSW a data de movto da fase PCP'''
+
+        sql = f"""
+            SELECT 
+                SUBSTRING(f.numeroOP,1,6) as OPSemTraco, 
+                datamov as dataStart
+            FROM 
+                tco.MovimentacaoOPFase f
+            WHERE 
+                f.codEmpresa = {self.codEmpresa} and SUBSTRING(f.numeroOP,1,6)
+                in (
+                    SELECT
+                        SUBSTRING (o.numeroOP,1,6)
+                    FROM
+                        tco.OrdemProd o
+                    where 
+                        o.codEmpresa = {self.codEmpresa}
+                        and situacao = 3
+                ) 
+                and f.seqroteiro = 1 
+                and f.numeroop like '%-001'
+            """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+
+        return consulta
+
+
 
 
 
