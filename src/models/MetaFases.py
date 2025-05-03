@@ -529,6 +529,7 @@ class MetaFases():
         cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Geral'].astype(str)
 
         cargaAtual['dataStartOP'] = cargaAtual['dataStartOP'].dt.strftime('%Y-%m-%d')
+        cargaAtual.drop('Tipo Producao', axis=1, inplace=True)
 
         return cargaAtual
 
