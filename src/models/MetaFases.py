@@ -518,6 +518,16 @@ class MetaFases():
         df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
         cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
 
+        # 1. Converter para datetime
+        cargaAtual['dataStartOP'] = pd.to_datetime(df['dataStartOP'], errors='coerce')
+
+        # 2. Calcular dias passados
+        hoje = pd.Timestamp(datetime.today().date())
+        cargaAtual['dias_passados'] = (hoje - cargaAtual['dataStartOP']).dt.days
+
+        # 3. Converter o resultado para string
+        cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Gera'].astype(str)
+
 
 
         return cargaAtual
