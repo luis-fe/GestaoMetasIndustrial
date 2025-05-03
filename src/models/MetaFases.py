@@ -526,7 +526,7 @@ class MetaFases():
         cargaAtual['dias_passados'] = (hoje - cargaAtual['dataStartOP']).dt.days
 
         # 3. Converter o resultado para string
-        cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Gera'].astype(str)
+        cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Geral'].astype(str)
 
 
 
