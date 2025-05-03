@@ -523,7 +523,7 @@ class MetaFases():
 
         # 2. Calcular dias passados
         hoje = pd.Timestamp(datetime.today().date())
-        cargaAtual['dias_passados'] = (hoje - cargaAtual['dataStartOP']).dt.days
+        cargaAtual['Lead Time Geral'] = (hoje - cargaAtual['dataStartOP']).dt.days
 
         # 3. Converter o resultado para string
         cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Geral'].astype(str)
