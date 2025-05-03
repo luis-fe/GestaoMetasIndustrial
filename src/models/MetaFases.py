@@ -506,7 +506,10 @@ class MetaFases():
         cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first",
                                                            "COLECAO":"first", "descricao":"first",
                                                            "codProduto":"first","prioridade":"first","EntFase":'first',
-                                                           "DiasFase":"first","Tipo Producao":"first"}).reset_index()
+                                                           "DiasFase":"first",
+                                                           "Tipo Producao":"first",
+                                                           "dataStartOP":"first"
+                                                           }).reset_index()
         cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
 

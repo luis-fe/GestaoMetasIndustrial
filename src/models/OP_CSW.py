@@ -223,7 +223,7 @@ class OP_CSW():
         sql = f"""
             SELECT 
                 SUBSTRING(f.numeroOP,1,6) as OPSemTraco, 
-                datamov as dataStart
+                datamov as dataStartOP
             FROM 
                 tco.MovimentacaoOPFase f
             WHERE 
