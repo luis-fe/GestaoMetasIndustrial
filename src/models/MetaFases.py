@@ -528,7 +528,7 @@ class MetaFases():
         # 3. Converter o resultado para string
         cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Geral'].astype(str)
 
-
+        cargaAtual['dataStartOP'] = cargaAtual['dataStartOP'].dt.strftime('%Y-%m-%d')
 
         return cargaAtual
 
