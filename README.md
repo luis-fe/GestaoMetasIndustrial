@@ -12,6 +12,8 @@
     Construiu o metodo que faz a filtragem dinamica por parametro na carga e fila , de acordo com o filtroProdutivo escolhido.
     Tratando a COLECAO nao reconhecida como Encomenda/Outras !
     Definindo integracao com a coluna COLECAO PADRAO DEFAUT no modulo PCP
+    Corrigido opcao de recalcular as metas apos filtrar os filtros desejados de Colecao 
+    Corrgido retorno da api de Metas caso o congelamento do calulo esteja marcado como FALSE.
 
 
 
