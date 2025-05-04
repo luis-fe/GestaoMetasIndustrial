@@ -545,11 +545,33 @@ class MetaFases():
 
 
         cargaAtual = cargaAtual[cargaAtual['Situacao']=='em processo'].reset_index()
-        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first", "COLECAO":"first"}).reset_index()
+        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first",
+                                                           "COLECAO":"first", "descricao":"first",
+                                                           "codProduto":"first","prioridade":"first","EntFase":'first',
+                                                           "DiasFase":"first",
+                                                           "Tipo Producao":"first",
+                                                           "dataStartOP":"first"
+                                                           }).reset_index()
         cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
 
+        # 17.2 Transformando o array em dataFrame
 
+        df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+        cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
+
+        # 1. Converter para datetime
+        cargaAtual['dataStartOP'] = pd.to_datetime(cargaAtual['dataStartOP'], errors='coerce')
+
+        # 2. Calcular dias passados
+        hoje = pd.Timestamp(datetime.today().date())
+        cargaAtual['Lead Time Geral'] = (hoje - cargaAtual['dataStartOP']).dt.days
+
+        # 3. Converter o resultado para string
+        cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Geral'].astype(str)
+
+        cargaAtual['dataStartOP'] = cargaAtual['dataStartOP'].dt.strftime('%Y-%m-%d')
+        cargaAtual.drop('Tipo Producao', axis=1, inplace=True)
 
         return cargaAtual
 
@@ -745,8 +767,29 @@ class MetaFases():
     def faltaProgramarFaseCategoria(self):
         '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias'''
 
+    def resumoFilaPorFase(self):
+        '''Metodo que resume por fase a fila de peças vinda de outras fases '''
+        caminhoAbsoluto = configApp.localProjeto
+
+        cargaAtual = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+        print(f'{self.nomeFase} nome da fase')
+        cargaAtual = cargaAtual[cargaAtual['fase']==self.nomeFase].reset_index()
 
 
+        cargaAtual = cargaAtual[cargaAtual['Situacao']=='em fila'].reset_index()
+
+        df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+        cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
+
+
+
+        cargaAtual = cargaAtual.groupby(["fase Atual"]).agg({"pcs": "sum"
+                                                           }).reset_index()
+        cargaAtual.rename(columns={'pcs': 'Fila'}, inplace=True)
+        cargaAtual = cargaAtual.sort_values(by=['Fila'], ascending=False)  # escolher como deseja classificar
+
+
+        return cargaAtual
 
 
 
