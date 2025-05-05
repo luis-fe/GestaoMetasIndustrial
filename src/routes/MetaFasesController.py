@@ -258,6 +258,9 @@ def post_cargaOP_fase():
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
     ArrayTipoProducao = ["VERAO 2025","ALTO VERAO 2025"]
 
+    if str(codigoPlano) == '2':
+        ArrayTipoProducao = ["INVERNO 2025"]
+
     meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','','','','','','',ArrayTipoProducao)
 
 
