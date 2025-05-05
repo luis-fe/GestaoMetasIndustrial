@@ -192,7 +192,88 @@ class MetaFases():
             # 7 - criando a coluna do faltaProgramar , retirando os produtos que tem falta programar negativo
             sqlMetas['FaltaProgramar'] = np.where(sqlMetas['FaltaProgramar1'] > 0, sqlMetas['FaltaProgramar1'], 0)
             if self.consideraFaltaProgr == False:
-                sqlMetas['FaltaProgramar'] = 0
+                # 1 Consulta sql para obter as OPs em aberto no sistema do ´PCP
+                sqlCarga2 = """
+                                      select 
+                                          codreduzido as "codItem", 
+                                          sum(total_pcs) as carga2  
+                                      from 
+                                          pcp.ordemprod o 
+                                      where 
+                                          codreduzido is not null
+                                          and 
+                                          "codFaseAtual" = '401' 
+                                          and "numeroop" in ('152072-001',
+                                          '152073-001',
+                                          '152074-001',
+                                          '152078-001',
+                                          '152079-001',
+                                          '152080-001',
+                                          '152084-001',
+                                          '152085-001',
+                                          '152086-001',
+                                          '152087-001',
+                                          '152088-001',
+                                          '152089-001',
+                                          '152090-001',
+                                          '152091-001',
+                                          '152092-001',
+                                          '152093-001',
+                                          '152094-001',
+                                          '152095-001',
+                                          '152096-001',
+                                          '152097-001',
+                                          '152098-001',
+                                          '152099-001',
+                                          '152100-001',
+                                          '152101-001',
+                                          '152102-001',
+                                          '152103-001',
+                                          '152104-001',
+                                          '152105-001',
+                                          '152106-001',
+                                          '152107-001',
+                                          '152108-001',
+                                          '152109-001',
+                                          '152110-001',
+                                          '152111-001',
+                                          '152112-001',
+                                          '152113-001',
+                                          '152114-001',
+                                          '152115-001',
+                                          '152116-001',
+                                          '152117-001',
+                                          '152118-001',
+                                          '152119-001',
+                                          '152120-001',
+                                          '152121-001',
+                                          '152122-001',
+                                          '152123-001',
+                                          '152124-001',
+                                          '152125-001',
+                                          '152126-001',
+                                          '152127-001',
+                                          '152128-001',
+                                          '152129-001',
+                                          '152130-001',
+                                          '152131-001',
+                                          '152132-001',
+                                          '152133-001',
+                                          '152134-001',
+                                          '152135-001'
+                                          )
+                                      group by 
+                                          codreduzido
+                                  """
+
+                conn = ConexaoPostgre.conexaoEngine()
+                sqlCarga2 = pd.read_sql(sqlCarga2, conn)
+
+                sqlMetas = pd.merge(sqlMetas, sqlCarga2, on='codItem', how='left')
+
+                sqlMetas['carga2'].fillna(0, inplace=True)
+                sqlMetas['FaltaProgramar'] = sqlMetas['carga2']
+
 
             # 8 - Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku
             data = self.__obterdiaAtual()
