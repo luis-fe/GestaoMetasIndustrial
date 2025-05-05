@@ -13,7 +13,7 @@ class MetaFases():
     '''Classe utilizada para construcao das metas por fase a nivel departamental '''
 
     def __init__(self, codPlano = None, codLote = None, nomeFase =None, dt_inicioRealizado = None, dt_fimRealizado = None, analiseCongelada = False, arrayCodLoteCsw = None,
-                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao',categoria = None, arrayTipoProducao = ''):
+                 codEmpresa = '1', dataBackupMetas = None, modeloAnalise = 'LoteProducao',categoria = None, arrayTipoProducao = '', consideraFaltaProgr = True):
         '''Construtor da classe'''
 
         self.codPlano = codPlano # codigo do Plano criado
@@ -28,8 +28,13 @@ class MetaFases():
         self.modeloAnalise = modeloAnalise # Modelo da Analise: Vendas x LoteProducao
         self.categoria = categoria
         self.arrayTipoProducao = arrayTipoProducao
+        self.consideraFaltaProgr = consideraFaltaProgr
         if self.arrayTipoProducao == '':
             self.arrayTipoProducao = ['']
+        if self.arrayCodLoteCsw == ['25A04B']:
+            self.consideraFaltaProgr = False
+            self.arrayTipoProducao = ['INVERNO 2025']
+
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
             self.loteIN = self.transformaando_codLote_clausulaIN() # funcao inicial que defini o loteIN
@@ -186,6 +191,8 @@ class MetaFases():
 
             # 7 - criando a coluna do faltaProgramar , retirando os produtos que tem falta programar negativo
             sqlMetas['FaltaProgramar'] = np.where(sqlMetas['FaltaProgramar1'] > 0, sqlMetas['FaltaProgramar1'], 0)
+            if self.consideraFaltaProgr == False:
+                sqlMetas['FaltaProgramar'] = 0
 
             # 8 - Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku
             data = self.__obterdiaAtual()
