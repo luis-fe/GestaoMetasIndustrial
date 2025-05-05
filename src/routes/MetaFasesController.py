@@ -37,7 +37,7 @@ def pOST_MetasFases():
     dataBackupMetas = data.get('dataBackupMetas', '2025-03-26')
     modeloAnalise = data.get('modeloAnalise', 'LoteProducao')
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
-    ArrayTipoProducao = ["VERAO 2025"]
+    ArrayTipoProducao = ["VERAO 2025", "ALTO VERAO 2025"]
     print(data)
     if congelado =='' or congelado == '-':
         congelado = False
@@ -256,7 +256,7 @@ def post_cargaOP_fase():
     nomeFase = data.get('nomeFase', '-')
     codigoPlano = data.get('codigoPlano')
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
-    ArrayTipoProducao = ["VERAO 2025"]
+    ArrayTipoProducao = ["VERAO 2025","ALTO VERAO 2025"]
 
     meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','','','','','','',ArrayTipoProducao)
 
@@ -289,7 +289,7 @@ def post_cargaOP_faseCater():
     meta = MetaFases.MetaFases(codigoPlano,'',nomeFase,'','','','','','','',categoria)
 
 
-    dados = meta.cargaOP_fase()
+    dados = meta.cargaOP_faseCategoria()
     #controle.salvarStatus(rotina, ip, datainicio)
 
     # Obtém os nomes das colunas

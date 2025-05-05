@@ -265,27 +265,10 @@ class MetaFases():
                 colecoes = self.__tratamentoInformacaoColecao()
 
             # 17 - Consultando o Fila das fases
-            filaFase = ordemProd.filaFases()
+            #Ponto de Congelamento do lote:
+            self.backupsCsv(Meta, f'analise_Plano_{self.codPlano}Lote{novo2}')
 
-            filaFase = filaFase.loc[:,
-                       ['codFase', 'Carga Atual', 'Fila']]
-
-
-            Meta = pd.merge(Meta, filaFase, on='codFase', how='left')
-
-            # 17- formatando erros de validacao nos valores dos atributos
-            Meta['Carga Atual'].fillna(0, inplace=True)
-            Meta['Fila'].fillna(0, inplace=True)
-            Meta['Falta Produzir'] = Meta['Carga Atual'] + Meta['Fila'] + Meta['FaltaProgramar']
-
-
-            #18 - obtendo a Meta diaria das fases:
-
-            Meta['dias'].fillna(1, inplace=True)
-            Meta['Meta Dia'] = np.where(Meta['dias'] == 0, Meta['Falta Produzir'],
-                                        Meta['Falta Produzir'] / Meta['dias'])
-
-            Meta['Meta Dia'] = Meta['Meta Dia'].round(0)
+            Meta = self.recalculoMetas(Meta, ordemProd)
 
             # 19 Ponto de Congelamento do lote:
             self.backupsCsv(Meta, f'analiseLote{novo2}')
@@ -318,7 +301,10 @@ class MetaFases():
         else:
             caminhoAbsoluto = configApp.localProjeto
             novo2 = self.loteIN.replace('"', "-")
-            Meta = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseLote{novo2}.csv')
+
+            Meta = pd.read_csv(f'{caminhoAbsoluto}/dados/analise_Plano_{self.codPlano}Lote{novo2}.csv')
+            Meta = self.recalculoMetas(Meta, ordemProd)
+
             Totais = pd.read_csv(f'{caminhoAbsoluto}/dados/Totais{novo2}.csv')
             try:
                 totalPc = Totais['0-Previcao Pçs'][0]
@@ -347,8 +333,21 @@ class MetaFases():
 
             return pd.DataFrame([dados])
 
-
-
+    def recalculoMetas(self, Meta, ordemProd):
+        filaFase = ordemProd.filaFases()
+        filaFase = filaFase.loc[:,
+                   ['codFase', 'Carga Atual', 'Fila']]
+        Meta = pd.merge(Meta, filaFase, on='codFase', how='left')
+        # 17- formatando erros de validacao nos valores dos atributos
+        Meta['Carga Atual'].fillna(0, inplace=True)
+        Meta['Fila'].fillna(0, inplace=True)
+        Meta['Falta Produzir'] = Meta['Carga Atual'] + Meta['Fila'] + Meta['FaltaProgramar']
+        # 18 - obtendo a Meta diaria das fases:
+        Meta['dias'].fillna(1, inplace=True)
+        Meta['Meta Dia'] = np.where(Meta['dias'] == 0, Meta['Falta Produzir'],
+                                    Meta['Falta Produzir'] / Meta['dias'])
+        Meta['Meta Dia'] = Meta['Meta Dia'].round(0)
+        return Meta
 
     def backupsCsv(self, dataFrame, nome, backupMetas = False ):
         '''Metodo que faz o backup em csv da analise do falta a programar'''
@@ -548,11 +547,33 @@ class MetaFases():
 
 
         cargaAtual = cargaAtual[cargaAtual['Situacao']=='em processo'].reset_index()
-        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first", "COLECAO":"first"}).reset_index()
+        cargaAtual = cargaAtual.groupby(["numeroOP"]).agg({"pcs": "sum","categoria":"first",
+                                                           "COLECAO":"first", "descricao":"first",
+                                                           "codProduto":"first","prioridade":"first","EntFase":'first',
+                                                           "DiasFase":"first",
+                                                           "Tipo Producao":"first",
+                                                           "dataStartOP":"first"
+                                                           }).reset_index()
         cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
 
+        # 17.2 Transformando o array em dataFrame
 
+        df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+        cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
+
+        # 1. Converter para datetime
+        cargaAtual['dataStartOP'] = pd.to_datetime(cargaAtual['dataStartOP'], errors='coerce')
+
+        # 2. Calcular dias passados
+        hoje = pd.Timestamp(datetime.today().date())
+        cargaAtual['Lead Time Geral'] = (hoje - cargaAtual['dataStartOP']).dt.days
+
+        # 3. Converter o resultado para string
+        cargaAtual['Lead Time Geral'] = cargaAtual['Lead Time Geral'].astype(str)
+
+        cargaAtual['dataStartOP'] = cargaAtual['dataStartOP'].dt.strftime('%Y-%m-%d')
+        cargaAtual.drop('Tipo Producao', axis=1, inplace=True)
 
         return cargaAtual
 
@@ -748,8 +769,29 @@ class MetaFases():
     def faltaProgramarFaseCategoria(self):
         '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias'''
 
+    def resumoFilaPorFase(self):
+        '''Metodo que resume por fase a fila de peças vinda de outras fases '''
+        caminhoAbsoluto = configApp.localProjeto
+
+        cargaAtual = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+        print(f'{self.nomeFase} nome da fase')
+        cargaAtual = cargaAtual[cargaAtual['fase']==self.nomeFase].reset_index()
 
 
+        cargaAtual = cargaAtual[cargaAtual['Situacao']=='a produzir'].reset_index()
+
+        df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+        cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
+
+
+
+        cargaAtual = cargaAtual.groupby(["faseAtual"]).agg({"pcs": "sum"
+                                                           }).reset_index()
+        cargaAtual.rename(columns={'pcs': 'Fila'}, inplace=True)
+        cargaAtual = cargaAtual.sort_values(by=['Fila'], ascending=False)  # escolher como deseja classificar
+
+
+        return cargaAtual
 
 
 
