@@ -38,6 +38,8 @@ class OrdemProd():
                     "codProduto" like '0%'
                     and 
                     "codFaseAtual" <> '401'
+                    and
+                    "codTipoOP" not in (27, 8, 6 )
                 group by 
                     codreduzido
             """
