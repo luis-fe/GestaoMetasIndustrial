@@ -320,7 +320,10 @@ class MetaFases():
             novo2 = self.loteIN.replace('"', "-")
             Meta = pd.read_csv(f'{caminhoAbsoluto}/dados/analiseLote{novo2}.csv')
             Totais = pd.read_csv(f'{caminhoAbsoluto}/dados/Totais{novo2}.csv')
-            totalPc = Totais['0-Previcao Pçs'][0]
+            try:
+                totalPc = Totais['0-Previcao Pçs'][0]
+            except:
+                totalPc = 0
             totalFaltaProgramar = Totais['01-Falta Programar'][0]
 
             realizadoPeriodo = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, '1', 100, 100, [6, 8])
