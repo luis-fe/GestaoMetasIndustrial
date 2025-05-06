@@ -33,7 +33,8 @@ class OP_CSW():
                 and lot.codEmpresa  = """+self.codEmpresa+""" 
             WHERE
                 op.codempresa = """+self.codEmpresa+""" 
-                and op.situacao = 3 """
+                and op.situacao = 3 
+                """
 
 
         with ConexaoERP.ConexaoInternoMPL() as conn:

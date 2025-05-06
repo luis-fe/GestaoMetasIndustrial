@@ -179,8 +179,9 @@ class OrdemProd():
 
             # 7 - buscando a qtde de peças da OP
             sqlBuscarPecas = self.ordemProd_geral()
-            fila = pd.merge(fila, sqlBuscarPecas, on='numeroOP')
-
+            fila = pd.merge(fila, sqlBuscarPecas, on='numeroOP', how='left')
+            fila['pcs'].fillna('-',inplace=True)
+            fila.fillna('-',inplace=True)
             # 8 - acrescentando a colecao e o ano de cada Ordem de Producao
             fila['COLECAO'] = fila['desLote'].apply(self.__tratamentoInformacaoColecao)
             fila['COLECAO'] = fila['COLECAO'] + ' ' + fila['desLote'].apply(self.__extrair_ano)
