@@ -860,6 +860,7 @@ class MetaFases():
     def faltaProgramarFaseCategoria(self):
         '''Metodo que busca o que falta programar por fase e categoria , retornando uma lista de referencias'''
 
+
     def resumoFilaPorFase(self):
         '''Metodo que resume por fase a fila de peças vinda de outras fases '''
         caminhoAbsoluto = configApp.localProjeto
