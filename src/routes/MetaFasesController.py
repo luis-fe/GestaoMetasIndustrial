@@ -331,9 +331,9 @@ def get_filtroProdutivo():
     del dados
     return jsonify(OP_data)
 
-@MetasFases_routes.route('/pcp/api/filaResumo_fase', methods=['GET'])
+@MetasFases_routes.route('/pcp/api/filaResumo_fase', methods=['POST'])
 @token_required
-def get_filaResumo_fase():
+def POST_filaResumo_fase():
     data = request.get_json()
 
     nomeFase = data.get('nomeFase', '-')
