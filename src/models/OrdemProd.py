@@ -105,7 +105,9 @@ class OrdemProd():
 
             consulta2 = self.buscandoDataEntradaOPFase()
 
-            consulta = pd.merge(consulta, consulta2, on='numeroOP')
+            consulta = pd.merge(consulta, consulta2, on='numeroOP', how='left')
+            consulta['DiasFase'].fillna(0, inplace=True)
+            consulta.fillna('-', inplace=True)
 
             # Buscando a Data de start do PCP para a OP
             consulta3 = self.dataStartPCP()
@@ -179,9 +181,8 @@ class OrdemProd():
 
             # 7 - buscando a qtde de peças da OP
             sqlBuscarPecas = self.ordemProd_geral()
-            fila = pd.merge(fila, sqlBuscarPecas, on='numeroOP', how='left')
-            fila['pcs'].fillna(0,inplace=True)
-            fila.fillna('-',inplace=True)
+            fila = pd.merge(fila, sqlBuscarPecas, on='numeroOP')
+
             # 8 - acrescentando a colecao e o ano de cada Ordem de Producao
             fila['COLECAO'] = fila['desLote'].apply(self.__tratamentoInformacaoColecao)
             fila['COLECAO'] = fila['COLECAO'] + ' ' + fila['desLote'].apply(self.__extrair_ano)
