@@ -248,8 +248,25 @@ class ProducaoFases():
         realizado["dataBaixa"] = pd.to_datetime(realizado["dataBaixa"], errors="coerce")
         realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
 
-        # Conversão de hora (se possível)
-        realizado["horaMov"] = pd.to_datetime(realizado["horaMov"], errors="coerce").dt.strftime("%H:%M")
+        # Função para formatar horaMov
+        def formatar_hora(hora):
+            try:
+                if pd.isnull(hora):
+                    return "-"
+                if isinstance(hora, str):
+                    # tenta parsear uma string tipo '13:45:00'
+                    dt = pd.to_datetime(hora, format="%H:%M:%S", errors="coerce")
+                    return dt.strftime("%H:%M:%S") if not pd.isnull(dt) else "-"
+                if isinstance(hora, datetime.time):
+                    return hora.strftime("%H:%M:%S")
+                if isinstance(hora, (datetime.datetime, pd.Timestamp)):
+                    return hora.time().strftime("%H:%M:%S")
+                return "-"
+            except Exception:
+                return "-"
+
+        # Aplicar formatação segura
+        realizado["horaMov"] = realizado["horaMov"].apply(formatar_hora)
 
         return realizado
 
