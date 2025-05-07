@@ -426,7 +426,7 @@ class MetaFases():
 
     def recalculoMetas(self, Meta, ordemProd):
 
-        if self.analiseCongelada == True:
+        if self.analiseCongelada == False:
 
             filaFase = ordemProd.filaFases()
         else:
