@@ -4,6 +4,7 @@ import pandas as pd
 from src.connection import ConexaoPostgre
 import pytz
 from src.models import Cronograma, OrdemProd
+import calendar
 
 
 class ProducaoFases():
@@ -267,18 +268,18 @@ class ProducaoFases():
         # Criando a coluna formatada no padrão brasileiro
         realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
 
-        # Criando a coluna com o nome do dia da semana em português
         dias_semana = {
-            "segunda": "segunda-feira",
-            "terça": "terça-feira",
-            "quarta": "quarta-feira",
-            "quinta": "quinta-feira",
-            "sexta": "sexta-feira",
-            "sábado": "sábado",
-            "domingo": "domingo"
+            0: "segunda-feira",
+            1: "terça-feira",
+            2: "quarta-feira",
+            3: "quinta-feira",
+            4: "sexta-feira",
+            5: "sábado",
+            6: "domingo"
         }
 
-        realizado["dia"] = realizado["dataBaixa"].apply(lambda x: dias_semana[pd.to_datetime(x, format="%d/%m/%Y").strftime("%A")])
+        realizado["dia"] = pd.to_datetime(realizado["dataBaixa"], format="%d/%m/%Y", errors="coerce").dt.dayofweek.map(
+            dias_semana)
         realizado = realizado.astype(str)
 
 
