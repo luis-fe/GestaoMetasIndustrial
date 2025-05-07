@@ -270,6 +270,7 @@ class ProducaoFases():
         realizado["horaMov"] = realizado["horaMov"].apply(formatar_hora)
         realizado['COLECAO'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao)
         realizado.drop(['descricaolote'], axis=1, inplace=True)
+        realizado = realizado.sort_values(by=['horaMov'], ascending=True)
 
         return realizado
 
