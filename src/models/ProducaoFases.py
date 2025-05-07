@@ -269,8 +269,13 @@ class ProducaoFases():
 
         # Criando a coluna com o nome do dia da semana em português
         dias_semana = {
-            "Monday": "segunda-feira", "Tuesday": "terça-feira", "Wednesday": "quarta-feira",
-            "Thursday": "quinta-feira", "Friday": "sexta-feira", "Saturday": "sábado", "Sunday": "domingo"
+            "segunda": "segunda-feira",
+            "terça": "terça-feira",
+            "quarta": "quarta-feira",
+            "quinta": "quinta-feira",
+            "sexta": "sexta-feira",
+            "sábado": "sábado",
+            "domingo": "domingo"
         }
 
         realizado["dia"] = realizado["dataBaixa"].apply(lambda x: dias_semana[pd.to_datetime(x, format="%d/%m/%Y").strftime("%A")])
