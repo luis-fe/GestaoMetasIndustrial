@@ -432,7 +432,9 @@ class MetaFases():
         else:
             caminhoAbsoluto = configApp.localProjeto
             fila = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+            print('utilizando a fila congelada ...')
             filaFase = ordemProd.tratandoInformFILA(fila)
+            print('termiando o tratamento  para fila congelada ...')
 
 
 
