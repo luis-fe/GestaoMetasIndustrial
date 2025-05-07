@@ -201,9 +201,7 @@ class ProducaoFases():
         realizado = realizado[realizado["nomeFase"] == str(self.nomeFase)].reset_index()
 
 
-        realizadoTotal = realizado.groupby(["nomeFase"]).agg({"Realizado": "sum"}).reset_index()
-        realizadoTotal['dataBaixa'] = 'Total:'
-        realizadoTotal['dia'] = '-'
+
         realizado = realizado.groupby(["codFase",'dataBaixa']).agg({"Realizado": "sum"}).reset_index()
 
 
@@ -226,9 +224,6 @@ class ProducaoFases():
         realizado["dia"] = pd.to_datetime(realizado["dataBaixa"], format="%d/%m/%Y", errors="coerce").dt.dayofweek.map(
             dias_semana)
         realizado = realizado.astype(str)
-
-
-        realizado = pd.concat([realizado, realizadoTotal], ignore_index=True)
 
         return realizado
 
