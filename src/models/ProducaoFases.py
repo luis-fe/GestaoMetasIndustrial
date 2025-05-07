@@ -244,7 +244,7 @@ class ProducaoFases():
 
         realizado = realizado[realizado["nomeFase"] == str(self.nomeFase)].reset_index()
 
-        realizado = realizado.groupby(["codEngenharia","numeroop",'dataBaixa']).agg({"Realizado": "sum","horaMov":"first"}).reset_index()
+        realizado = realizado.groupby(["codEngenharia","numeroop",'dataBaixa']).agg({"Realizado": "sum","horaMov":"first","descricaolote":"first"}).reset_index()
         # Conversão de datas
         realizado["dataBaixa"] = pd.to_datetime(realizado["dataBaixa"], errors="coerce")
         realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
@@ -268,8 +268,21 @@ class ProducaoFases():
 
         # Aplicar formatação segura
         realizado["horaMov"] = realizado["horaMov"].apply(formatar_hora)
+        realizado['COLECAO'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao)
 
         return realizado
+
+    def __tratamentoInformacaoColecao(self, descricaoLote):
+        if 'INVERNO' in descricaoLote:
+            return 'INVERNO'
+        elif 'PRI' in descricaoLote:
+            return 'VERAO'
+        elif 'ALT' in descricaoLote:
+            return 'ALTO VERAO'
+        elif 'VER' in descricaoLote:
+            return 'VERAO'
+        else:
+            return 'ENCOMENDAS'
 
 
 
