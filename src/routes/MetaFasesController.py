@@ -360,3 +360,33 @@ def POST_filaResumo_fase():
         OP_data.append(op_dict)
     del dados
     return jsonify(OP_data)
+
+@MetasFases_routes.route('/pcp/api/filaResumo_categoria', methods=['POST'])
+@token_required
+def POST_filaResumo_categoria():
+    data = request.get_json()
+
+    nomeFase = data.get('nomeFase', '-')
+    codigoPlano = data.get('codigoPlano')
+    ArrayTipoProducao = data.get('ArrayTipoProducao', '')
+    ArrayTipoProducao = ["VERAO 2025", "ALTO VERAO 2025"]
+
+    if str(codigoPlano) == '2':
+        ArrayTipoProducao = ["INVERNO 2025"]
+
+    meta = MetaFases.MetaFases(codigoPlano, '', nomeFase, '', '', '', '', '', '', '', '', ArrayTipoProducao)
+
+    dados = meta.resumoFilaPorCategoria()
+    # controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)

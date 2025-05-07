@@ -884,6 +884,30 @@ class MetaFases():
 
         return cargaAtual
 
+    def resumoFilaPorCategoria(self):
+        '''Metodo que resume por fase a fila de peças vinda de outras fases '''
+        caminhoAbsoluto = configApp.localProjeto
+
+        cargaAtual = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+        print(f'{self.nomeFase} nome da fase')
+        cargaAtual = cargaAtual[cargaAtual['fase']==self.nomeFase].reset_index()
+
+
+        cargaAtual = cargaAtual[cargaAtual['Situacao']=='a produzir'].reset_index()
+
+        df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+        cargaAtual = pd.merge(cargaAtual, df, on='Tipo Producao')
+
+
+
+        cargaAtual = cargaAtual.groupby(["categoria"]).agg({"pcs": "sum"
+                                                           }).reset_index()
+        cargaAtual.rename(columns={'pcs': 'Fila'}, inplace=True)
+        cargaAtual = cargaAtual.sort_values(by=['Fila'], ascending=False)  # escolher como deseja classificar
+
+
+        return cargaAtual
+
 
 
 
