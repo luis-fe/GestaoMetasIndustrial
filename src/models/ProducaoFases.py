@@ -269,6 +269,7 @@ class ProducaoFases():
         # Aplicar formatação segura
         realizado["horaMov"] = realizado["horaMov"].apply(formatar_hora)
         realizado['COLECAO'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao)
+        realizado.drop(['descricaolote'], axis=1, inplace=True)
 
         return realizado
 
