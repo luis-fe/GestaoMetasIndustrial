@@ -196,39 +196,34 @@ class OrdemProd():
             self.backupsCsv(fila,'filaroteiroOP')
             # 17.2 Transformando o array em dataFrame
 
+            fila = self.tratandoInformFILA(fila)
+
+            return fila
+
+        def tratandoInformFILA(self, fila):
             df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
             fila = pd.merge(fila, df, on='Tipo Producao')
-
-            #10 - separando as fases que estao na situacao em processo e obtendo a sua respectiva carga
+            # 10 - separando as fases que estao na situacao em processo e obtendo a sua respectiva carga
             fila_carga_atual = fila[fila['Situacao'] == 'em processo'].reset_index()
-
-
             fila_carga_atual = fila_carga_atual.groupby('codFase').agg({"pcs": 'sum'}).reset_index()
             fila_carga_atual.rename(columns={'pcs': 'Carga Atual'}, inplace=True)
-
-            #11 - obtendo a informacao da situacao em fila : a produzir
+            # 11 - obtendo a informacao da situacao em fila : a produzir
             fila_fila = fila[fila['Situacao'] == 'a produzir'].reset_index()
             fila_fila = fila_fila.groupby('codFase').agg({"pcs": 'sum'}).reset_index()
             fila_fila.rename(columns={'pcs': 'Fila'}, inplace=True)
-
             # 12 - formando um unico DataFrame com a fase + qtdFila + qtdCarga
             fila = fila.groupby('codFase').agg({"fase": 'first'}).reset_index()
             fila = pd.merge(fila, fila_carga_atual, on='codFase', how='left')
             fila = pd.merge(fila, fila_fila, on='codFase', how='left')
             fila.fillna(0, inplace=True)
-
-
             # 13 - filtrando apenas as fases que o usuario deseja exibir
             apresentacao = self.apresentacao_Fases()
             apresentacao.rename(columns={'nomeFase': 'fase'}, inplace=True)
             fila = pd.merge(fila, apresentacao, on='fase')
-
             # 14 - transformando fila e carga atual no tipo Inteiro
             fila['Carga Atual'] = fila['Carga Atual'].astype(int).round()
             fila['Fila'] = fila['Fila'].astype(int).round()
-
-
-            #15 - Retornando o dataFrame processado
+            # 15 - Retornando o dataFrame processado
             return fila
 
         def __tratamentoInformacaoColecao(self, descricaoLote):

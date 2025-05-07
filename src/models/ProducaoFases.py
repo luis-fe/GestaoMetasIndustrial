@@ -46,12 +46,12 @@ class ProducaoFases():
 
 
         else:
-            self.arrayTipoProducao = ['Producao']
+            #self.arrayTipoProducao = ['Producao']
             agrupamentoOP = ordemProd.agrupado_x_tipoOP()
-            dataFrameTipoProducao = pd.DataFrame({'Agrupado': self.arrayTipoProducao})
-            dataFrameTipoProducao = pd.merge(agrupamentoOP,dataFrameTipoProducao, on='Agrupado')
-            realizado['codtipoop'] = realizado['codtipoop'].astype(str)
-            realizado = pd.merge(realizado,dataFrameTipoProducao, on='codtipoop')
+            #dataFrameTipoProducao = pd.DataFrame({'Agrupado': self.arrayTipoProducao})
+            #dataFrameTipoProducao = pd.merge(agrupamentoOP,dataFrameTipoProducao, on='Agrupado')
+            #realizado['codtipoop'] = realizado['codtipoop'].astype(str)
+            #realizado = pd.merge(realizado,dataFrameTipoProducao, on='codtipoop')
 
 
         realizado['filtro'] = realizado['codFase'].astype(str) + '|' + realizado['codEngenharia'].str[0]

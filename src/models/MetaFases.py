@@ -362,7 +362,7 @@ class MetaFases():
             self.backupsCsv(Meta, f'analiseLote{novo2}')
 
             # 20 - Buscando o realizado da Producao das fases
-            producaofases = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, self.codEmpresa, 100, 100, [6, 8])
+            producaofases = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, self.codEmpresa, 100, 100,None )
             realizado = producaofases.realizadoMediaMovel()
             realizado['codFase'] = realizado['codFase'].astype(int)
             Meta = pd.merge(Meta, realizado, on='codFase', how='left')
@@ -403,7 +403,7 @@ class MetaFases():
             except:
                 totalFaltaProgramar = 0
 
-            realizadoPeriodo = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, '1', 100, 100, [6, 8])
+            realizadoPeriodo = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, '1', 100, 100, None)
             realizado = realizadoPeriodo.realizadoMediaMovel()
             realizado['codFase'] = realizado['codFase'].astype(int)
             Meta = pd.merge(Meta, realizado, on='codFase', how='left')
@@ -425,7 +425,18 @@ class MetaFases():
             return pd.DataFrame([dados])
 
     def recalculoMetas(self, Meta, ordemProd):
-        filaFase = ordemProd.filaFases()
+
+        if self.analiseCongelada == True:
+
+            filaFase = ordemProd.filaFases()
+        else:
+            caminhoAbsoluto = configApp.localProjeto
+            fila = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
+            filaFase = ordemProd.tratandoInformFILA(fila)
+
+
+
+
         filaFase = filaFase.loc[:,
                    ['codFase', 'Carga Atual', 'Fila']]
         Meta = pd.merge(Meta, filaFase, on='codFase', how='left')
@@ -865,7 +876,6 @@ class MetaFases():
         caminhoAbsoluto = configApp.localProjeto
 
         cargaAtual = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
-        print(f'{self.nomeFase} nome da fase')
         cargaAtual = cargaAtual[cargaAtual['fase']==self.nomeFase].reset_index()
 
 
