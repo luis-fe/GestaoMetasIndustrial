@@ -224,3 +224,30 @@ class ProducaoFases():
 
 
 
+    def realizadoFasePeriodoFase_detalhaDia(self):
+
+        realizado = self.__sqlRealizadoPeriodo()
+
+
+        realizado['filtro'] = realizado['codFase'].astype(str) + '|' + realizado['codEngenharia'].str[0]
+        realizado = realizado[(realizado['filtro'] != '401|6')]
+        realizado = realizado[(realizado['filtro'] != '401|5')]
+        realizado = realizado[(realizado['filtro'] != '426|6')]
+        realizado = realizado[(realizado['filtro'] != '441|5')]
+        realizado = realizado[(realizado['filtro'] != '412|5')]
+
+        # filtrando o nome da fase
+        fases = self.__sqlObterFases()
+
+        realizado = pd.merge(realizado, fases , on ="codFase")
+
+        realizado = realizado[realizado["nomeFase"] == str(self.nomeFase)].reset_index()
+
+        realizado = realizado.groupby(["numeroop","codFase",'dataBaixa']).agg({"Realizado": "sum"}).reset_index()
+
+
+
+        return realizado
+
+
+
