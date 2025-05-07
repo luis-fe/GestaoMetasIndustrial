@@ -244,6 +244,8 @@ class ProducaoFases():
         realizado = realizado[realizado["nomeFase"] == str(self.nomeFase)].reset_index()
 
         realizado = realizado.groupby(["numeroop","codFase",'dataBaixa']).agg({"Realizado": "sum"}).reset_index()
+        # Convertendo para datetime sem especificar o formato fixo
+        realizado["dataBaixa"] = pd.to_datetime(realizado["dataBaixa"], errors="coerce")
         realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
 
 
