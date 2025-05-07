@@ -249,7 +249,7 @@ class ProducaoFases():
         realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
 
         # Conversão de hora (se possível)
-        realizado["horaMov"] = pd.to_datetime(realizado["horaMov"], errors="coerce").dt.strftime("%H:%M:%S")
+        realizado["horaMov"] = pd.to_datetime(realizado["horaMov"], errors="coerce").dt.strftime("%H:%M")
 
         return realizado
 
