@@ -123,61 +123,6 @@ class ProducaoFases():
         return realizado.drop_duplicates()
 
 
-    def realizadoFasePeriodo(self):
-
-        realizado = self.__sqlRealizadoPeriodo()
-        print(f'nomeFase:{self.nomeFase}')
-
-
-
-        if self.arraytipoOPExluir is not None and isinstance(self.arraytipoOPExluir, list):
-            realizado = realizado[~realizado['codtipoop'].isin(self.arraytipoOPExluir)]
-
-        if self.consideraMost == 'nao':
-            realizado = realizado[~realizado['descricaolote'].str.contains("MOST", case=False, na=False)].reset_index()
-
-        realizado['filtro'] = realizado['codFase'].astype(str) + '|' + realizado['codEngenharia'].str[0]
-        realizado = realizado[(realizado['filtro'] != '401|6')]
-        realizado = realizado[(realizado['filtro'] != '401|5')]
-        realizado = realizado[(realizado['filtro'] != '426|6')]
-        realizado = realizado[(realizado['filtro'] != '441|5')]
-        realizado = realizado[(realizado['filtro'] != '412|5')]
-
-        # filtrando o nome da fase
-        fases = self.__sqlObterFases()
-
-        realizado = pd.merge(realizado, fases , on ="codFase")
-
-        realizado = realizado[realizado["nomeFase"] == str(self.nomeFase)].reset_index()
-
-
-        realizadoTotal = realizado.groupby(["codFase"]).agg({"Realizado": "sum"}).reset_index()
-        realizadoTotal['dataBaixa'] = 'Total:'
-        realizadoTotal['dia'] = '-'
-        realizado = realizado.groupby(["codFase",'dataBaixa']).agg({"Realizado": "sum"}).reset_index()
-
-
-        # Convertendo para datetime sem especificar o formato fixo
-        realizado["dataBaixa"] = pd.to_datetime(realizado["dataBaixa"], errors="coerce")
-
-        # Criando a coluna formatada no padrão brasileiro
-        realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
-
-        # Criando a coluna com o nome do dia da semana em português
-        dias_semana = {
-            "Monday": "segunda-feira", "Tuesday": "terça-feira", "Wednesday": "quarta-feira",
-            "Thursday": "quinta-feira", "Friday": "sexta-feira", "Saturday": "sábado", "Sunday": "domingo"
-        }
-
-        realizado["dia"] = realizado["dataBaixa"].apply(lambda x: dias_semana[pd.to_datetime(x, format="%d/%m/%Y").strftime("%A")])
-        realizado = realizado.astype(str)
-
-
-        realizado = pd.concat([realizado, realizadoTotal], ignore_index=True)
-
-        return realizado
-
-
 
 
     def calcular_dias_sem_domingos(self,dataInicio, dataFim):

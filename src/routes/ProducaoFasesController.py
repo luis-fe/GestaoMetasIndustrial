@@ -36,7 +36,7 @@ def get_RetornoPorFaseDiaria():
     print(dataFinal)
 
     realizado = ProducaoFases.ProducaoFases(dataInicio, dataFinal, '','',codEmpresa,'','',None,'sim',nomeFase)
-    dados = realizado.realizadoFasePeriodo()
+    dados = realizado.realizadoFasePeriodoFase()
 
 
     # Obtém os nomes das colunas
