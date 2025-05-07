@@ -167,7 +167,7 @@ class ProducaoFases():
 	        distinct "codFase"::varchar ,
 	        "nomeFase"
         from
-	        "PCP".pcp."Eng_Roteiro" er
+	        pcp."Eng_Roteiro" er
         """
 
         conn = ConexaoPostgre.conexaoEngine()
@@ -180,11 +180,6 @@ class ProducaoFases():
 
         realizado = self.__sqlRealizadoPeriodo()
 
-        if self.arraytipoOPExluir is not None and isinstance(self.arraytipoOPExluir, list):
-            realizado = realizado[~realizado['codtipoop'].isin(self.arraytipoOPExluir)]
-
-        if self.consideraMost == 'nao':
-            realizado = realizado[~realizado['descricaolote'].str.contains("MOST", case=False, na=False)].reset_index()
 
         realizado['filtro'] = realizado['codFase'].astype(str) + '|' + realizado['codEngenharia'].str[0]
         realizado = realizado[(realizado['filtro'] != '401|6')]
