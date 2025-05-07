@@ -247,6 +247,7 @@ class ProducaoFases():
         # Convertendo para datetime sem especificar o formato fixo
         realizado["dataBaixa"] = pd.to_datetime(realizado["dataBaixa"], errors="coerce")
         realizado["dataBaixa"] = realizado["dataBaixa"].dt.strftime("%d/%m/%Y")
+        realizado["horaMov"] = realizado["horaMov"].dt.strftime("%h:%ss")
 
 
 
