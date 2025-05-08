@@ -2,14 +2,14 @@
     Cliente: Grupo MPL
     Framework: Flask - python
     Criador: Luís Fernando Gonçalves de Lima Machado
-    Versao Produção: 1.2 /Homologado 01-05-2025
+    Versao Produção: 1.3 /Homologado 12-05-2025
 
 ### Path 1.3
         Atualizado a opção de detalhar, a nivel de OP, a carga por fase/categoria ao clicar em carga no modal "Falta Produzir" conf!.
         Definindo integracao com a coluna COLECAO PADRAO DEFAUT no modulo PCP
-        Corrigido opcao de recalcular as metas apos filtrar os filtros desejados de Colecao , a performace estava ruim e optamos
-    por utilizar calculo em dados congelados em csv ao inves de nova consulta sql.
-        Revisado e corrigido apis do campo realizado-fase de acordo com o plano.
+        Corrigido opcao de "recalcular as metas" apos filtrar os filtros desejados de Colecao , a performace estava ruim e optamos
+    por utilizar calculo em dados congelados em csv (filaroteiro.csv) ao inves de nova consulta sql.
+        Revisado e corrigido apis do campo realizado-fase de acordo com o plano, trazendo todo o realizado independente da Colecao.
 
 
 
