@@ -184,13 +184,15 @@ class MetaFases():
                 faturadoAnterior = faturado.consultaArquivoFastVendasAnteriores()
                 sqlMetas = pd.merge(sqlMetas, faturadoAnterior, on ="codItem", how='left')
                 sqlMetas.fillna(0,inplace=True)
-                sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - sqlMetas['saldoPedidoAnt']
+                sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - sqlMetas['saldoPedidoAnt']*0.5
                 sqlMetas['FaltaProgramar1'] = sqlMetas['previsao'] - (sqlMetas['estoque-saldoAnt'] + sqlMetas['carga'])
 
             # ----------------------------------------------------------------------------------------------------------------
 
             # 7 - criando a coluna do faltaProgramar , retirando os produtos que tem falta programar negativo
             sqlMetas['FaltaProgramar'] = np.where(sqlMetas['FaltaProgramar1'] > 0, sqlMetas['FaltaProgramar1'], 0)
+
+
             if self.consideraFaltaProgr == False:
                 # 1 Consulta sql para obter as OPs em aberto no sistema do ´PCP
                 sqlCarga2 = """
