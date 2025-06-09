@@ -185,7 +185,7 @@ class MetaFases():
                 sqlMetas = pd.merge(sqlMetas, faturadoAnterior, on ="codItem", how='left')
                 sqlMetas.fillna(0,inplace=True)
                 sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - (sqlMetas['saldoPedidoAnt']*0.3)
-                sqlMetas['FaltaProgramar1'] = sqlMetas['previsao'] - (sqlMetas['estoque-saldoAnt'] + sqlMetas['carga'])
+                sqlMetas['FaltaProgramar1'] = (sqlMetas['previsao']-sqlMetas['qtdeFaturada']) - (sqlMetas['estoque-saldoAnt'] + sqlMetas['carga'])
 
             # ----------------------------------------------------------------------------------------------------------------
 
