@@ -146,18 +146,20 @@ class MetaFases():
 
             # 3.2 - concatenando com o DataFrame das metas o faturmento:
             sqlMetas = pd.merge(sqlMetas,faturadoPeriodo,on='codItem',how='left')
-
+            sqlMetas.fillna(0, inplace=True)
 
             # 4 - Aplicando os estoques ao calculo
             #----------------------------------------------------------------------------------------------------------
             estoque = produto.estoqueProdutosPA_addPartes()
             sqlMetas = pd.merge(sqlMetas, estoque, on='codItem', how='left')
+            sqlMetas.fillna(0, inplace=True)
 
             # 5- Aplicando a carga em producao
             #-------------------------------------------------------------------------------------------------------
             cargas = ordemProd.carga_porReduzido_addEquivParte(consultaPartes)
 
             sqlMetas = pd.merge(sqlMetas, cargas, on='codItem', how='left')
+            sqlMetas.fillna(0, inplace=True)
 
             sqlMetas.fillna({
                 'saldo': 0,
