@@ -174,13 +174,15 @@ class MetaFases():
             plano = PlanoClass.Plano(self.codPlano)
             IniFat = plano.iniFat
             IniFat = datetime.strptime(IniFat, '%Y-%m-%d')
-            IniFat = pd.to_datetime(IniFat)+ pd.Timedelta(days=15)
+            IniFat = pd.to_datetime(IniFat)- pd.Timedelta(days=15)
 
             # 6.1 Caso o periodo de faturamento da colecao tenha começado
             if diaAtual >= IniFat:
                 sqlMetas['FaltaProgramar1'] = (sqlMetas['previsao']-sqlMetas['qtdeFaturada']) - (
                             sqlMetas['estoqueAtual'] + sqlMetas['carga'] )
                 sqlMetas['saldoPedidoAnt'] = 0
+
+                print('data atual maior que a data inicio faturamento - 15 dias')
 
             # 6.2 caso o faturamento da colecao atual nao tenha iniciado
             else:
