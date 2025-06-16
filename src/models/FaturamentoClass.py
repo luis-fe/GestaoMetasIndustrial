@@ -62,7 +62,7 @@ class Faturamento():
             pedidos = pd.merge(pedidos, tipoNotas, on='codTipoNota')
             pedidos = pedidos.groupby("codItem").agg({"qtdeFaturada": "sum",'qtdeCancelada':'sum'}).reset_index()
             pedidos = pedidos.sort_values(by=['qtdeFaturada'], ascending=False)
-            pedidos = pedidos[pedidos['qtdeFaturada'] > 0].reset_index()
+            #pedidos = pedidos[pedidos['qtdeFaturada'] > 0].reset_index()
 
             return pedidos
 
