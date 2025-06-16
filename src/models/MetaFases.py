@@ -182,7 +182,7 @@ class MetaFases():
                             sqlMetas['estoqueAtual'] + sqlMetas['carga'] )
                 sqlMetas['saldoPedidoAnt'] = 0
 
-                print('data atual maior que a data inicio faturamento - 15 dias')
+                print('data atual maior que a data inicio faturamento + 15 dias')
 
             # 6.2 caso o faturamento da colecao atual nao tenha iniciado
             else:
@@ -191,6 +191,8 @@ class MetaFases():
                 sqlMetas.fillna(0,inplace=True)
                 sqlMetas['estoque-saldoAnt'] = sqlMetas['estoqueAtual'] - (sqlMetas['saldoPedidoAnt'])
                 sqlMetas['FaltaProgramar1'] = (sqlMetas['previsao']-sqlMetas['qtdeFaturada']) - (sqlMetas['estoque-saldoAnt'] + sqlMetas['carga'])
+
+                print('considerando saldo anterior ')
 
             # ----------------------------------------------------------------------------------------------------------------
 
