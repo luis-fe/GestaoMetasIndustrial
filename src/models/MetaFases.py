@@ -174,7 +174,7 @@ class MetaFases():
             plano = PlanoClass.Plano(self.codPlano)
             IniFat = plano.iniFat
             IniFat = datetime.strptime(IniFat, '%Y-%m-%d')
-            IniFat = pd.to_datetime(IniFat)- pd.Timedelta(days=15)
+            IniFat = pd.to_datetime(IniFat)+ pd.Timedelta(days=15)
 
             # 6.1 Caso o periodo de faturamento da colecao tenha começado
             if diaAtual >= IniFat:
