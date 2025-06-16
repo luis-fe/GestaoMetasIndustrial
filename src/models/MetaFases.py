@@ -178,7 +178,7 @@ class MetaFases():
             # 6.1 Caso o periodo de faturamento da colecao tenha começado
             if diaAtual >= IniFat:
                 sqlMetas['FaltaProgramar1'] = (sqlMetas['previsao']-sqlMetas['qtdeFaturada']) - (
-                            sqlMetas['estoqueAtual'] + sqlMetas['carga'] +sqlMetas['qtdeCancelada'])
+                            sqlMetas['estoqueAtual'] + sqlMetas['carga'] )
                 sqlMetas['saldoPedidoAnt'] = 0
 
             # 6.2 caso o faturamento da colecao atual nao tenha iniciado
