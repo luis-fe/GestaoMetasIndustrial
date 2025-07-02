@@ -178,8 +178,10 @@ class MetaFases():
 
             # 6.1 Caso o periodo de faturamento da colecao tenha começado
             if diaAtual >= IniFat:
-                sqlMetas['FaltaProgramar1'] = (sqlMetas['previsao']-sqlMetas['qtdeFaturada']) - (
+                sqlMetas['FaltaProgramar1'] = (
+                                                      sqlMetas['previsao'] - sqlMetas['qtdeFaturada'] ) - (
                             sqlMetas['estoqueAtual'] + sqlMetas['carga'] )
+
                 sqlMetas['saldoPedidoAnt'] = 0
 
                 print('data atual maior que a data inicio faturamento + 15 dias')
@@ -820,33 +822,44 @@ class MetaFases():
             descricaoLote = lote.consultaNomeLote()
 
             if 'INVERNO' in descricaoLote:
-                nome = 'INVERNO' + ' ' + self._extrair_ano(descricaoLote)
+                nome = 'INVERNO' + ' ' + self._extrair_ano(codLote)
                 colecoes.append(nome)
             elif 'PRI' in descricaoLote:
-                nome = 'VERAO' + ' ' + self._extrair_ano(descricaoLote)
+                nome = 'VERAO' + ' ' + self._extrair_ano(codLote)
                 colecoes.append(nome)
             elif 'ALT' in descricaoLote:
-                nome = 'ALTO VERAO' + ' ' + self._extrair_ano(descricaoLote)
+                nome = 'ALTO VERAO' + ' ' + self._extrair_ano(codLote)
                 colecoes.append(nome)
 
             elif 'VER' in descricaoLote:
-                nome = 'VERAO' + ' ' + self._extrair_ano(descricaoLote)
+                nome = 'VERAO' + ' ' + self._extrair_ano(codLote)
                 colecoes.append(nome)
             else:
-                nome = 'ENCOMENDAS' + ' ' + self._extrair_ano(descricaoLote)
+                nome = 'ENCOMENDAS' + ' ' + self._extrair_ano(codLote)
                 colecoes.append(nome)
 
 
         return colecoes
 
-    def _extrair_ano(self, descricaoLote):
+    def _extrair_ano(self, codLote):
         '''Metodo privado que extrai da descricao o ano do lote'''
 
-        match = re.search(r'\b2\d{3}\b', descricaoLote)
-        if match:
-            return match.group(0)
-        else:
-            return None
+        # Verifica qual a colecao do lote:
+
+        sql = """
+            select 
+                substring(p."finalFat",0,5) ano  
+            from 
+                pcp."LoteporPlano" lp 
+            inner join 
+                    pcp."Plano" p on p.codigo = lp.plano 
+            where lote = %s
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+        ano = pd.read_sql(sql,conn,str(codLote) )
+        ano = ano['ano'][0]
+        return ano
 
 
     def backupMetasAnteriores(self):
