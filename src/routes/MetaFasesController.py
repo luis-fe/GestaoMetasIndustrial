@@ -39,10 +39,10 @@ def pOST_MetasFases():
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
     ArrayTipoProducao = ["VERAO 2025", "ALTO VERAO 2025"]
     print(data)
-    if congelado =='' or congelado == '-' or codigoPlano == '3':
-        congelado = True
-    else:
+    if congelado =='' or congelado == '-':
         congelado = False
+    else:
+        congelado = congelado
 
     meta = MetaFases.MetaFases(codigoPlano, '','',dataMovFaseIni,dataMovFaseFim,congelado,arrayCodLoteCsw, '1',dataBackupMetas,modeloAnalise,'',ArrayTipoProducao)
     dados = meta.metasFase()

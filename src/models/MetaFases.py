@@ -31,9 +31,10 @@ class MetaFases():
         self.consideraFaltaProgr = consideraFaltaProgr
         if self.arrayTipoProducao == '':
             self.arrayTipoProducao = ['']
-        if self.arrayCodLoteCsw == ['25A04B']:
+
+        if self.arrayCodLoteCsw == ['25A04B','25J29A']:
             self.consideraFaltaProgr = False
-            self.arrayTipoProducao = ['INVERNO 2025']
+            self.arrayTipoProducao = ['INVERNO 2025', "VERAO 2025"]
 
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
