@@ -857,7 +857,7 @@ class MetaFases():
         """
 
         conn = ConexaoPostgre.conexaoEngine()
-        ano = pd.read_sql(sql,conn,params=(str(codLote)), )
+        ano = pd.read_sql(sql,conn,params=(str(codLote),))
         ano = ano['ano'][0]
         return ano
 
