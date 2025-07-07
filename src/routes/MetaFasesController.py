@@ -39,6 +39,7 @@ def pOST_MetasFases():
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
     ArrayTipoProducao = ["VERAO 2025", "ALTO VERAO 2025"]
     print(data)
+
     if congelado =='' or congelado == '-':
         congelado = False
     else:

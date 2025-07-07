@@ -35,6 +35,7 @@ class MetaFases():
         if self.arrayCodLoteCsw == ['25A04B','25J29A']:
             self.consideraFaltaProgr = False
             self.arrayTipoProducao = ['INVERNO 2025', "VERAO 2025"]
+            print(f'consideracao do falta programar lote: {self.consideraFaltaProgr}')
 
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
@@ -233,7 +234,7 @@ class MetaFases():
                                             '157630-001',
                                             '157369-001',
                                             '157639-001',
-                                            '157645-001',
+                                            '157645-001',   
                                             '157628-001',
                                             '157631-001',
                                             '157370-001',
