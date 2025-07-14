@@ -34,7 +34,7 @@ class MetaFases():
 
         if self.arrayCodLoteCsw == ['25A04B'] or self.arrayCodLoteCsw == ['25J29A'] :
             self.consideraFaltaProgr = False
-            self.arrayTipoProducao = ['INVERNO 2025', "VERAO 2025"]
+            self.arrayTipoProducao = ["VERAO 2025"]
             print(f'consideracao do falta programar lote: {self.consideraFaltaProgr}')
 
 
@@ -489,6 +489,8 @@ class MetaFases():
         Meta = pd.merge(Meta, filaFase, on='codFase', how='left')
         # 17- formatando erros de validacao nos valores dos atributos
         Meta['Carga Atual'].fillna(0, inplace=True)
+
+
         Meta['Fila'].fillna(0, inplace=True)
         Meta['Falta Produzir'] = Meta['Carga Atual'] + Meta['Fila'] + Meta['FaltaProgramar']
         # 18 - obtendo a Meta diaria das fases:
