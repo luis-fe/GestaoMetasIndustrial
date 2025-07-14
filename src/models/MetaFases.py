@@ -666,7 +666,6 @@ class MetaFases():
                                                            "dataStartOP":"first"
                                                            }).reset_index()
 
-        cargaAtual['Tipo Producao'] = cargaAtual['COLECAO']
 
         cargaAtual.rename(columns={'pcs': 'Carga'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Carga'], ascending=False)  # escolher como deseja classificar
