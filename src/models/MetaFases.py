@@ -41,7 +41,7 @@ class MetaFases():
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
             self.loteIN = self.transformaando_codLote_clausulaIN() # funcao inicial que defini o loteIN
 
-        #print('segue o array tipo producao '+self.arrayTipoProducao)
+        print(f'segue o array tipo producao {self.arrayTipoProducao}')
 
     def transformaando_codLote_clausulaIN(self):
         '''Metodo que transforma o arrayCodLote em cláusula IN'''
