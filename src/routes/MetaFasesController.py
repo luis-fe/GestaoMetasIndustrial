@@ -257,7 +257,7 @@ def post_cargaOP_fase():
     nomeFase = data.get('nomeFase', '-')
     codigoPlano = data.get('codigoPlano')
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
-    ArrayTipoProducao = ["VERAO 2025","ALTO VERAO 2025"]
+    #ArrayTipoProducao = ["VERAO 2025","ALTO VERAO 2025"]
 
     if str(codigoPlano) == '2':
         ArrayTipoProducao = ["INVERNO 2025"]
