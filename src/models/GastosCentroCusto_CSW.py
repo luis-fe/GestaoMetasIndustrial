@@ -73,7 +73,7 @@ class Gastos_centroCusto_CSW():
                 rows = cursor_csw.fetchall()
                 consulta = pd.DataFrame(rows, columns=colunas)
                 del rows
-
+        '''
         # Função para extrair pares e manter outras colunas
         def extrair_pares(row):
             valores = row['centroCustovalor'].split(';')
@@ -89,7 +89,7 @@ class Gastos_centroCusto_CSW():
         # Aplica a função
         linhas_expandida = sum(consulta.apply(extrair_pares, axis=1), [])
         consulta = pd.DataFrame(linhas_expandida)
-
+    '''
         print(consulta)
 
         return consulta
