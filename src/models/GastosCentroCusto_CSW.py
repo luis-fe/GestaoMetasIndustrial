@@ -62,7 +62,6 @@ class Gastos_centroCusto_CSW():
                 and e.dataEntrada  >= '{self.dataCompentencia}'
                 and ei.centroCustoValor > 0
         """
-        print(sql)
 
 
 
