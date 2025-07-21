@@ -12,8 +12,8 @@ class Gastos_centroCusto_CSW():
                  codCentroCusto = '', nomeCentroCusto = ''
                  ):
 
-        self.codEmpresa = codEmpresa
-        self.dataCompentencia = dataCompentencia
+        self.codEmpresa = str(codEmpresa)
+        self.dataCompentencia = str(dataCompentencia)
         self.codFornecdor = codFornecedor
         self.nomeFornecedor = nomeFornecedor
         self.dataEntradaNF = dataEntradaNF
@@ -33,6 +33,7 @@ class Gastos_centroCusto_CSW():
 
         sql = f"""
             SELECT
+                top 1
                 e.fornecedor as codFornecedor,
                 f.nome as nomeFornecedor,
                 e.dataEntrada as dataEntradaNF,
@@ -62,6 +63,7 @@ class Gastos_centroCusto_CSW():
                 and e.dataEntrada  >= {self.dataCompentencia}
                 and ei.centroCustoValor > 0
         """
+        print(sql)
 
 
 
