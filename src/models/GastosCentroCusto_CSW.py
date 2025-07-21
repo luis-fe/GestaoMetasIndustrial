@@ -91,6 +91,8 @@ class Gastos_centroCusto_CSW():
         centroCusto = self.get_centroCusto()
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
 
+        consulta = consulta.fillna('-', inplace=True)
+
         return consulta
 
 
