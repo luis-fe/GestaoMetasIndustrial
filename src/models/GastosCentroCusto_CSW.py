@@ -6,14 +6,15 @@ from src.connection import ConexaoERP
 class Gastos_centroCusto_CSW():
     '''Classe que captura as informacoes de gastos e centro de custo '''
 
-    def __init__(self, codEmpresa = '1' , dataCompentencia= '',
+    def __init__(self, codEmpresa = '1' , dataCompentenciaInicial= '',dataCompentenciaFinal= '',
                  codFornecedor = '', nomeFornecedor= '', dataEntradaNF ='', codDocumento = '',
                  seqItemDocumento = '', descricaoItem = '', centroCustovalor ='', codContaContabil = '', nomeItem ='',
                  codCentroCusto = '', nomeCentroCusto = ''
                  ):
 
         self.codEmpresa = str(codEmpresa)
-        self.dataCompentencia = str(dataCompentencia)
+        self.dataCompentenciaInicial = str(dataCompentenciaInicial)
+        self.dataCompentenciaFinal = str(dataCompentenciaFinal)
         self.codFornecdor = codFornecedor
         self.nomeFornecedor = nomeFornecedor
         self.dataEntradaNF = dataEntradaNF
@@ -59,7 +60,8 @@ class Gastos_centroCusto_CSW():
                 on cb.codigo = ei.contaContabil
             WHERE
                 e.codEmpresa = {self.codEmpresa}
-                and e.dataEntrada  >= '{self.dataCompentencia}'
+                and e.dataEntrada  >= '{self.dataCompentenciaInicial}'
+                and e.dataEntrada  >= '{self.dataCompentenciaFinal}'
                 and ei.centroCustoValor > 0
         """
 
@@ -91,7 +93,7 @@ class Gastos_centroCusto_CSW():
         centroCusto = self.get_centroCusto()
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
 
-        consulta = consulta.fillna('-', inplace=True)
+        consulta.fillna('-', inplace=True)
 
         return consulta
 

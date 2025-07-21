@@ -25,10 +25,11 @@ def token_required(f):
 def get_GastosCentroCusto():
 
     codEmpresa = request.args.get('codEmpresa', '1')
-    dataCompentencia = request.args.get('dataCompentencia', '1')
+    dataCompentenciaInicial = request.args.get('dataCompentenciaInicial', '1')
+    dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '1')
 
 
-    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentencia).get_notasEntredas_Csw()
+    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentenciaInicial,dataCompentenciaFinal).get_notasEntredas_Csw()
 
 
     # Obtém os nomes das colunas
