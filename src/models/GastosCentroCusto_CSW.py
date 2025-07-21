@@ -88,7 +88,8 @@ class Gastos_centroCusto_CSW():
         # Aplica a função
         linhas_expandida = sum(consulta.apply(extrair_pares, axis=1), [])
         consulta = pd.DataFrame(linhas_expandida)
-        print(consulta)
+        centroCusto = self.get_centroCusto()
+        consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
 
         return consulta
 
@@ -100,7 +101,7 @@ class Gastos_centroCusto_CSW():
 
         sql = """
         select
-            c.mascaraRdz as codCentroCusto,
+            c.mascaraRdz as centrocusto,
             nome as nomeCentroCusto
         FROM
             Cad.CCusto c
