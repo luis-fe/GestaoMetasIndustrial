@@ -481,6 +481,7 @@ class MetaFases():
             fila = pd.read_csv(f'{caminhoAbsoluto}/dados/filaroteiroOP.csv')
             print('utilizando a fila congelada ...')
             filaFase = ordemProd.tratandoInformFILA(fila)
+            fila.to_csv(f'{caminhoAbsoluto}/dados/filaroteiroOPProvisorio.csv')
             print('termiando o tratamento  para fila congelada ...')
 
 
