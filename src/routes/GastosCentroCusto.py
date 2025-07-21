@@ -28,9 +28,8 @@ def get_GastosCentroCusto():
     dataCompentencia = request.args.get('dataCompentencia', '1')
 
 
-    filtro = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentencia).get_notasEntredas_Csw()
+    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentencia).get_notasEntredas_Csw()
 
-    dados = filtro.filtroProdutivo()
 
     # Obtém os nomes das colunas
     column_names = dados.columns
