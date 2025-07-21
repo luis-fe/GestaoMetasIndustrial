@@ -37,6 +37,10 @@ class MetaFases():
             self.arrayTipoProducao = ["VERAO 2025"]
             print(f'consideracao do falta programar lote: {self.consideraFaltaProgr}')
 
+        if self.arrayCodLoteCsw == ['25L07A'] or self.arrayCodLoteCsw == ['25L21G'] :
+
+            self.arrayTipoProducao = ["ALTO VERAO 2025"]
+
 
         if arrayCodLoteCsw != None or arrayCodLoteCsw != '':
             self.loteIN = self.transformaando_codLote_clausulaIN() # funcao inicial que defini o loteIN
