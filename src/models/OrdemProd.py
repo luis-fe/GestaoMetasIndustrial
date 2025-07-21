@@ -202,6 +202,7 @@ class OrdemProd():
 
         def tratandoInformFILA(self, fila):
             df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+            print(df)
             fila = pd.merge(fila, df, on='Tipo Producao')
             # 10 - separando as fases que estao na situacao em processo e obtendo a sua respectiva carga
             fila_carga_atual = fila[fila['Situacao'] == 'em processo'].reset_index()
