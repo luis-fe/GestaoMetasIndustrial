@@ -59,7 +59,7 @@ class Gastos_centroCusto_CSW():
                 on cb.codigo = ei.contaContabil
             WHERE
                 e.codEmpresa = {self.codEmpresa}
-                and e.dataEntrada  >= {self.dataCompentencia}
+                and e.dataEntrada  >= '{self.dataCompentencia}'
                 and ei.centroCustoValor > 0
         """
         print(sql)
