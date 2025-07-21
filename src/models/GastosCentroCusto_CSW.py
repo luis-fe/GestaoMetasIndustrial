@@ -33,7 +33,6 @@ class Gastos_centroCusto_CSW():
 
         sql = f"""
             SELECT
-                top 1
                 e.fornecedor as codFornecedor,
                 f.nome as nomeFornecedor,
                 e.dataEntrada as dataEntradaNF,
