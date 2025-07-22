@@ -142,6 +142,17 @@ class Gastos_centroCusto_CSW():
         return consulta
 
 
+    def get_Empresa(self):
+
+
+        empresa = pd.DataFrame([{'codEmpresa': ['1','4'], 'nomeEmpresa': ['Matriz','Filial-Cianorte']}])
+
+
+        return empresa
+
+
+
+
 
 
 
