@@ -90,7 +90,7 @@ class Gastos_centroCusto_CSW():
         # Aplica a função
         linhas_expandida = sum(consulta.apply(extrair_pares, axis=1), [])
         consulta = pd.DataFrame(linhas_expandida)
-        centroCusto = self.get_centroCusto()
+        centroCusto = self.__get_centroCusto()
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
 
         consulta.fillna('-', inplace=True)
@@ -99,18 +99,22 @@ class Gastos_centroCusto_CSW():
 
 
 
-    def get_centroCusto(self):
+    def __get_centroCusto(self):
         '''Metodo que obtem os centro de custos cadastrados no erp cesw'''
 
 
         sql = """
         select
             c.mascaraRdz as centrocusto,
-            nome as nomeCentroCusto
+            c.nome as nomeCentroCusto, 
+            c.codarea, 
+            a.nome as nomeArea
         FROM
             Cad.CCusto c
+        inner join
+            cad.CCustoArea a on a.codigo = c.codArea 
         WHERE
-            c.codEmpresa = 1
+            c.codEmpresa = 1 and c.situacao = 1
         """
         with ConexaoERP.ConexaoInternoMPL() as conn:
             with conn.cursor() as cursor_csw:
@@ -122,3 +126,25 @@ class Gastos_centroCusto_CSW():
                 del rows
 
         return consulta
+
+
+
+    def get_centro_custo(self):
+        '''Metodo publico para obter os centro de custos cadastrddos no ERP CSW'''
+
+
+        consulta = self.__get_centroCusto()
+
+        consulta['nomeArea'] = consulta.apply(lambda r: 'PRODUCAO' if r['nomeArea'] == 'CONFECÇÃO' else r['nomeArea'],
+                                              axis=1)
+
+
+        return consulta
+
+
+
+
+
+
+
+
