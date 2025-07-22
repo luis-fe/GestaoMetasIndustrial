@@ -145,7 +145,7 @@ class Gastos_centroCusto_CSW():
     def get_Empresa(self):
 
 
-        empresa = pd.DataFrame([{'codEmpresa': ['1','4'], 'nomeEmpresa': ['Matriz','Filial-Cianorte']}])
+        empresa = pd.DataFrame({'codEmpresa': ['1','4'], 'nomeEmpresa': ['Matriz','Filial-Cianorte']})
 
 
         return empresa
