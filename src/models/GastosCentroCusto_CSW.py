@@ -107,7 +107,7 @@ class Gastos_centroCusto_CSW():
         select
             c.mascaraRdz as centrocusto,
             c.nome as nomeCentroCusto, 
-            c.codarea, 
+            c.codarea as codArea, 
             a.nome as nomeArea
         FROM
             Cad.CCusto c
@@ -155,7 +155,7 @@ class Gastos_centroCusto_CSW():
 
         area = self.get_centro_custo()
 
-        area = area.groupby('nomeArea', as_index=False).agg({'codarea': 'first'})
+        area = area.groupby('nomeArea').agg({'codArea': 'first'}).reset_index()
 
         return area
 
