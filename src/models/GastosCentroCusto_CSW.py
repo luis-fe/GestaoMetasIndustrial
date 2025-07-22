@@ -202,11 +202,11 @@ class Gastos_centroCusto_CSW():
 
     def get_GrupoContas(self):
 
-        area = self.__getContaContabil()
+        grupo = self.__getContaContabil()
 
-        area = area.groupby('GRUPO')
+        grupos_unicos = grupo[['GRUPO']].drop_duplicates().reset_index(drop=True)
 
-        return area
+        return grupos_unicos
 
 
 
