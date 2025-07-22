@@ -160,6 +160,54 @@ class Gastos_centroCusto_CSW():
         return area
 
 
+    def __getContaContabil(self):
+        '''Metodo privado que busca no ERP do CSW o plano de contas contabil'''
+
+        sql = """
+        SELECT
+            c.codigo as contaContabil,
+            c.nome as nomeContaContabil,
+            pl.mascaraEdt ,
+            case 
+                when substring(pl.mascaraEdt,0,9) = '3.2.1.05' then 'MAO OBRA PRODUCAO' 
+                when substring(pl.mascaraEdt,0,9) = '3.2.1.15' then 'GASTOS GERAIS FABRICACAO' 
+                when substring(pl.mascaraEdt,0,9) = '3.3.3.10' then 'DESPESAS ADM' 
+                when substring(pl.mascaraEdt,0,9) = '3.3.3.05' then 'DESPESAS ADM PESSOAL' 
+                ELSE '-' END GRUPO 
+        FROM
+            ctb.ContaContabil c
+        inner join 
+            ctb.PlanoContasPadrao pl on
+            c.codigo = pl.codContaContabil 
+        WHERE 
+            SUBSTRING(pl.mascaraEdt, 0, 9) = '3.2.1.05'
+            OR SUBSTRING(pl.mascaraEdt, 0, 9) = '3.2.1.15'
+            OR SUBSTRING(pl.mascaraEdt, 0, 9) = '3.3.3.10'
+            OR SUBSTRING(pl.mascaraEdt, 0, 9) = '3.3.3.05'
+        """
+
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor_csw:
+                # Executa a primeira consulta e armazena os resultados
+                cursor_csw.execute(sql)
+                colunas = [desc[0] for desc in cursor_csw.description]
+                rows = cursor_csw.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+                del rows
+
+        return consulta
+
+
+
+    def get_GrupoContas(self):
+
+        area = self.__getContaContabil()
+
+        area = area.groupby('GRUPO').reset_index()
+
+        return area
+
 
 
 
