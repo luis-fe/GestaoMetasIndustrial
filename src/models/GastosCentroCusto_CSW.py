@@ -135,7 +135,7 @@ class Gastos_centroCusto_CSW():
 
         consulta = self.__get_centroCusto()
 
-        consulta['nomeArea'] = consulta.apply(lambda r: 'PRODUCAO' if r['nomeArea'] == 'CONFECÇÃO' else r['nomeArea'],
+        consulta['nomeArea'] = consulta.apply(lambda r: 'PRODUCAO' if r['codArea'] == '4' else r['nomeArea'],
                                               axis=1)
 
 
