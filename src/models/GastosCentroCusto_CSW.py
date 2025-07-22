@@ -204,7 +204,7 @@ class Gastos_centroCusto_CSW():
 
         area = self.__getContaContabil()
 
-        area = area.groupby('GRUPO').reset_index()
+        area = area.groupby('GRUPO')
 
         return area
 
