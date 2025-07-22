@@ -155,7 +155,7 @@ class Gastos_centroCusto_CSW():
 
         area = self.get_centro_custo()
 
-        area = area.groupby(['nomeArea']).add({'codarea':'first'}).reset_index()
+        area = area.groupby('nomeArea', as_index=False).agg({'codarea': 'first'})
 
         return area
 
