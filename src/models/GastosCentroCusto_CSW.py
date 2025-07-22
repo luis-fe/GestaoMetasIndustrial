@@ -151,6 +151,16 @@ class Gastos_centroCusto_CSW():
         return empresa
 
 
+    def get_area(self):
+
+        area = self.get_centro_custo()
+
+        area = area.groupby(['nomeArea']).add({'codarea':'first'}).reset_index()
+
+        return area
+
+
+
 
 
 
