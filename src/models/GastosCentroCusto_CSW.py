@@ -280,7 +280,7 @@ class Gastos_centroCusto_CSW():
                 sql2 = pd.DataFrame(rows, columns=colunas)
                 del rows
 
-        consulta = pd.merge(consulta, sql2, on='codtransacao', how='left')
+        consulta = pd.merge(consulta, sql2, on='codTransacao', how='left')
         consulta['codFornecedor'] = '-'
         consulta['nomeFornecedor'] = '-'
         consulta['seqItemDocumento'] = '-'
