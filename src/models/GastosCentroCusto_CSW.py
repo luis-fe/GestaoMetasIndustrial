@@ -231,7 +231,6 @@ class Gastos_centroCusto_CSW():
             CentroCusto as centroCustovalor,
             codCCusto as centrocusto,
             m.codTransacao,
-            t.contaContabil as codContaContabil,
             numDocto as codDocumento,
             dataLcto,
             nomeItem as descricaoItem,
@@ -241,10 +240,6 @@ class Gastos_centroCusto_CSW():
             vlrTotal as valor
         FROM
             est.Movimento m
-        left join
-			(SELECT DISTINCT contadebito as contaContabil, codTransacao  FROM Est.CtbIntLctCont e
-            WHERE e.codempresa = 1 and e.anoMes like '202%' and codtransacao > 0) t
-            on t.codTransacao = m.codTransacao
         WHERE
             m.codEmpresa = {self.codEmpresa}
             and m.dataLcto >= '{self.dataCompentenciaInicial}'
@@ -265,6 +260,27 @@ class Gastos_centroCusto_CSW():
                 consulta = pd.DataFrame(rows, columns=colunas)
                 del rows
 
+
+
+        sql2 = """
+        SELECT 
+		    DISTINCT 
+			        contadebito as contaContabil, codTransacao  
+			    FROM 
+			        Est.CtbIntLctCont e
+                WHERE e.codempresa = 1 and e.anoMes like '202%' and codtransacao > 0
+        """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor_csw:
+                # Executa a primeira consulta e armazena os resultados
+                cursor_csw.execute(sql2)
+                colunas = [desc[0] for desc in cursor_csw.description]
+                rows = cursor_csw.fetchall()
+                sql2 = pd.DataFrame(rows, columns=colunas)
+                del rows
+
+        consulta = pd.merge(consulta, sql2, how='left')
         consulta['codFornecedor'] = '-'
         consulta['nomeFornecedor'] = '-'
         consulta['seqItemDocumento'] = '-'
