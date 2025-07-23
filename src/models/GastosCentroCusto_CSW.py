@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from src.connection import ConexaoERP
@@ -145,6 +146,8 @@ class Gastos_centroCusto_CSW():
                 consulta = pd.DataFrame(rows, columns=colunas)
                 del rows
 
+        consulta['nomeArea'] = np.where(consulta['codArea'] == '4', 'PRODUCAO', consulta['nomeArea'])
+
         return consulta
 
 
@@ -155,8 +158,6 @@ class Gastos_centroCusto_CSW():
 
         consulta = self.__get_centroCusto()
 
-        consulta['nomeArea'] = consulta.apply(lambda r: 'PRODUCAO' if r['codArea'] == '4' else r['nomeArea'],
-                                              axis=1)
 
 
         return consulta
