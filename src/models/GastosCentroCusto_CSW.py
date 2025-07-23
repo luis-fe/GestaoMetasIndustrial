@@ -301,7 +301,10 @@ class Gastos_centroCusto_CSW():
 
         resumo = self.get_notasEntredas_Csw()
 
-        resumo = resumo.groupby('centrocusto').agg({'valor':'sum'}).reset_index()
+        resumo = resumo.groupby('centrocusto').agg({
+            'nomeCentroCusto':'first',
+            'valor':'sum'
+        }).reset_index()
 
         return resumo
 
