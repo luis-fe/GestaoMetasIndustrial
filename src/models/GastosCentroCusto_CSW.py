@@ -279,6 +279,8 @@ class Gastos_centroCusto_CSW():
                 rows = cursor_csw.fetchall()
                 sql2 = pd.DataFrame(rows, columns=colunas)
                 del rows
+        sql2['codTransacao'] = sql2['codTransacao'].astype(str)
+        consulta['codTransacao'] = consulta['codTransacao'].astype(str)
 
         consulta = pd.merge(consulta, sql2, on='codTransacao', how='left')
         consulta['codFornecedor'] = '-'
