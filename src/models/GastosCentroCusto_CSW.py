@@ -91,6 +91,7 @@ class Gastos_centroCusto_CSW():
         linhas_expandida = sum(consulta.apply(extrair_pares, axis=1), [])
         consulta = pd.DataFrame(linhas_expandida)
         centroCusto = self.__get_centroCusto()
+        contacontb = self.__getContaContabil()
 
         consulta['qtd'] = ''
         consulta['vlrUnitario'] = ''
@@ -102,6 +103,8 @@ class Gastos_centroCusto_CSW():
         consulta = pd.concat([consulta, consulta2])
 
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
+        consulta = pd.merge(consulta, contacontb , on ='centrocusto')
+
         consulta.fillna('-', inplace=True)
 
 
@@ -175,7 +178,7 @@ class Gastos_centroCusto_CSW():
 
         sql = """
         SELECT
-            c.codigo as contaContabil,
+            c.codigo as codContaContabil,
             c.nome as nomeContaContabil,
             pl.mascaraEdt ,
             case 
