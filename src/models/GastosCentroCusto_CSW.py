@@ -320,9 +320,7 @@ class Gastos_centroCusto_CSW():
             'valor':'sum'
         }).reset_index()
 
-
-
-
+        resumo['valor'] = resumo['valor'].round(2)
 
         return resumo
 
