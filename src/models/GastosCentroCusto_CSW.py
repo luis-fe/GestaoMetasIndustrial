@@ -280,6 +280,10 @@ class Gastos_centroCusto_CSW():
                 sql2 = pd.DataFrame(rows, columns=colunas)
                 del rows
         sql2['codTransacao'] = sql2['codTransacao'].astype(str)
+        sql2['ocorrencia_acumulada'] = sql2.groupby('codTransacao').cumcount() + 1
+
+        sql2 = sql2[sql2['ocorrencia_acumulada']>1].reset_index()
+
         consulta['codTransacao'] = consulta['codTransacao'].astype(str)
 
         consulta = pd.merge(consulta, sql2, on='codTransacao', how='left')
