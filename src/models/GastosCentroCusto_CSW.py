@@ -103,7 +103,7 @@ class Gastos_centroCusto_CSW():
         consulta = pd.concat([consulta, consulta2])
 
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
-        consulta = pd.merge(consulta, contacontb , on ='centrocusto')
+        consulta = pd.merge(consulta, contacontb , on ='codContaContabil')
 
         consulta.fillna('-', inplace=True)
 
