@@ -103,6 +103,9 @@ class Gastos_centroCusto_CSW():
         consulta2 = self.__get_intensReqIndependente()
         consulta = pd.concat([consulta, consulta2])
 
+        consulta['centrocusto'] =consulta['centrocusto'].astype(str)
+        centroCusto['centrocusto'] =centroCusto['centrocusto'].astype(str)
+
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto', how='left')
         consulta['codContaContabil'] =consulta['codContaContabil'].astype(str)
 
