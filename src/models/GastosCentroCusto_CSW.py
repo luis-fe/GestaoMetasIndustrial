@@ -102,8 +102,11 @@ class Gastos_centroCusto_CSW():
         consulta2 = self.__get_intensReqIndependente()
         consulta = pd.concat([consulta, consulta2])
 
-        consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
-        consulta = pd.merge(consulta, contacontb , on ='codContaContabil')
+        consulta = pd.merge(consulta, centroCusto , on ='centrocusto', how='left')
+        consulta['codContaContabil'] =consulta['codContaContabil'].astype(str)
+
+
+        consulta = pd.merge(consulta, contacontb , on ='codContaContabil',how='left')
 
         consulta.fillna('-', inplace=True)
 
@@ -208,6 +211,8 @@ class Gastos_centroCusto_CSW():
                 rows = cursor_csw.fetchall()
                 consulta = pd.DataFrame(rows, columns=colunas)
                 del rows
+        consulta['codContaContabil'] =consulta['codContaContabil'].astype(str)
+
 
         return consulta
 
