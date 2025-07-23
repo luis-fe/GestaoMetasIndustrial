@@ -296,6 +296,17 @@ class Gastos_centroCusto_CSW():
 
 
 
+    def resumo_centroCusto(self):
+        '''Metodo para resumir os gasto por centro de custo no periodo'''
+
+        resumo = self.get_notasEntredas_Csw()
+
+        resumo = resumo.groupby('centrocusto').agg({'valor':'sum'}).reset_index()
+
+        return resumo
+
+
+
 
 
 
