@@ -97,7 +97,7 @@ class Gastos_centroCusto_CSW():
         consulta['codItem'] = ''
 
         consulta2 = self.__get_intensReqIndependente()
-        consulta = pd.concat(consulta, consulta2)
+        consulta = pd.concat([consulta, consulta2])
 
         consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
         consulta.fillna('-', inplace=True)
