@@ -7,7 +7,7 @@ class Gastos_centroCusto_CSW():
     '''Classe que captura as informacoes de gastos e centro de custo '''
 
     def __init__(self, codEmpresa = '1' , dataCompentenciaInicial= '',dataCompentenciaFinal= '',
-                 codFornecedor = '', nomeFornecedor= '', dataEntradaNF ='', codDocumento = '',
+                 codFornecedor = '', nomeFornecedor= '', dataLcto ='', codDocumento = '',
                  seqItemDocumento = '', descricaoItem = '', centroCustovalor ='', codContaContabil = '', nomeItem ='',
                  codCentroCusto = '', nomeCentroCusto = ''
                  ):
@@ -17,7 +17,7 @@ class Gastos_centroCusto_CSW():
         self.dataCompentenciaFinal = str(dataCompentenciaFinal)
         self.codFornecdor = codFornecedor
         self.nomeFornecedor = nomeFornecedor
-        self.dataEntradaNF = dataEntradaNF
+        self.dataLcto = dataLcto
         self.codDocumento = codDocumento
         self.seqItemDocumento = seqItemDocumento
         self.descricaoItem = descricaoItem
@@ -36,7 +36,7 @@ class Gastos_centroCusto_CSW():
             SELECT
                 e.fornecedor as codFornecedor,
                 f.nome as nomeFornecedor,
-                e.dataEntrada as dataEntradaNF,
+                e.dataEntrada as dataLcto,
                 e.numDocumento as codDocumento,
                 ei.item as seqItemDocumento,
                 ei.descricaoItem as descricaoItem,
@@ -91,9 +91,17 @@ class Gastos_centroCusto_CSW():
         linhas_expandida = sum(consulta.apply(extrair_pares, axis=1), [])
         consulta = pd.DataFrame(linhas_expandida)
         centroCusto = self.__get_centroCusto()
-        consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
 
+        consulta['qtd'] = ''
+        consulta['vlrUnitario'] = ''
+        consulta['codItem'] = ''
+
+        consulta2 = self.__get_intensReqIndependente()
+        consulta = pd.concat(consulta, consulta2)
+
+        consulta = pd.merge(consulta, centroCusto , on ='centrocusto')
         consulta.fillna('-', inplace=True)
+
 
         return consulta
 
@@ -207,6 +215,57 @@ class Gastos_centroCusto_CSW():
         grupos_unicos = grupo[['GRUPO']].drop_duplicates().reset_index(drop=True)
 
         return grupos_unicos
+
+
+    def __get_intensReqIndependente(self):
+        '''Metodo privado que busca no CSW as requisicoes indepedentes'''
+
+
+        sql = f"""
+        SELECT
+            CentroCusto as centroCustovalor,
+            codCCusto as centrocusto,
+            m.codTransacao,
+            t.contaContabil as codContaContabil,
+            numDocto as codDocumento,
+            dataLcto,
+            nomeItem as descricaoItem,
+            codItem,
+            vlrUnitario ,
+            qtdMovto as qtd ,
+            vlrTotal as valor
+        FROM
+            est.Movimento m
+        left join
+			(SELECT DISTINCT contadebito as contaContabil, codTransacao  FROM Est.CtbIntLctCont e
+            WHERE e.codempresa = 1 and e.anoMes like '202%' and codtransacao > 0) t
+            on t.codTransacao = m.codTransacao
+        WHERE
+            m.codEmpresa = {self.codEmpresa}
+            and m.dataLcto >= '{self.dataCompentenciaInicial}'
+            and m.dataLcto <= '{self.dataCompentenciaFinal}'
+            and numDocto like '%RQI%'
+            and codCCusto > 0
+        """
+
+
+
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor_csw:
+                # Executa a primeira consulta e armazena os resultados
+                cursor_csw.execute(sql)
+                colunas = [desc[0] for desc in cursor_csw.description]
+                rows = cursor_csw.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+                del rows
+
+        consulta['codFornecedor'] = '-'
+        consulta['nomeFornecedor'] = '-'
+        consulta['seqItemDocumento'] = '-'
+
+
+        return consulta
 
 
 
