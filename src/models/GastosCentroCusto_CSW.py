@@ -318,18 +318,30 @@ class Gastos_centroCusto_CSW():
         orcamento['centrocusto'] =  orcamento['centrocusto'].astype(str)
         orcamento['valorOrcado'] =  orcamento['valorOrcado'].astype(float)
 
+        centroCusto = self.__get_centroCusto()
+        orcamento = pd.merge(orcamento, centroCusto , on ='centrocusto', how='left')
+
+
+
+
+
+
+
         resumo['centrocusto'] =  resumo['centrocusto'].astype(str)
 
 
         if self.nomeArea != '':
 
             resumo = resumo[resumo['nomeArea']==self.nomeArea].reset_index()
+            orcamento = orcamento[orcamento['nomeArea']==self.nomeArea].reset_index()
+
 
         resumo = resumo.groupby('centrocusto').agg({
             'nomeCentroCusto':'first',
             'valor':'sum'
         }).reset_index()
 
+        orcamento = orcamento.groupby('centrocusto').agg({'valorOrcado':'sum'}).reset_index()
 
         resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
 

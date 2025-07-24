@@ -50,7 +50,6 @@ class GastosOrcamentoBI():
         consulta = pd.read_sql(sql,conn)
 
 
-        consulta = consulta.groupby('centrocusto').agg({'valorOrcado':'sum'}).reset_index()
 
 
 
