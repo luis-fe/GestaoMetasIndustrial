@@ -37,7 +37,7 @@ class GastosOrcamentoBI():
             "contaContabil" ,
             mes ,
             ano ,
-            valor
+            valor as "valorOrcado"
         from
             "PCP".pcp."orcamentoCentroCusto" occ
         where
@@ -48,6 +48,9 @@ class GastosOrcamentoBI():
 
 
         consulta = pd.read_sql(sql,conn)
+
+
+        consulta = consulta.groupby('centrocusto').agg({'valorOrcado':'sum'})
 
         print(consulta)
 
