@@ -119,7 +119,7 @@ class Gastos_centroCusto_CSW():
                                 e.codEmpresa = {self.codEmpresa}
                                 and e.dataEntrada  >= '{self.dataCompentenciaInicial}'
                                 and e.dataEntrada  >= '{self.dataCompentenciaFinal}'
-                                and ei.centroCustoValor = {self.codCentroCusto}
+                                and ei.centroCustoValor like '%%{str(self.codCentroCusto)}%%'
                         """
 
 
