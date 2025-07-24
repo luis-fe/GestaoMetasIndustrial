@@ -28,6 +28,9 @@ class Gastos_centroCusto_CSW():
         self.nomeItem = nomeItem
         self.codCentroCusto = codCentroCusto
         self.nomeCentroCusto = nomeCentroCusto
+        if self.nomeCentroCusto != '':
+            self.__pesquisarCC_peloNome()
+
         self.nomeArea = nomeArea
         self.grupo = grupo
 
