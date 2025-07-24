@@ -316,6 +316,8 @@ class Gastos_centroCusto_CSW():
         resumo = self.get_notasEntredas_Csw()
         orcamento = self.gastosOrcamentoBI.get_orcamentoGastos()
         orcamento['centrocusto'] =  orcamento['centrocusto'].astype(str)
+        orcamento['valorOrcado'] =  orcamento['valorOrcado'].astype(float)
+
         resumo['centrocusto'] =  resumo['centrocusto'].astype(str)
 
         resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
