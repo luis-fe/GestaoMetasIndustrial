@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from src.connection import ConexaoERP
+from src.models import GastosOrçamentoBI
 
 
 class Gastos_centroCusto_CSW():
@@ -28,6 +29,10 @@ class Gastos_centroCusto_CSW():
         self.codCentroCusto = codCentroCusto
         self.nomeCentroCusto = nomeCentroCusto
         self.nomeArea = nomeArea
+
+        self.gastosOrcamentoBI = GastosOrçamentoBI.GastosOrcamentoBI(self.codEmpresa, self.dataCompentenciaInicial, self.dataCompentenciaFinal)
+
+
 
 
     def get_notasEntredas_Csw(self):
@@ -310,6 +315,9 @@ class Gastos_centroCusto_CSW():
         '''Metodo para resumir os gasto por centro de custo no periodo'''
 
         resumo = self.get_notasEntredas_Csw()
+        orcamento = self.gastosOrcamentoBI.get_orcamentoGastos()
+
+        resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
 
         if self.nomeArea != '':
 
@@ -317,7 +325,8 @@ class Gastos_centroCusto_CSW():
 
         resumo = resumo.groupby('centrocusto').agg({
             'nomeCentroCusto':'first',
-            'valor':'sum'
+            'valor':'sum',
+            'valorOrcado':'sum'
         }).reset_index()
 
         resumo['valor'] = resumo['valor'].round(2)
