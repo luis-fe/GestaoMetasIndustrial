@@ -338,9 +338,9 @@ class Gastos_centroCusto_CSW():
 
         if self.grupo != '':
 
-            resumo = resumo[resumo['GRUPO']==self.grupo].reset_index()
+            resumo = resumo[resumo['GRUPO']==self.grupo].reset_index(drop=True)
 
-            orcamento = orcamento[orcamento['GRUPO']==self.grupo].reset_index()
+            orcamento = orcamento[orcamento['GRUPO']==self.grupo].reset_index(drop=True)
 
 
         resumo = resumo.groupby('centrocusto').agg({
