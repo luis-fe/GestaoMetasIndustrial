@@ -52,7 +52,6 @@ class GastosOrcamentoBI():
 
         consulta = consulta.groupby('centrocusto').agg({'valorOrcado':'sum'}).reset_index()
 
-        print(consulta)
 
 
         return consulta
