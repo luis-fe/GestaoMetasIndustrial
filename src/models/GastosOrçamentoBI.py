@@ -55,7 +55,7 @@ class GastosOrcamentoBI():
         print(consulta)
 
 
-        return pd.DataFrame([{'Mensagem':'retornando o teste'}])
+        return consulta
 
     def __obter_nomes_meses(self, data_inicial: str, data_final: str):
         ''' Metodo para obter os meses de acordo com as datas informada

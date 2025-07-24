@@ -316,7 +316,7 @@ class Gastos_centroCusto_CSW():
         resumo = self.get_notasEntredas_Csw()
         orcamento = self.gastosOrcamentoBI.get_orcamentoGastos()
         orcamento['centrocusto'] =  orcamento['centrocusto'].astype(str)
-        #resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
+        resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
 
         if self.nomeArea != '':
 
@@ -325,7 +325,7 @@ class Gastos_centroCusto_CSW():
         resumo = resumo.groupby('centrocusto').agg({
             'nomeCentroCusto':'first',
             'valor':'sum',
-          #'valorOrcado':'sum'
+          'valorOrcado':'sum'
         }).reset_index()
 
         resumo['valor'] = resumo['valor'].round(2)
