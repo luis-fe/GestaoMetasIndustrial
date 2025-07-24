@@ -11,7 +11,7 @@ class Gastos_centroCusto_CSW():
     def __init__(self, codEmpresa = '1' , dataCompentenciaInicial= '',dataCompentenciaFinal= '',
                  codFornecedor = '', nomeFornecedor= '', dataLcto ='', codDocumento = '',
                  seqItemDocumento = '', descricaoItem = '', centroCustovalor ='', codContaContabil = '', nomeItem ='',
-                 codCentroCusto = '', nomeCentroCusto = '',  nomeArea =''
+                 codCentroCusto = '', nomeCentroCusto = '',  nomeArea ='', grupo = ''
                  ):
 
         self.codEmpresa = str(codEmpresa)
@@ -29,6 +29,7 @@ class Gastos_centroCusto_CSW():
         self.codCentroCusto = codCentroCusto
         self.nomeCentroCusto = nomeCentroCusto
         self.nomeArea = nomeArea
+        self.grupo = grupo
 
         self.gastosOrcamentoBI = GastosOrçamentoBI.GastosOrcamentoBI(self.codEmpresa, self.dataCompentenciaInicial, self.dataCompentenciaFinal)
 
@@ -333,6 +334,13 @@ class Gastos_centroCusto_CSW():
             resumo = resumo[resumo['nomeArea']==self.nomeArea].reset_index()
 
             orcamento = orcamento[orcamento['nomeArea']==self.nomeArea].reset_index()
+
+
+        if self.grupo != '':
+
+            resumo = resumo[resumo['GRUPO']==self.grupo].reset_index()
+
+            orcamento = orcamento[orcamento['GRUPO']==self.grupo].reset_index()
 
 
         resumo = resumo.groupby('centrocusto').agg({
