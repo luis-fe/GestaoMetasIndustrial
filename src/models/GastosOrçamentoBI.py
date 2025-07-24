@@ -40,7 +40,7 @@ class GastosOrcamentoBI():
         nomes_array = self.__obter_nomes_meses(self.dataInicial, self.dataFinal)
 
         ano_str = "({})".format(", ".join("'{}'".format(ano) for ano in ano_array))
-        nome_str = "({})".format(", ".join("'{}'".format(nome) for ano in nomes_array))
+        nome_str = "({})".format(", ".join("'{}'".format(nome) for nome in nomes_array))
 
         print(ano_str)
         print(nome_str)
