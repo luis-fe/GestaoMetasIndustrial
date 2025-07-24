@@ -54,6 +54,7 @@ def get_ResumooGastosCentroCustoo():
     dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '1')
     nomeArea = request.args.get('nomeArea', '')
 
+    dados2 = GastosOrçamentoBI.GastosOrcamentoBI(codEmpresa, dataCompentenciaInicial, dataCompentenciaFinal)
 
     dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentenciaInicial,dataCompentenciaFinal,'','','','','','','','','','','',nomeArea).resumo_centroCusto()
 
