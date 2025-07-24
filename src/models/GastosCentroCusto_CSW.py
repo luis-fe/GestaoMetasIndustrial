@@ -320,14 +320,8 @@ class Gastos_centroCusto_CSW():
 
         centroCusto = self.__get_centroCusto()
         centroCusto['centrocusto'] =centroCusto['centrocusto'].astype(str)
-        print(centroCusto)
         orcamento = pd.merge(orcamento, centroCusto , on ='centrocusto', how='left')
-
-
-
-
-
-
+        print(orcamento)
 
         resumo['centrocusto'] =  resumo['centrocusto'].astype(str)
 
