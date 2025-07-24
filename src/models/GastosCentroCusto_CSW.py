@@ -310,7 +310,6 @@ class Gastos_centroCusto_CSW():
         return consulta
 
 
-
     def resumo_centroCusto(self):
         '''Metodo para resumir os gasto por centro de custo no periodo'''
 
