@@ -353,13 +353,13 @@ class Gastos_centroCusto_CSW():
 
         centroCustoNome = self.get_centro_custo()
 
-        resumo = pd.merge(resumo, centroCustoNome, on='centrocusto', how='left')
 
 
         orcamento = orcamento.groupby('centrocusto').agg({'valorOrcado':'sum'}).reset_index()
 
         resumo = pd.merge(resumo, orcamento, on='centrocusto', how='right')
 
+        resumo = pd.merge(resumo, centroCustoNome, on='centrocusto', how='left')
 
         resumo['valor'] = resumo['valor'].round(2)
         resumo['valorOrcado'] = resumo['valorOrcado'].round(2)
