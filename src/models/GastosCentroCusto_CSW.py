@@ -141,7 +141,7 @@ class Gastos_centroCusto_CSW():
         FROM
             Cad.CCusto c
         inner join
-            cad.CCustoArea a on a.codigo = c.codArea 
+            cad.CCustoArea a on a.codigo = c.codArea and a.codempresa = c.codempresa
         WHERE
             c.codEmpresa = 1 and c.situacao = 1
         """
