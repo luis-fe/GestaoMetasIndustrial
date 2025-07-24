@@ -333,6 +333,8 @@ class Gastos_centroCusto_CSW():
         if self.nomeArea != '':
 
             resumo = resumo[resumo['nomeArea']==self.nomeArea].reset_index()
+            print(orcamento)
+
             orcamento = orcamento[orcamento['nomeArea']==self.nomeArea].reset_index()
 
 
@@ -344,7 +346,6 @@ class Gastos_centroCusto_CSW():
 
 
         orcamento = orcamento.groupby('centrocusto').agg({'valorOrcado':'sum'}).reset_index()
-        print(orcamento)
 
         resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
 
