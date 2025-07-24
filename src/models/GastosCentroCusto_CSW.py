@@ -314,9 +314,9 @@ class Gastos_centroCusto_CSW():
         '''Metodo para resumir os gasto por centro de custo no periodo'''
 
         resumo = self.get_notasEntredas_Csw()
-        orcamento = self.gastosOrcamentoBI.get_orcamentoGastos()
+        #orcamento = self.gastosOrcamentoBI.get_orcamentoGastos()
 
-        resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
+        #resumo = pd.merge(resumo, orcamento, on='centrocusto', how='outer')
 
         if self.nomeArea != '':
 

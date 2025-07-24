@@ -32,7 +32,7 @@ class GastosOrcamentoBI():
 
         sql = f"""
         select
-            centrocusto ,
+            centrocusto as centrocusto,
             "codEmpresa" ,
             "contaContabil" ,
             mes ,
@@ -50,7 +50,7 @@ class GastosOrcamentoBI():
         consulta = pd.read_sql(sql,conn)
 
 
-        consulta = consulta.groupby('centrocusto').agg({'valorOrcado':'sum'})
+        consulta = consulta.groupby('centrocusto').agg({'valorOrcado':'sum'}).reset_index()
 
         print(consulta)
 
