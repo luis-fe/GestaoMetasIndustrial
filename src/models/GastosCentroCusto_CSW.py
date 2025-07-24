@@ -325,7 +325,7 @@ class Gastos_centroCusto_CSW():
         resumo = resumo.groupby('centrocusto').agg({
             'nomeCentroCusto':'first',
             'valor':'sum',
-          'valorOrcado':'sum'
+          'valorOrcado':'first'
         }).reset_index()
 
         resumo['valor'] = resumo['valor'].round(2)
