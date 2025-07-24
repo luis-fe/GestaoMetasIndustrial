@@ -41,8 +41,8 @@ class GastosOrcamentoBI():
         from
             "PCP".pcp."orcamentoCentroCusto" occ
         where
-            mes in '{nome_str}'
-            and ano in '{ano_str}'
+            mes in {nome_str}
+            and ano in {ano_str}
             and "codEmpresa" = '{self.codEmpresa}'
             """
 
