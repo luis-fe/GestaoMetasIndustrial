@@ -43,11 +43,11 @@ class GastosOrcamentoBI():
         where
             mes in '{nome_str}'
             and ano in '{ano_str}'
-            and "codEmpresa" = %s
+            and "codEmpresa" = '{self.codEmpresa}'
             """
 
 
-        consulta = pd.read_sql(sql,conn, params=(self.codEmpresa, ))
+        consulta = pd.read_sql(sql,conn)
 
         print(consulta)
 
