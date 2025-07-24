@@ -359,7 +359,7 @@ class Gastos_centroCusto_CSW():
         resumo = pd.merge(resumo, orcamento, on='centrocusto', how='right')
         print(resumo)
 
-        print(centroCusto)
+        print(centroCusto[centroCusto['centrocusto']=='21110210'])
 
         resumo = pd.merge(resumo, centroCusto, on='centrocusto', how='left')
 
