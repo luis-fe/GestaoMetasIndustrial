@@ -34,44 +34,93 @@ class Gastos_centroCusto_CSW():
         self.gastosOrcamentoBI = GastosOrçamentoBI.GastosOrcamentoBI(self.codEmpresa, self.dataCompentenciaInicial, self.dataCompentenciaFinal)
 
 
+    def __pesquisarCC_peloNome(self):
+        '''Metodo privado que pesquisa o codigo do centro de custo pelo nomeCentroCusto'''
+
+        consulta = self.get_centro_custo()
+
+        consulta = consulta[consulta['nomeCentroCusto']==self.nomeCentroCusto].reset_index()
+
+        self.codCentroCusto = consulta['centrocusto'][0]
+
+
+
 
 
     def get_notasEntredas_Csw(self):
         '''Metodo que captura as notas de entrda do CSW'''
 
 
-        sql = f"""
-            SELECT
-                e.fornecedor as codFornecedor,
-                f.nome as nomeFornecedor,
-                e.dataEntrada as dataLcto,
-                e.numDocumento as codDocumento,
-                ei.item as seqItemDocumento,
-                ei.descricaoItem as descricaoItem,
-                ei.centroCustoValor as centroCustovalor,
-                ei.contaContabil as codContaContabil,
-                cb.nome as nomeItem
-            FROM
-                est.NotaFiscalEntrada e
-            INNER JOIN
-                    est.NotaFiscalEntradaItens ei   
-                on 
-                ei.codEmpresa = e.codEmpresa 
-                and ei.codFornecedor = e.fornecedor 
-                and ei.numDocumento = e.numDocumento 
-            inner JOIN 
-                CPG.Fornecedor F 
-                ON F.codEmpresa = e.codEmpresa 
-                and f.codigo = e.fornecedor 
-            inner JOIN 
-                ctb.ContaContabil cb 
-                on cb.codigo = ei.contaContabil
-            WHERE
-                e.codEmpresa = {self.codEmpresa}
-                and e.dataEntrada  >= '{self.dataCompentenciaInicial}'
-                and e.dataEntrada  >= '{self.dataCompentenciaFinal}'
-                and ei.centroCustoValor > 0
-        """
+
+
+        if self.nomeCentroCusto == '':
+            sql = f"""
+                SELECT
+                    e.fornecedor as codFornecedor,
+                    f.nome as nomeFornecedor,
+                    e.dataEntrada as dataLcto,
+                    e.numDocumento as codDocumento,
+                    ei.item as seqItemDocumento,
+                    ei.descricaoItem as descricaoItem,
+                    ei.centroCustoValor as centroCustovalor,
+                    ei.contaContabil as codContaContabil,
+                    cb.nome as nomeItem
+                FROM
+                    est.NotaFiscalEntrada e
+                INNER JOIN
+                        est.NotaFiscalEntradaItens ei   
+                    on 
+                    ei.codEmpresa = e.codEmpresa 
+                    and ei.codFornecedor = e.fornecedor 
+                    and ei.numDocumento = e.numDocumento 
+                inner JOIN 
+                    CPG.Fornecedor F 
+                    ON F.codEmpresa = e.codEmpresa 
+                    and f.codigo = e.fornecedor 
+                inner JOIN 
+                    ctb.ContaContabil cb 
+                    on cb.codigo = ei.contaContabil
+                WHERE
+                    e.codEmpresa = {self.codEmpresa}
+                    and e.dataEntrada  >= '{self.dataCompentenciaInicial}'
+                    and e.dataEntrada  >= '{self.dataCompentenciaFinal}'
+                    and ei.centroCustoValor > 0
+            """
+
+        else:
+
+            sql = f"""
+                            SELECT
+                                e.fornecedor as codFornecedor,
+                                f.nome as nomeFornecedor,
+                                e.dataEntrada as dataLcto,
+                                e.numDocumento as codDocumento,
+                                ei.item as seqItemDocumento,
+                                ei.descricaoItem as descricaoItem,
+                                ei.centroCustoValor as centroCustovalor,
+                                ei.contaContabil as codContaContabil,
+                                cb.nome as nomeItem
+                            FROM
+                                est.NotaFiscalEntrada e
+                            INNER JOIN
+                                    est.NotaFiscalEntradaItens ei   
+                                on 
+                                ei.codEmpresa = e.codEmpresa 
+                                and ei.codFornecedor = e.fornecedor 
+                                and ei.numDocumento = e.numDocumento 
+                            inner JOIN 
+                                CPG.Fornecedor F 
+                                ON F.codEmpresa = e.codEmpresa 
+                                and f.codigo = e.fornecedor 
+                            inner JOIN 
+                                ctb.ContaContabil cb 
+                                on cb.codigo = ei.contaContabil
+                            WHERE
+                                e.codEmpresa = {self.codEmpresa}
+                                and e.dataEntrada  >= '{self.dataCompentenciaInicial}'
+                                and e.dataEntrada  >= '{self.dataCompentenciaFinal}'
+                                and ei.centroCustoValor = {self.codCentroCusto}
+                        """
 
 
 

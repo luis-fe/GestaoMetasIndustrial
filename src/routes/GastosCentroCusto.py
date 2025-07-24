@@ -27,9 +27,10 @@ def get_GastosCentroCusto():
     codEmpresa = request.args.get('codEmpresa', '1')
     dataCompentenciaInicial = request.args.get('dataCompentenciaInicial', '1')
     dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '1')
+    nomeCentroCusto = request.args.get('nomeCentroCusto', '')
 
 
-    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentenciaInicial,dataCompentenciaFinal).get_notasEntredas_Csw()
+    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentenciaInicial,dataCompentenciaFinal,'','','','','','','','','','',nomeCentroCusto).get_notasEntredas_Csw()
 
 
     # Obtém os nomes das colunas
