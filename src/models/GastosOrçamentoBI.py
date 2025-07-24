@@ -34,7 +34,7 @@ class GastosOrcamentoBI():
         select
             centrocusto as centrocusto,
             "codEmpresa" ,
-            "contaContabil" ,
+            "contaContabil" as "codContaContabil",
             mes ,
             ano ,
             valor as "valorOrcado"

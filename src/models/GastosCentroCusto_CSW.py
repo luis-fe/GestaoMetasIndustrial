@@ -322,8 +322,12 @@ class Gastos_centroCusto_CSW():
         orcamento['valorOrcado'] =  orcamento['valorOrcado'].astype(float)
 
         centroCusto = self.__get_centroCusto()
+        contacontb = self.__getContaContabil()
+
         centroCusto['centrocusto'] =centroCusto['centrocusto'].astype(str)
         orcamento = pd.merge(orcamento, centroCusto , on ='centrocusto', how='left')
+        orcamento = pd.merge(orcamento, contacontb , on ='codContaContabil', how='left')
+
         print(orcamento)
 
         resumo['centrocusto'] =  resumo['centrocusto'].astype(str)
