@@ -21,7 +21,16 @@ class GastosOrcamentoBI():
         '''Metodo que consulta o orçamento projetado'''
 
 
-        sql = """
+
+        ano_array = self.__obter_anos(self.dataInicial, self.dataFinal)
+        nomes_array = self.__obter_nomes_meses(self.dataInicial, self.dataFinal)
+
+        ano_str = "({})".format(", ".join("'{}'".format(ano) for ano in ano_array))
+        nome_str = "({})".format(", ".join("'{}'".format(nome) for nome in nomes_array))
+
+        conn = ConexaoPostgre.conexaoEngine()
+
+        sql = f"""
         select
             centrocusto ,
             "codEmpresa" ,
@@ -32,18 +41,13 @@ class GastosOrcamentoBI():
         from
             "PCP".pcp."orcamentoCentroCusto" occ
         where
-            mes in %
-            and ano in %
+            mes in '{nome_str}'
+            and ano in '{ano_str}'
             and "codEmpresa" = %s
             """
-        ano_array = self.__obter_anos(self.dataInicial, self.dataFinal)
-        nomes_array = self.__obter_nomes_meses(self.dataInicial, self.dataFinal)
 
-        ano_str = "({})".format(", ".join("'{}'".format(ano) for ano in ano_array))
-        nome_str = "({})".format(", ".join("'{}'".format(nome) for nome in nomes_array))
 
-        conn = ConexaoPostgre.conexaoEngine()
-        consulta = pd.read_sql(sql,conn, params=(nome_str,ano_str, self.codEmpresa))
+        consulta = pd.read_sql(sql,conn, params=(self.codEmpresa, ))
 
         print(consulta)
 
