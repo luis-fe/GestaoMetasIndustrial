@@ -173,6 +173,11 @@ class Gastos_centroCusto_CSW():
         consulta.fillna('-', inplace=True)
 
 
+        if self.nomeCentroCusto != '':
+
+            consulta = consulta[consulta['centrocusto']==str(self.codCentroCusto)].reset_index()
+
+
         return consulta
 
 
