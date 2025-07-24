@@ -11,7 +11,7 @@ class GastosOrcamentoBI():
 
     def __init__(self, codEmpresa = '1', dataInicial = '', dataFinal = ''):
 
-        self.codEmpresa = codEmpresa
+        self.codEmpresa = str(codEmpresa)
         self.dataInicial = dataInicial
         self.dataFinal = dataFinal
 
@@ -42,8 +42,10 @@ class GastosOrcamentoBI():
         ano_str = "({})".format(", ".join("'{}'".format(ano) for ano in ano_array))
         nome_str = "({})".format(", ".join("'{}'".format(nome) for nome in nomes_array))
 
-        print(ano_str)
-        print(nome_str)
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(sql,conn, params=(nome_str,ano_str, self.codEmpresa))
+
+        print(consulta)
 
 
         return pd.DataFrame([{'Mensagem':'retornando o teste'}])
