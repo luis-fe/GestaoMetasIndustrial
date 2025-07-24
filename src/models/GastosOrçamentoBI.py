@@ -60,9 +60,9 @@ class GastosOrcamentoBI():
 
 
         meses_pt = {
-            1: 'janeiro', 2: 'fevereiro', 3: 'março', 4: 'abril',
-            5: 'maio', 6: 'junho', 7: 'julho', 8: 'agosto',
-            9: 'setembro', 10: 'outubro', 11: 'novembro', 12: 'dezembro'
+            1: 'Janeiro', 2: 'Fevereiro', 3: 'Marco', 4: 'Abril',
+            5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
+            9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
         }
 
         data_ini = datetime.strptime(data_inicial, "%Y-%m-%d")
