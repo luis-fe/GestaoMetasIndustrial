@@ -107,7 +107,9 @@ class Gastos_centroCusto_CSW():
         consulta['valor'] =consulta['valor']/100000
 
         consulta2 = self.__get_intensReqIndependente()
-        consulta = pd.concat([consulta, consulta2])
+        consulta3 = self.__getSalarios()
+
+        consulta = pd.concat([consulta, consulta2,consulta3])
 
         consulta['centrocusto'] =consulta['centrocusto'].astype(str)
         centroCusto['centrocusto'] =centroCusto['centrocusto'].astype(str)
@@ -351,6 +353,49 @@ class Gastos_centroCusto_CSW():
 
 
         return resumo
+
+
+
+
+    def __getSalarios(self):
+
+
+        sql = f"""
+        SELECT 
+                CONVERT(varchar(10), codcentrocusto) as centrocusto,
+                CONVERT(varchar(10), codcentrocusto) as centroCustovalor,
+                codcontacontabil as contaContabil,
+                m.data as dataLcto,
+                (totalDebito - totalCredito) as valor
+        FROM
+            CTB.MovContaCentroCusto m
+        WHERE
+            m.codEmpresa = {self.codEmpresa}
+            and m.codContaContabil in (3063, 3323)
+            and m.data >= '{self.dataCompentenciaInicial}'
+            and m.data <= '{self.dataCompentenciaFinal}'
+        """
+
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor_csw:
+                # Executa a primeira consulta e armazena os resultados
+                cursor_csw.execute(sql)
+                colunas = [desc[0] for desc in cursor_csw.description]
+                rows = cursor_csw.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+                del rows
+
+        consulta['descricaoItem'] = 'Pagamento de Salario'
+        consulta['codTransacao'] = '-'
+        consulta['codDocumento'] = '-'
+        consulta['codItem'] = '-'
+        consulta['vlrUnitario'] = consulta['valor']
+        consulta['qtd'] = 1
+
+
+        return consulta
+
 
 
 
