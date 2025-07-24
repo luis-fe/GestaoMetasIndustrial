@@ -174,7 +174,7 @@ class Gastos_centroCusto_CSW():
 
 
         if self.nomeCentroCusto != '':
-
+            print(self.codCentroCusto)
             consulta = consulta[consulta['centrocusto']==str(self.codCentroCusto)].reset_index()
 
 
