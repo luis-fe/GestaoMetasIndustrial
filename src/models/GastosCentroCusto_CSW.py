@@ -184,6 +184,11 @@ class Gastos_centroCusto_CSW():
             consulta = consulta[consulta['centrocusto']==str(self.codCentroCusto)].reset_index()
 
 
+        if self.grupo != '':
+            consulta = consulta[consulta['GRUPO']==str(self.grupo)].reset_index(drop=True)
+
+
+
         consulta = consulta[consulta['GRUPO']!='SERVIÇO INDUSTRIALIZACAO'].reset_index(drop=True)
         consulta = consulta[consulta['GRUPO']!='MATÉRIA PRIMA'].reset_index(drop=True)
 
