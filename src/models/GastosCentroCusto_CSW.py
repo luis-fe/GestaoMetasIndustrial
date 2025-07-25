@@ -341,7 +341,7 @@ class Gastos_centroCusto_CSW():
         sql2 = """
         SELECT 
 		    DISTINCT 
-			        contadebito as contaContabil, codTransacao  
+			        contadebito as codContaContabil, codTransacao  
 			    FROM 
 			        Est.CtbIntLctCont e
                 WHERE e.codempresa = 1 and e.anoMes like '202%' and codtransacao > 0
@@ -439,7 +439,7 @@ class Gastos_centroCusto_CSW():
         SELECT 
                 CONVERT(varchar(10), codcentrocusto) as centrocusto,
                 CONVERT(varchar(10), codcentrocusto) as centroCustovalor,
-                codcontacontabil as codContaContabil,
+                codcontacontabil as ContaContabil,
                 m.data as dataLcto,
                 (totalDebito - totalCredito) as valor
         FROM
