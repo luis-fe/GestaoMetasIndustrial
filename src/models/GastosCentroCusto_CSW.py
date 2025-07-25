@@ -285,6 +285,12 @@ class Gastos_centroCusto_CSW():
         consulta['codContaContabil'] =consulta['codContaContabil'].astype(str)
 
 
+        data2 = {'codContaContabil':['3151'],"nomeContaContabil":["Serviços de Industrialização"],"mascaraEdt":['-'],"GRUPO":['SERVIÇO INDUSTRIALIZACAO']}
+        consulta2 = pd.DataFrame(data2)
+
+        consulta = pd.concat([consulta,consulta2])
+
+
         return consulta
 
 
