@@ -191,7 +191,7 @@ class Gastos_centroCusto_CSW():
 
         consulta = consulta[consulta['GRUPO']!='SERVIÇO INDUSTRIALIZACAO'].reset_index(drop=True)
         consulta = consulta[consulta['GRUPO']!='MATÉRIA PRIMA'].reset_index(drop=True)
-        consulta.drop(['index', 'level_0', 'mascaraEdt'], axis=1, inplace=True)
+        consulta.drop(['index', 'level_0', 'mascaraEdt','codTransacao','centroCustovalor','codArea'], axis=1, inplace=True)
 
         return consulta
 
