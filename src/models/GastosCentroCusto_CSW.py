@@ -356,6 +356,7 @@ class Gastos_centroCusto_CSW():
 			    FROM 
 			        Est.CtbIntLctCont e
                 WHERE e.codempresa = 1 and e.anoMes like '202%' and codtransacao > 0
+                ORDER BY E.valor DESC
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
