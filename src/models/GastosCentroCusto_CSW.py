@@ -439,7 +439,7 @@ class Gastos_centroCusto_CSW():
         SELECT 
                 CONVERT(varchar(10), codcentrocusto) as centrocusto,
                 CONVERT(varchar(10), codcentrocusto) as centroCustovalor,
-                codcontacontabil as ContaContabil,
+                codcontacontabil as codContaContabil,
                 m.data as dataLcto,
                 (totalDebito - totalCredito) as valor
         FROM
