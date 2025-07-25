@@ -185,6 +185,7 @@ class Gastos_centroCusto_CSW():
 
 
         consulta = consulta[consulta['GRUPO']!='SERVIÇO INDUSTRIALIZACAO'].reset_index(drop=True)
+        consulta = consulta[consulta['GRUPO']!='MATÉRIA PRIMA'].reset_index(drop=True)
 
 
         return consulta
@@ -290,7 +291,7 @@ class Gastos_centroCusto_CSW():
         consulta['codContaContabil'] =consulta['codContaContabil'].astype(str)
 
 
-        data2 = {'codContaContabil':['3151'],"nomeContaContabil":["Serviços de Industrialização"],"mascaraEdt":['-'],"GRUPO":['SERVIÇO INDUSTRIALIZACAO']}
+        data2 = {'codContaContabil':['3151','3201'],"nomeContaContabil":["Serviços de Industrialização",'MATÉRIA PRIMA'],"mascaraEdt":['-','-'],"GRUPO":['SERVIÇO INDUSTRIALIZACAO','MATÉRIA PRIMA']}
         consulta2 = pd.DataFrame(data2)
 
         consulta = pd.concat([consulta,consulta2])
