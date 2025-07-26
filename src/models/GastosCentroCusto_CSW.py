@@ -507,6 +507,8 @@ class Gastos_centroCusto_CSW():
         resumo['valorOrcado'] = resumo['valorOrcado'].round(2)
         resumo['valorOrcado'].fillna(0, inplace=True)
         resumo['valor'].fillna(0, inplace=True)
+        resumo.fillna('-',inplace=True)
+        resumo = resumo[resumo['GRUPO']!='-']
 
 
         return resumo
