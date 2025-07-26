@@ -448,6 +448,67 @@ class Gastos_centroCusto_CSW():
         return resumo
 
 
+    def resumo_contacontabil(self):
+        '''Metodo para resumir os gasto por centro de custo no periodo'''
+
+        resumo = self.get_notasEntredas_Csw()
+        orcamento = self.gastosOrcamentoBI.get_orcamentoGastos()
+        orcamento['centrocusto'] =  orcamento['centrocusto'].astype(str)
+        orcamento['valorOrcado'] =  orcamento['valorOrcado'].astype(float)
+
+        centroCusto = self.__get_centroCusto()
+        contacontb = self.__getContaContabil()
+
+        centroCusto['centrocusto'] =centroCusto['centrocusto'].astype(str)
+        orcamento = pd.merge(orcamento, centroCusto , on ='centrocusto', how='left')
+        orcamento = pd.merge(orcamento, contacontb , on ='codContaContabil', how='left')
+
+
+        resumo['centrocusto'] =  resumo['centrocusto'].astype(str)
+
+
+        if self.nomeArea != '':
+
+            resumo = resumo[resumo['nomeArea']==self.nomeArea].reset_index()
+
+            orcamento = orcamento[orcamento['nomeArea']==self.nomeArea].reset_index()
+
+
+        if self.grupo != '':
+
+            resumo = resumo[resumo['GRUPO']==self.grupo].reset_index(drop=True)
+
+            orcamento = orcamento[orcamento['GRUPO']==self.grupo].reset_index(drop=True)
+
+
+        resumo = resumo.groupby(['centrocusto','codContaContabil']).agg({
+            'valor':'sum',
+            'nomeContaContabil':'first'
+
+        }).reset_index()
+
+
+
+
+        orcamento = orcamento.groupby(['centrocusto','codContaContabil']).agg({'valorOrcado':'sum'}).reset_index()
+        print(orcamento)
+
+        resumo = pd.merge(resumo, orcamento, on=['centrocusto','codContaContabil'], how='right')
+        print(resumo)
+
+        print(centroCusto[centroCusto['centrocusto']=='21110210'])
+
+        resumo = pd.merge(resumo, centroCusto, on='centrocusto', how='left')
+
+        resumo['valor'] = resumo['valor'].round(2)
+        resumo['valorOrcado'] = resumo['valorOrcado'].round(2)
+        resumo['valorOrcado'].fillna(0, inplace=True)
+        resumo['valor'].fillna(0, inplace=True)
+
+
+        return resumo
+
+
 
 
     def __getSalarios(self):
