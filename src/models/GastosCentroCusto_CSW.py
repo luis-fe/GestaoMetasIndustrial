@@ -483,7 +483,6 @@ class Gastos_centroCusto_CSW():
 
         resumo = resumo.groupby(['centrocusto','codContaContabil']).agg({
             'valor':'sum',
-            'nomeContaContabil':'first'
 
         }).reset_index()
 
@@ -499,6 +498,7 @@ class Gastos_centroCusto_CSW():
         print(centroCusto[centroCusto['centrocusto']=='21110210'])
 
         resumo = pd.merge(resumo, centroCusto, on='centrocusto', how='left')
+        resumo = pd.merge(resumo, contacontb, on='codContaContabil', how='left')
 
         resumo['valor'] = resumo['valor'].round(2)
         resumo['valorOrcado'] = resumo['valorOrcado'].round(2)
