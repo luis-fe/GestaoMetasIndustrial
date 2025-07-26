@@ -84,8 +84,9 @@ def get_ResumooGastosCentroCustooConta():
     nomeArea = request.args.get('nomeArea', '')
     GRUPO = request.args.get('GRUPO', '')
 
+    nomeCentroCusto = request.args.get('nomeCentroCusto', '')
 
-    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentenciaInicial,dataCompentenciaFinal,'','','','','','','','','','','',nomeArea, GRUPO).resumo_contacontabil()
+    dados = GastosCentroCusto_CSW.Gastos_centroCusto_CSW(codEmpresa,dataCompentenciaInicial,dataCompentenciaFinal,'','','','','','','','','','',nomeCentroCusto,nomeArea, GRUPO).resumo_contacontabil()
 
 
     # Obtém os nomes das colunas

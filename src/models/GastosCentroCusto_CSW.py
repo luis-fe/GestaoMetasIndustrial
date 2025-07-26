@@ -511,6 +511,12 @@ class Gastos_centroCusto_CSW():
         resumo = resumo[resumo['GRUPO']!='-']
 
 
+        if self.nomeCentroCusto != '':
+            resumo = resumo[resumo['nomeCentroCusto']==self.nomeCentroCusto].reset_index(drop=True)
+
+
+
+
         return resumo
 
 
