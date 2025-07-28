@@ -553,6 +553,7 @@ class Gastos_centroCusto_CSW():
             and m.codContaContabil not in (3063, 3323, 3174, 3323, 3081, 3084 ,3083, 3069, 3080, 3085 )
             and m.data >= '{self.dataCompentenciaInicial}'
             and m.data <= '{self.dataCompentenciaFinal}'
+            and totalCredito > 0
         """
 
 
