@@ -37,7 +37,7 @@ class MetaFases():
             self.arrayTipoProducao = ["VERAO 2025"]
             print(f'consideracao do falta programar lote: {self.consideraFaltaProgr}')
 
-        if self.arrayCodLoteCsw == ['25L07A'] or self.arrayCodLoteCsw == ['25L21G'] :
+        if self.arrayCodLoteCsw == ['25L07A'] or self.arrayCodLoteCsw == ['25L21G']or self.arrayCodLoteCsw == ['25L27A'] :
 
             self.arrayTipoProducao = ["ALTO VERAO 2025"]
 
