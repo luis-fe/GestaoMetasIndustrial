@@ -137,14 +137,17 @@ class Gastos_centroCusto_CSW():
                 del rows
         # Função para extrair pares e manter outras colunas
         def extrair_pares(row):
-            valores = row['centroCustovalor'].split(';')
             pares = []
-            for i in range(0, len(valores), 2):
-                if i + 1 < len(valores):
-                    nova_linha = row.to_dict()
-                    nova_linha['centrocusto'] = valores[i]
-                    nova_linha['valor'] = valores[i + 1]
-                    pares.append(nova_linha)
+            try:
+                valores = row['centroCustovalor'].split(';')
+                for i in range(0, len(valores), 2):
+                    if i + 1 < len(valores):
+                        nova_linha = row.to_dict()
+                        nova_linha['centrocusto'] = valores[i]
+                        nova_linha['valor'] = valores[i + 1]
+                        pares.append(nova_linha)
+            except Exception as e:
+                print(f"Erro ao processar linha: {row} - Erro: {e}")
             return pares
 
         # Aplica a função
