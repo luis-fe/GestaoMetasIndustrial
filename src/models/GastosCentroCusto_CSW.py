@@ -550,7 +550,7 @@ class Gastos_centroCusto_CSW():
             CTB.MovContaCentroCusto m
         WHERE
             m.codEmpresa = {self.codEmpresa}
-            and m.codContaContabil in (3179 )
+            and m.codContaContabil in (3179, 3189 )
             and m.data >= '{self.dataCompentenciaInicial}'
             and m.data <= '{self.dataCompentenciaFinal}'
         """
@@ -568,6 +568,7 @@ class Gastos_centroCusto_CSW():
         consulta['descricaoItem'] = 'Pagamento de Salario'
         consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3174', 'DEPRECIACAO', consulta['descricaoItem'])
         consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3179', 'credito Manutencao de Softwares', consulta['descricaoItem'])
+        consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3189', 'credito Manuutencao de veiculos', consulta['descricaoItem'])
 
         consulta['codTransacao'] = '-'
         consulta['codDocumento'] = '-'
