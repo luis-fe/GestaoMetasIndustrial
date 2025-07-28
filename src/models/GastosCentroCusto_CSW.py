@@ -539,6 +539,20 @@ class Gastos_centroCusto_CSW():
             and m.codContaContabil in (3063, 3323, 3174, 3323, 3081, 3084 ,3083, 3069, 3080, 3085 )
             and m.data >= '{self.dataCompentenciaInicial}'
             and m.data <= '{self.dataCompentenciaFinal}'
+        UNION 
+                SELECT 
+                CONVERT(varchar(10), codcentrocusto) as centrocusto,
+                CONVERT(varchar(10), codcentrocusto) as centroCustovalor,
+                codcontacontabil as codContaContabil,
+                m.data as dataLcto,
+                ( - totalCredito) as valor
+        FROM
+            CTB.MovContaCentroCusto m
+        WHERE
+            m.codEmpresa = {self.codEmpresa}
+            and m.codContaContabil in (3179 )
+            and m.data >= '{self.dataCompentenciaInicial}'
+            and m.data <= '{self.dataCompentenciaFinal}'
         """
 
 
@@ -553,6 +567,7 @@ class Gastos_centroCusto_CSW():
 
         consulta['descricaoItem'] = 'Pagamento de Salario'
         consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3174', 'DEPRECIACAO', consulta['descricaoItem'])
+        consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3179', 'credito Manutencao de Softwares', consulta['descricaoItem'])
 
         consulta['codTransacao'] = '-'
         consulta['codDocumento'] = '-'
