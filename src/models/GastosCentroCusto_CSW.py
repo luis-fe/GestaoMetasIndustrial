@@ -159,7 +159,10 @@ class Gastos_centroCusto_CSW():
         consulta['qtd'] = ''
         consulta['vlrUnitario'] = ''
         consulta['codItem'] = ''
-        consulta['valor'] =consulta['valor'].astype(float)
+        if 'valor' in consulta.columns:
+            consulta['valor'] = consulta['valor'].astype(float)
+        else:
+            consulta['valor'] = 0
         consulta['valor'] =consulta['valor']/100000
 
         consulta2 = self.__get_intensReqIndependente()
