@@ -52,8 +52,8 @@ def get_GastosCentroCusto():
 def get_ResumooGastosCentroCustoo():
 
     codEmpresa = request.args.get('codEmpresa', '1')
-    dataCompentenciaInicial = request.args.get('dataCompentenciaInicial', '1')
-    dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '1')
+    dataCompentenciaInicial = request.args.get('dataCompentenciaInicial', '2025-07-01')
+    dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '2025-07-31')
     nomeArea = request.args.get('nomeArea', '')
     GRUPO = request.args.get('GRUPO', '')
 
@@ -79,8 +79,8 @@ def get_ResumooGastosCentroCustoo():
 def get_ResumooGastosCentroCustooConta():
 
     codEmpresa = request.args.get('codEmpresa', '1')
-    dataCompentenciaInicial = request.args.get('dataCompentenciaInicial', '1')
-    dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '1')
+    dataCompentenciaInicial = request.args.get('dataCompentenciaInicial', '2025-07-01')
+    dataCompentenciaFinal = request.args.get('dataCompentenciaFinal', '2025-07-31')
     nomeArea = request.args.get('nomeArea', '')
     GRUPO = request.args.get('GRUPO', '')
 
