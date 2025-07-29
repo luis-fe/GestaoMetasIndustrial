@@ -2,7 +2,7 @@ import pandas as pd
 from src.connection import ConexaoPostgre
 import pytz
 from datetime import datetime
-
+from src.models import OP_CSW
 class Cronograma():
     '''Classe que lida com o cronagrama de fases'''
 
@@ -134,7 +134,70 @@ class Cronograma():
     def excluirFeriado(self):
         '''Metodo que exclui o feriado'''
 
+    def ConsultarCronogramaFasesPlano(self):
 
+        sql = """
+            select 
+                plano , 
+                codfase as "codFase" , 
+                datainico as "DataInicio" , 
+                datafim as "DataFim" 
+            from 
+                pcp.calendario_plano_fases cpf
+            where 
+                cpf.plano  = %s 
+            order by 
+                codfase
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(sql, conn, params=(self.codPlano,))
+
+        fases = OP_CSW.OP_CSW().Fases()
+        consulta = pd.merge(consulta, fases, on='codFase')
+
+        # Convertendo as colunas de data para o tipo datetime
+        consulta['DataInicio'] = pd.to_datetime(consulta['DataInicio'])
+        consulta['DataFim'] = pd.to_datetime(consulta['DataFim'])
+
+        # Calculando a diferença entre as datas em dias úteis (excluindo domingos) e adicionando como nova coluna
+        consulta['dias'] = consulta.apply(lambda row: self.calcular_dias_sem_domingos(row['DataInicio'], row['DataFim']),
+                                          axis=1)
+
+        # Formatando as colunas de data para o formato desejado
+        consulta['DataFim'] = consulta['DataFim'].dt.strftime('%d/%m/%Y')
+        consulta['DataInicio'] = consulta['DataInicio'].dt.strftime('%d/%m/%Y')
+
+        return consulta
+
+    def calcular_dias_sem_domingos(self,dataInicio, dataFim):
+        # Obtendo a data atual
+        dataHoje = self.obterdiaAtual()
+        # Convertendo as datas para o tipo datetime, se necessário
+        if not isinstance(dataInicio, pd.Timestamp):
+            dataInicio = pd.to_datetime(dataInicio)
+        if not isinstance(dataFim, pd.Timestamp):
+            dataFim = pd.to_datetime(dataFim)
+        if not isinstance(dataHoje, pd.Timestamp):
+            dataHoje = pd.to_datetime(dataFim)
+
+        # Ajustando a data de início se for anterior ao dia atual
+        if dataHoje > dataInicio:
+            dataInicio = dataHoje
+
+        # Inicializando o contador de dias
+        dias = 0
+        data_atual = dataInicio
+
+        # Iterando através das datas
+        while data_atual <= dataFim:
+            # Se o dia não for sábado (5) ou domingo (6), incrementa o contador de dias
+            if data_atual.weekday() != 5 and data_atual.weekday() != 6:
+                dias += 1
+            # Incrementa a data atual em um dia
+            data_atual += pd.Timedelta(days=1)
+
+        return dias
 
 
 

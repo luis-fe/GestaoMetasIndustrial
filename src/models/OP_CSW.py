@@ -255,6 +255,23 @@ class OP_CSW():
 
         return consulta
 
+    def Fases(self):
+        sql = """ SELECT f.codFase as codFase , f.nome as nomeFase  FROM tcp.FasesProducao f
+                WHERE f.codEmpresa = 1 and f.codFase > 400 and f.codFase < 500 """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                fases = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+        fases['codFase'] = fases['codFase'].astype(str)
+        return fases
+
 
 
 
