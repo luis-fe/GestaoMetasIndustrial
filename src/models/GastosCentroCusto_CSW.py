@@ -542,7 +542,7 @@ class Gastos_centroCusto_CSW():
             CTB.MovContaCentroCusto m
         WHERE
             m.codEmpresa = {self.codEmpresa}
-            and m.codContaContabil in (3063, 3323, 3174, 3323, 3081, 3084 ,3083, 3069, 3080, 3085 )
+            and m.codContaContabil in (3063, 3323, 3174, 3323, 3081, 3084 ,3083, 3069, 3080, 3085 , 3071, 3188)
             and m.data >= '{self.dataCompentenciaInicial}'
             and m.data <= '{self.dataCompentenciaFinal}'
         UNION 
@@ -556,7 +556,7 @@ class Gastos_centroCusto_CSW():
             CTB.MovContaCentroCusto m
         WHERE
             m.codEmpresa = {self.codEmpresa}
-            and m.codContaContabil not in (3063, 3323, 3174, 3323, 3081, 3084 ,3083, 3069, 3080, 3085 )
+            and m.codContaContabil not in (3063, 3323, 3174, 3323, 3081, 3084 ,3083, 3069, 3080, 3085, 3071, 3188 )
             and m.data >= '{self.dataCompentenciaInicial}'
             and m.data <= '{self.dataCompentenciaFinal}'
             and totalCredito > 0
@@ -573,9 +573,11 @@ class Gastos_centroCusto_CSW():
                 del rows
 
         consulta['descricaoItem'] = 'Pagamento de Salario'
-        consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3174', 'DEPRECIACAO', consulta['descricaoItem'])
+
+        consulta['descricaoItem'] = np.where(consulta['valor'] < 0, 'credito na conta', consulta['descricaoItem'])
         consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3179', 'credito Manutencao de Softwares', consulta['descricaoItem'])
         consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3189', 'credito Manuutencao de veiculos', consulta['descricaoItem'])
+        consulta['descricaoItem'] = np.where(consulta['codContaContabil'] == '3174', 'DEPRECIACAO', consulta['descricaoItem'])
 
         consulta['codTransacao'] = '-'
         consulta['codDocumento'] = '-'
