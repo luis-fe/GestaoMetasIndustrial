@@ -2,7 +2,7 @@
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from functools import wraps
-from src.models import cronograma
+from src.models import Cronograma
 import datetime
 import pytz
 
@@ -24,9 +24,10 @@ def token_required(f):
 @token_required
 def get_ConsultaCronogramaFasePlanoFase():
     codigoPlano = request.args.get('codigoPlano')
-    codFase = request.args.get('codFase')
+    codFase = request.args.get('codFase','')
+    codEmpresa = request.args.get('codEmpresa','1')
 
-    dados = cronograma.ConsultarCronogramaFasesPlano(codigoPlano)
+    dados = Cronograma.Cronograma(codigoPlano,codEmpresa,codFase ).ConsultarCronogramaFasesPlano()
     dados = dados[dados['codFase']==str(codFase)]
     #controle.salvarStatus(rotina, ip, datainicio)
 

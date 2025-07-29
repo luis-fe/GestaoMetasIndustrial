@@ -6,11 +6,12 @@ from src.models import OP_CSW
 class Cronograma():
     '''Classe que lida com o cronagrama de fases'''
 
-    def __init__(self, codPlano = None, codEmpresa = None):
+    def __init__(self, codPlano = None, codEmpresa = None, codFase = ''):
         '''Construtor da Classe'''
 
         self.codPlano = codPlano # atributo codPlano
         self.codEmpresa = codEmpresa # atributo codEmpresa
+        self.codFase = codFase # atributo codEmpresa
 
     def get_cronogramaFases(self):
 
