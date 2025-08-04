@@ -32,12 +32,12 @@ class MetaFases():
         if self.arrayTipoProducao == '':
             self.arrayTipoProducao = ['']
 
-        if self.arrayCodLoteCsw == ['25A04B'] or self.arrayCodLoteCsw == ['25J29A'] :
+        if self.arrayCodLoteCsw == ['25A04B'] or self.arrayCodLoteCsw == ['25J29A']  :
             self.consideraFaltaProgr = False
             self.arrayTipoProducao = ["VERAO 2025"]
             print(f'consideracao do falta programar lote: {self.consideraFaltaProgr}')
 
-        if self.arrayCodLoteCsw == ['25L07A'] or self.arrayCodLoteCsw == ['25L21G']or self.arrayCodLoteCsw == ['25L27A'] :
+        if self.arrayCodLoteCsw == ['25L07A'] or self.arrayCodLoteCsw == ['25L21G']or self.arrayCodLoteCsw == ['25L27A'] or self.arrayCodLoteCsw == ['25G03A']  :
 
             self.arrayTipoProducao = ["ALTO VERAO 2025"]
 

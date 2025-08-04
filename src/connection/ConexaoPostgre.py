@@ -96,19 +96,5 @@ def conexaoInsercao():
     return psycopg2.connect(dbname=db_name, user=db_user, password=db_password, host=db_host, port=db_porta)
 
 
-def Funcao_InserirBackup (df_tags, tamanho,tabela, metodo):
-    # Configurações de conexão ao banco de dados
-    db_name = os.getenv('POSTGRES_DB')
-    db_user = os.getenv('POSTGRES_USER')
-    db_password = os.getenv('POSTGRES_PASSWORD_SRV1')
-    db_host = os.getenv('POSTGRES_HOST_SRV1')
-    db_porta = os.getenv('POSTGRES_PORT')
 
-# Cria conexão ao banco de dados usando SQLAlchemy
-    engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_porta}/{db_name}')
-
-    # Inserir dados em lotes
-    chunksize = tamanho
-    for i in range(0, len(df_tags), chunksize):
-        df_tags.iloc[i:i + chunksize].to_sql(tabela, engine, if_exists=metodo, index=False , schema='backup')
 
