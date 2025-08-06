@@ -64,7 +64,6 @@ def get_LeadTimesFases():
 
     # Libera a memória ocupada pelo DataFrame, se necessário
     del dados
-    gc.collect()
 
     # Retorna os dados em formato JSON
     return jsonify(OP_data)
