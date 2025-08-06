@@ -361,6 +361,58 @@ class OP_CSW():
         del rows
 
 
-        return entrada, sqlFasesCsw
+        return entrada,sqlFasesCsw
+    def leadtimeFaccionistaCsw(self, data_inicio, data_final):
+        sql = """
+                SELECT
+                    r.codFase ,
+                    r.codFaccio as codfaccionista ,
+                    r.codOP ,
+                    r.dataEmissao as dataEntrada, op.codProduto , e.descricao as nome
+                FROM
+                    tct.RetSimbolicoNF r
+                inner join 
+                    tco.OrdemProd op on op.codEmpresa = 1 and op.numeroOP = r.codOP 
+                inner JOIN 
+                    tcp.Engenharia e on e.codEmpresa = 1 and e.codEngenharia = op.codProduto 
+                WHERE
+                    r.Empresa = 1 and r.codFase in (429, 431, 455, 459) and r.dataEmissao >= DATEADD(DAY,
+                                -80,
+                                GETDATE()) and r.dataEmissao <=  '""" + data_final + """'"""
+
+        sqlRetornoFaccionista = """
+                SELECT
+                    r.codFase  ,
+                    r.codFaccio as codfaccionista,
+                    r.codOP ,
+                    r.quantidade as Realizado ,
+                    r.dataEntrada as dataBaixa,
+                    op.codtipoop as codtipoop
+                FROM
+                    tct.RetSimbolicoNFERetorno r
+                inner join 
+                    tco.OrdemProd op on op.codEmpresa = 1 and op.numeroOP = r.codOP 
+                inner JOIN 
+                    tcp.Engenharia e on e.codEmpresa = 1 and e.codEngenharia = op.codProduto 
+                WHERE
+                    r.Empresa = 1 and r.codFase in (429, 431, 455, 459) and r.dataEntrada >= '""" + data_inicio + """'and r.dataEntrada <=  '""" + data_final + """'"""
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                realizado = pd.DataFrame(rows, columns=colunas)
+
+                cursor.execute(sqlRetornoFaccionista)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                sqlRetornoFaccionista = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+
+        return realizado, sqlRetornoFaccionista
 
 

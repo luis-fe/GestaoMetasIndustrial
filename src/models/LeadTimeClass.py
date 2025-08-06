@@ -243,3 +243,57 @@ class LeadTimeCalculator:
         consulta = pd.read_sql(sql, conn)
 
         return consulta
+
+    def getLeadTimeFaccionistas(self, faccionistas):
+
+        oP_CSW = OP_CSW.OP_CSW()
+
+        realizado, sqlRetornoFaccionista =  oP_CSW.leadtimeFaccionistaCsw(self.data_inicio, self.data_final)
+
+        realizado['categoria'] = '-'
+        realizado['nome'] = realizado['nome'].astype(str)
+        faccionistas['codfaccionista'] = faccionistas['codfaccionista'].astype(str)
+        realizado['codfaccionista'] = realizado['codfaccionista'].astype(str)
+        sqlRetornoFaccionista['codfaccionista'] = sqlRetornoFaccionista['codfaccionista'].astype(str)
+
+        realizado['categoria'] = realizado['nome'].apply(self.mapear_categoria)
+        faccionistas = faccionistas.drop(columns='categoria')
+
+        realizado = pd.merge(realizado, faccionistas, on='codfaccionista', how='left')
+        realizado = pd.merge(realizado, sqlRetornoFaccionista, on=['codfaccionista', 'codFase', 'codOP'])
+
+        realizado.fillna('-', inplace=True)
+        # Verifica e converte para datetime se necessário
+        realizado['dataEntrada'] = pd.to_datetime(realizado['dataEntrada'], errors='coerce')
+        realizado['dataBaixa'] = pd.to_datetime(realizado['dataBaixa'], errors='coerce')
+        realizado['LeadTime(diasCorridos)'] = (realizado['dataBaixa'] - realizado['dataEntrada']).dt.days
+
+        # Convertendo a lista em um DataFrame
+
+        if self.tipoOps != []:
+            result = [int(item.split('-')[0]) for item in self.tipoOps]
+            codtipoops = pd.DataFrame(result, columns=["codtipoop"])
+
+            realizado = pd.merge(realizado, codtipoops, on=['codtipoop'])
+
+        if self.categorias != []:
+            categoriasData = pd.DataFrame(self.categorias, columns=["categoria"])
+            realizado = pd.merge(realizado, categoriasData, on='categoria')
+
+        realizado['Realizadofac'] = realizado.groupby('codfaccionista')['Realizado'].transform('sum')
+        realizado['LeadTime(PonderadoPorQtd)'] = (realizado['Realizado'] / realizado['Realizadofac']) * 100
+
+        realizado['LeadTime(PonderadoPorQtd)'] = realizado['LeadTime(diasCorridos)'] * realizado[
+            'LeadTime(PonderadoPorQtd)']
+        realizado['LeadTime(PonderadoPorQtd)'] = realizado['LeadTime(PonderadoPorQtd)'].round()
+        realizado = realizado.groupby(["codfaccionista"]).agg({"LeadTime(diasCorridos)": "mean", "Realizado": "sum",
+                                                               "LeadTime(PonderadoPorQtd)": 'sum',
+                                                               'apelidofaccionista': 'first'}).reset_index()
+        realizado['LeadTime(PonderadoPorQtd)'] = realizado['LeadTime(PonderadoPorQtd)'] / 100
+        realizado['LeadTime(diasCorridos)'] = realizado['LeadTime(diasCorridos)'].round()
+        print('realizado faccionistas:')
+        print(realizado)
+
+        return realizado
+
+
