@@ -359,7 +359,6 @@ class OP_CSW():
 
         # Libera memória manualmente
         del rows
-        gc.collect()
 
 
         return entrada, sqlFasesCsw
