@@ -298,7 +298,70 @@ class OP_CSW():
         return fases
 
 
+    def get_leadTimeCsW(self):
+        sql_entrada = """
+                        SELECT
+                            o.numeroop as numeroop,
+                            (
+                            select
+                                e.descricao
+                            from
+                                tco.OrdemProd op
+                            join tcp.Engenharia e on
+                                e.codengenharia = op.codproduto
+                                and e.codempresa = 1
+                            WHERE
+                                op.codempresa = 1
+                                and op.numeroop = o.numeroOP) as nome,
+                            o.dataBaixa,
+                            o.seqRoteiro,
+                            o.horaMov as horaMovEntrada, (select
+                                op.codTipoOP 
+                            from
+                                tco.OrdemProd op
+                            WHERE
+                                op.codempresa = 1
+                                and op.numeroop = o.numeroOP) as codtipoop
+                        FROM
+                            tco.MovimentacaoOPFase o
+                        WHERE
+                            o.codEmpresa = 1
+                            AND O.databaixa >= DATEADD(DAY,
+                            -30,
+                            GETDATE())
+                                """
+
+        sqlFasesCsw = """
+                select
+            f.nome as nomeFase,
+            f.codFase as codfase
+        FROM
+            tcp.FasesProducao f
+        WHERE
+            f.codempresa = 1
+            and f.codFase >400
+            and f.codFase <500
+        """
 
 
+
+        with ConexaoERP.ConexaoInternoMPL() as connCSW:
+                    with connCSW.cursor() as cursor:
+                        cursor.execute(sql_entrada)
+                        colunas = [desc[0] for desc in cursor.description]
+                        rows = cursor.fetchall()
+                        entrada = pd.DataFrame(rows, columns=colunas)
+
+                        cursor.execute(sqlFasesCsw)
+                        colunas = [desc[0] for desc in cursor.description]
+                        rows = cursor.fetchall()
+                        sqlFasesCsw = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+
+
+        return entrada, sqlFasesCsw
 
 

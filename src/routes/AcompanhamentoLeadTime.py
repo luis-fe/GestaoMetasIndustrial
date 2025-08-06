@@ -2,7 +2,7 @@
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from functools import wraps
-from src.models import OP_CSW
+from src.models import OP_CSW, LeadTimeClass
 import datetime
 import pytz
 
@@ -38,4 +38,33 @@ def get_ObterTipoOP():
             op_dict[column_name] = row[column_name]
         OP_data.append(op_dict)
     del dados
+    return jsonify(OP_data)
+
+
+@LeadTime_routes.route('/pcp/api/LeadTimesFases', methods=['POST'])
+@token_required
+def get_LeadTimesFases():
+    data = request.get_json()
+
+    # Corrigindo o nome da variável para 'dataInicio'
+    dataInicio = data.get('dataInicio')
+    dataFim = data.get('dataFim')
+    arrayTipoOP = data.get('arrayTipoOP', [])
+    arrayCategorias = data.get('arrayCategorias', [])
+    congelado = data.get('congelado',False)
+
+    # Instancia a classe e obtém os dados
+    leadTime1 = LeadTimeClass.LeadTimeCalculator(dataInicio, dataFim, arrayTipoOP, arrayCategorias, congelado)
+    dados = leadTime1.getLeadTimeFases()
+    if congelado ==False:
+        leadTime1.LimpezaBackpCongelamento(3)
+
+    # Converte o DataFrame para uma lista de dicionários de forma eficiente
+    OP_data = dados.to_dict('records')
+
+    # Libera a memória ocupada pelo DataFrame, se necessário
+    del dados
+    gc.collect()
+
+    # Retorna os dados em formato JSON
     return jsonify(OP_data)
