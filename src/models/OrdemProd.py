@@ -26,7 +26,7 @@ class OrdemProd():
             '''Método que consulta a carga dos itens em aberto'''
 
             # 1 Consulta sql para obter as OPs em aberto no sistema do ´PCP
-            sqlCarga = """
+            sqlCarga = f"""
                 select 
                     codreduzido as "codItem", 
                     sum(total_pcs) as carga  
@@ -40,6 +40,7 @@ class OrdemProd():
                     "codFaseAtual" <> '401'
                     and
                     "codTipoOP" not in (27, 8, 6 )
+                    and "codEmpresa" = {self.codEmpresa}
                 group by 
                     codreduzido
             """
@@ -88,7 +89,7 @@ class OrdemProd():
         def ordemProd_geral(self):
             '''Metododo que busca as ordens de producao em aberto do banco pcp'''
 
-            consulta = """
+            consulta = f"""
             select 
                 o.numeroop as "numeroOP", 
                 categoria, 
@@ -96,6 +97,8 @@ class OrdemProd():
                 sum(o.total_pcs) as pcs 
             from 
                 pcp.ordemprod o 
+            where
+                o."codEmpresa" = {self.codEmpresa}
             group by 
                 numeroop, categoria, "codProduto"
             """

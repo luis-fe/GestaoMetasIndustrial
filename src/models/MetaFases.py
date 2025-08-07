@@ -212,7 +212,7 @@ class MetaFases():
 
             if self.consideraFaltaProgr == False:
                 # 1 Consulta sql para obter as OPs em aberto no sistema do ´PCP
-                sqlCarga2 = """
+                sqlCarga2 = f"""
                                       select 
                                           codreduzido as "codItem", 
                                           sum(total_pcs) as carga2  
@@ -222,6 +222,7 @@ class MetaFases():
                                           codreduzido is not null
                                           and 
                                           "codFaseAtual" = '401' 
+                                          and "codEmpresa" = {self.codEmpresa}
                                           and "numeroop" in ('152072-001',
                                          '157609-001',
                                             '157651-001',
@@ -616,7 +617,7 @@ class MetaFases():
         '''Metodo que obtem a carga em cada fase por categoria '''
 
 
-        cargaAtual = """
+        cargaAtual = f"""
         select
             o."codFaseAtual",
             o."codreduzido",
@@ -627,7 +628,7 @@ class MetaFases():
         inner join 
             "PCP".pcp.itens_csw ic on ic.codigo = o.codreduzido
         WHERE 
-                "codFaseAtual" <> '401'
+                "codFaseAtual" <> '401' and "codEmpresa" = {self.codEmpresa}
         """
 
 
