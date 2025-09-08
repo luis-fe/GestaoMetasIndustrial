@@ -64,7 +64,7 @@ class ProducaoFases():
         realizado = realizado[(realizado['filtro'] != '412|5')]
 
         realizado['codFase'] = np.where(realizado['codFase'].isin(['431', '455', '459']), '429', realizado['codFase'])
-        realizado['COLECAO'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao)
+        realizado['Tipo Producao'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao)
         df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
         realizado = pd.merge(realizado, df, on='Tipo Producao')
 
