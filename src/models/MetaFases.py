@@ -455,7 +455,7 @@ class MetaFases():
             except:
                 totalFaltaProgramar = 0
 
-            realizadoPeriodo = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, self.codEmpresa, 100, 100, None)
+            realizadoPeriodo = ProducaoFases.ProducaoFases(self.dt_inicioRealizado, self.dt_fimRealizado, '', 0, self.codEmpresa, 100, 100, None,'','',self.arrayTipoProducao)
             realizado = realizadoPeriodo.realizadoMediaMovel()
             realizado['codFase'] = realizado['codFase'].astype(int)
             Meta = pd.merge(Meta, realizado, on='codFase', how='left')

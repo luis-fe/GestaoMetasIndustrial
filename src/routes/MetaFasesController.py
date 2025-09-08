@@ -37,7 +37,7 @@ def pOST_MetasFases():
     dataBackupMetas = data.get('dataBackupMetas', '2025-03-26')
     modeloAnalise = data.get('modeloAnalise', 'LoteProducao')
     ArrayTipoProducao = data.get('ArrayTipoProducao', '')
-    ArrayTipoProducao = ["VERAO 2025", "ALTO VERAO 2025"]
+    #ArrayTipoProducao = ["VERAO 2025", "ALTO VERAO 2025"]
     print(data)
 
     if congelado =='' or congelado == '-':
