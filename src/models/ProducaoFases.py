@@ -72,7 +72,9 @@ class ProducaoFases():
             print('nada filtrado')
         else:
             df = pd.DataFrame(self.arrayTipoProducao, columns=['Tipo Producao'])
+            print(realizado['Tipo Producao'])
             realizado = pd.merge(realizado, df, on='Tipo Producao')
+
 
 
         realizado = realizado.groupby(["codFase"]).agg({"Realizado": "sum"}).reset_index()
