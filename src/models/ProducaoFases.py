@@ -6,6 +6,8 @@ import pytz
 from src.models import Cronograma, OrdemProd
 import calendar
 import datetime
+import re
+
 
 
 class ProducaoFases():
@@ -64,7 +66,7 @@ class ProducaoFases():
         realizado = realizado[(realizado['filtro'] != '412|5')]
 
         realizado['codFase'] = np.where(realizado['codFase'].isin(['431', '455', '459']), '429', realizado['codFase'])
-        realizado['Tipo Producao'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao)
+        realizado['Tipo Producao'] = realizado['descricaolote'].apply(self.__tratamentoInformacaoColecao2)
         print(f'teste arrayTipoProducaoRealizado{self.arrayTipoProducao}')
         if self.arrayTipoProducao ==[] or self.arrayTipoProducao == None :
             print('nada filtrado')
@@ -293,6 +295,31 @@ class ProducaoFases():
             return 'VERAO'
         else:
             return 'ENCOMENDAS'
+
+    def __tratamentoInformacaoColecao2(self, descricaoLote):
+        '''Método privado que trata a informação do nome da coleção'''
+
+        descricaoLote = descricaoLote.upper()  # padroniza para evitar erro com letras minúsculas
+        ano_match = re.search(r'\d{4}', descricaoLote)
+
+        if ano_match:
+            ano = ano_match.group()
+        else:
+            return 'ENCOMENDAS/OUTRAS'
+
+        if 'INVERNO' in descricaoLote:
+            nome = f'INVERNO {ano}'
+        elif 'PRI' in descricaoLote:
+            nome = f'VERAO {ano}'
+        elif 'ALT' in descricaoLote:
+            nome = f'ALTO VERAO {ano}'
+        elif 'VER' in descricaoLote:
+            nome = f'VERAO {ano}'
+        else:
+            nome = 'ENCOMENDAS/OUTRAS'
+
+        return nome
+
 
 
 
