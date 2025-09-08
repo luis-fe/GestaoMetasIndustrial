@@ -41,6 +41,7 @@ class ProducaoFases():
             realizado = realizado[~realizado['codtipoop'].isin(self.arraytipoOPExluir)]
 
         # 2 - verfica o arrayTipoProducao com os tipo de ordens de producao que desejo consultar
+        '''
         if self.arrayTipoProducao != None:
 
             agrupamentoOP = ordemProd.agrupado_x_tipoOP()
@@ -55,7 +56,7 @@ class ProducaoFases():
             #dataFrameTipoProducao = pd.DataFrame({'Agrupado': self.arrayTipoProducao})
             #dataFrameTipoProducao = pd.merge(agrupamentoOP,dataFrameTipoProducao, on='Agrupado')
             #realizado['codtipoop'] = realizado['codtipoop'].astype(str)
-            #realizado = pd.merge(realizado,dataFrameTipoProducao, on='codtipoop')
+            #realizado = pd.merge(realizado,dataFrameTipoProducao, on='codtipoop')'''
 
 
         realizado['filtro'] = realizado['codFase'].astype(str) + '|' + realizado['codEngenharia'].str[0]
