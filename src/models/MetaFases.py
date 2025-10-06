@@ -980,7 +980,7 @@ class MetaFases():
 
 
 
-        cargaAtual = cargaAtual.groupby(["categoria"]).agg({"pcs": "sum"
+        cargaAtual = cargaAtual.groupby(["faseAtual","categoria"]).agg({"pcs": "sum"
                                                            }).reset_index()
         cargaAtual.rename(columns={'pcs': 'Fila'}, inplace=True)
         cargaAtual = cargaAtual.sort_values(by=['Fila'], ascending=False)  # escolher como deseja classificar
