@@ -49,7 +49,7 @@ class Tag_Csw():
 
 
         inventario = self.__ultimo_inventario_tag()
-        ultimamov = self._ultima_saida_tercerizado()
+        ultimamov = self.__ultima_saida_tercerizado()
 
         consulta = pd.merge(consulta, inventario, on='codBarrasTag', how='left')
         consulta = pd.merge(consulta, ultimamov, on='codBarrasTag', how='left')
@@ -98,11 +98,11 @@ class Tag_Csw():
 
 
 
-    def _ultima_saida_tercerizado(self):
+    def __ultima_saida_tercerizado(self):
 
         sql = """
         	SELECT
-                observacao1 as codbarrastag,
+                observacao1 as codBarrasTag,
                 numeroOP,
                 observacao10,
                 nomeFase 
@@ -138,7 +138,7 @@ class Tag_Csw():
         consulta = (
             consulta
             .sort_values('dataHoraFase')
-            .drop_duplicates(subset='codbarrastag', keep='last')
+            .drop_duplicates(subset='codBarrasTag', keep='last')
             .reset_index(drop=True)
         )
         return consulta
