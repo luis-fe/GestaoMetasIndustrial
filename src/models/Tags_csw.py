@@ -135,6 +135,10 @@ class Tag_Csw():
                                                             regex=True).str.strip()
 
         # --- Remove duplicadas, mantendo a última movimentação ---
-        consulta = consulta.sort_values('dataHoraFase').drop_duplicates(subset='codBarrasTag', keep='last')
-
+        consulta = (
+            consulta
+            .sort_values('dataHoraFase')
+            .drop_duplicates(subset='tag', keep='last')
+            .reset_index(drop=True)
+        )
         return consulta
