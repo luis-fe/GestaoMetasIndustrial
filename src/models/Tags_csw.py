@@ -76,7 +76,7 @@ class Tag_Csw():
                 FROM tci.InventarioProdutos ip2
                 WHERE ip2.Empresa = ip.Empresa
                   AND ip2.codnatureza = ip.codnatureza
-            );
+            )
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
