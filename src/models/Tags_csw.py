@@ -53,6 +53,10 @@ class Tag_Csw():
 
         consulta = pd.merge(consulta, inventario, on='codBarrasTag', how='left')
         consulta = pd.merge(consulta, ultimamov, on='codBarrasTag', how='left')
+        # Converter novamente para string formatada
+        consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%d/%m/%Y %H:%M')
+        consulta['dataFase'] = consulta['dataHoraFase'].str.split(' ').str[0]
+        consulta['horaFase'] = consulta['dataHoraFase'].str.split(' ').str[1]
 
 
         consulta.fillna('-',inplace=True)
