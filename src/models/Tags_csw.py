@@ -47,4 +47,47 @@ class Tag_Csw():
         del rows
         gc.collect()
 
+
+        inventario = self.__ultimo_inventario_tag()
+
+        consulta = pd.merge(consulta, inventario, on='codBarrasTag', how='left')
+        consulta.fillna('-',inplace=True)
+
+        return consulta
+
+
+
+    def __ultimo_inventario_tag(self):
+
+
+        sql = """
+        SELECT 
+            convert(varchar(40),t.codBarrasTag) as codBarrasTag, 
+            ip.dataEncContagem as ultimoInv
+        FROM tci.InventarioProdutosTagLidas t
+        INNER JOIN tci.InventarioProdutos ip 
+            ON ip.Empresa = 1 
+            AND t.inventario = ip.inventario 
+        WHERE t.Empresa = 1 
+          AND ip.codnatureza = 24 
+          AND ip.situacao = 4
+          AND ip.dataEncContagem = (
+                SELECT MAX(ip2.dataEncContagem)
+                FROM tci.InventarioProdutos ip2
+                WHERE ip2.Empresa = ip.Empresa
+                  AND ip2.codnatureza = ip.codnatureza
+            );
+        """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+
         return consulta
