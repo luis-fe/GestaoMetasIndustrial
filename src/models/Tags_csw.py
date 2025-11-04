@@ -138,7 +138,7 @@ class Tag_Csw():
         consulta = (
             consulta
             .sort_values('dataHoraFase')
-            .drop_duplicates(subset='tag', keep='last')
+            .drop_duplicates(subset='codbarrastag', keep='last')
             .reset_index(drop=True)
         )
         return consulta
