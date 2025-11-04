@@ -57,6 +57,7 @@ class Tag_Csw():
         consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%d/%m/%Y %H:%M')
         consulta['dataFase'] = consulta['dataHoraFase'].str.split(' ').str[0]
         consulta['horaFase'] = consulta['dataHoraFase'].str.split(' ').str[1]
+        consulta['dataBaixa'] = consulta['dataBaixa'].dt.strftime('%d/%m/%Y %H:%M')
 
 
         consulta.fillna('-',inplace=True)
