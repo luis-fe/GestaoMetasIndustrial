@@ -57,6 +57,7 @@ class Tag_Csw():
         consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%d/%m/%Y %H:%M')
         consulta['dataFase'] = consulta['dataHoraFase'].str.split(' ').str[0]
         consulta['horaFase'] = consulta['dataHoraFase'].str.split(' ').str[1]
+        consulta['dataBaixa'] = consulta['dataBaixa'].dt.strftime('%d/%m/%Y %H:%M')
 
 
         consulta.fillna('-',inplace=True)
@@ -105,17 +106,22 @@ class Tag_Csw():
     def __ultima_saida_tercerizado(self):
 
         sql = """
-        	SELECT
-                observacao1 as codBarrasTag,
-                numeroOP,
-                observacao10,
-                nomeFase 
-            FROM
-                tco.RoteiroOP m
-            WHERE
-                m.codEmpresa = 1
-                and m.observacao1 like '0%'
-                and m.codFase in (406, 428, 425 )
+        SELECT
+            observacao1 as codbarrastag,
+            m.numeroOP,
+            observacao10,
+            nomeFase, m2.dataBaixa 
+        FROM
+            tco.RoteiroOP m
+        left join tco.MovimentacaoOPFase m2 on m2.codEmpresa = 1 
+            and m2.numeroOP = m.numeroOP  
+            and m2.codFase = m.codFase 
+        WHERE
+            m.codEmpresa = 1
+            and m.observacao1 like '0%'
+            and m.codFase in (406, 428, 425 )
+            and m2.codFase in (406, 428, 425 )
+            AND m2.dataBaixa > DATEADD(day, -500, CURRENT_DATE)
         """
 
 
@@ -134,6 +140,8 @@ class Tag_Csw():
         consulta['dataHoraFase'] = consulta['observacao10'].str.extract(r'(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2})')
         consulta['dataHoraFase'] = pd.to_datetime(consulta['dataHoraFase'], format='%d/%m/%Y %H:%M')
         consulta['dataFase'] = consulta['dataHoraFase'].dt.date
+        consulta['dataBaixa'] = consulta['dataBaixa'].dt.date
+
         consulta['horaFase'] = consulta['dataHoraFase'].dt.time
         consulta['observacao10'] = consulta['observacao10'].str.replace(r'\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}', '',
                                                             regex=True).str.strip()
@@ -141,7 +149,7 @@ class Tag_Csw():
         # --- Remove duplicadas, mantendo a última movimentação ---
         consulta = (
             consulta
-            .sort_values('dataHoraFase')
+            .sort_values('dataBaixa')
             .drop_duplicates(subset='codBarrasTag', keep='last')
             .reset_index(drop=True)
         )
