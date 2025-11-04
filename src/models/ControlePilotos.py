@@ -13,5 +13,8 @@ class ControlePilotos():
         '''Metodo para levantar as tags das pilotos'''
 
         consulta = self.tags_csw.buscar_tags_csw_estoque_pilotos()
+        consulta['status'] ='-'
+        consulta['numeroOP'] = '-'
+
         return consulta
 
