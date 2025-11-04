@@ -115,7 +115,7 @@ class Tag_Csw():
             WHERE
                 m.codEmpresa = 1
                 and m.observacao1 like '0%'
-                and m.codFase in (406, 429, 425 )
+                and m.codFase in (406, 428, 425 )
         """
 
 
