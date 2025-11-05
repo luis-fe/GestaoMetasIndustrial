@@ -58,7 +58,7 @@ class Tag_Csw():
 
         consulta['numeroOP'] = np.where(
             # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
-            (consulta['dataBaixa'] > consulta['ultimoInventario']) & (consulta['ultimoInventario'].notna()),
+            (consulta['dataBaixa'] > consulta['ultimoInv']) & (consulta['ultimoInv'].notna()),
 
             # Se V: Mantém o valor original de 'numeroOP'
             consulta['numeroOP'],
