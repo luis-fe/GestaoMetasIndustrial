@@ -14,7 +14,7 @@ class ControlePilotos():
 
         consulta = self.tags_csw.buscar_tags_csw_estoque_pilotos()
         consulta['status'] ='-'
-        consulta['numeroOP'] = consulta['numeroOP'].fillna('-',inplace=True)
+        consulta['numeroOP'].fillna('-', inplace=True)
 
         return consulta
 
