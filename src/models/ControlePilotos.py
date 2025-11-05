@@ -18,5 +18,7 @@ class ControlePilotos():
         consulta['status'] ='-'
         consulta['numeroOP'].fillna('-', inplace=True)
 
+        return consulta
+
 
 

@@ -67,7 +67,6 @@ class Tag_Csw():
             '-'
         )
 
-        return consulta
 
         # Converter novamente para string formatada
         consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%Y-%m-%d %H:%M')
