@@ -107,7 +107,7 @@ class Tag_Csw():
 
         sql = """
         SELECT
-            observacao1 as codbarrastag,
+            observacao1 as codBarrasTag,
             m.numeroOP,
             observacao10,
             nomeFase, m2.dataBaixa 
