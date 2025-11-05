@@ -56,16 +56,7 @@ class Tag_Csw():
         consulta = pd.merge(consulta, inventario, on='codBarrasTag', how='left')
         consulta = pd.merge(consulta, ultimamov, on='codBarrasTag', how='left')
 
-        consulta['numeroOP'] = np.where(
-            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
-            (consulta['dataBaixa'] > consulta['ultimoInv']) & (consulta['ultimoInv'].notna()),
 
-            # Se V: Mantém o valor original de 'numeroOP'
-            consulta['numeroOP'],
-
-            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
-            '-'
-        )
 
 
         # Converter novamente para string formatada
@@ -76,6 +67,17 @@ class Tag_Csw():
 
 
         consulta.fillna('-',inplace=True)
+
+        consulta['numeroOP'] = np.where(
+            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
+            (consulta['dataBaixa'] > consulta['ultimoInv']) & (consulta['ultimoInv'].notna()),
+
+            # Se V: Mantém o valor original de 'numeroOP'
+            consulta['numeroOP'],
+
+            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
+            '-'
+        )
 
         return consulta
 
