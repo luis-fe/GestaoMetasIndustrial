@@ -1,4 +1,6 @@
 import gc
+
+import numpy as np
 import pandas as pd
 from src.connection import ConexaoERP
 
@@ -53,6 +55,20 @@ class Tag_Csw():
 
         consulta = pd.merge(consulta, inventario, on='codBarrasTag', how='left')
         consulta = pd.merge(consulta, ultimamov, on='codBarrasTag', how='left')
+
+        consulta['numeroOP'] = np.where(
+            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
+            (consulta['dataBaixa'] > consulta['ultimoInventario']) & (consulta['ultimoInventario'].notna()),
+
+            # Se V: Mantém o valor original de 'numeroOP'
+            consulta['numeroOP'],
+
+            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
+            '-'
+        )
+
+        return consulta
+
         # Converter novamente para string formatada
         consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%Y-%m-%d %H:%M')
         consulta['dataFase'] = consulta['dataHoraFase'].str.split(' ').str[0]

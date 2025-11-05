@@ -1,3 +1,5 @@
+import numpy as np
+
 from src.models import Tags_csw
 
 
@@ -16,5 +18,5 @@ class ControlePilotos():
         consulta['status'] ='-'
         consulta['numeroOP'].fillna('-', inplace=True)
 
-        return consulta
+
 
