@@ -81,8 +81,11 @@ class Tag_Csw():
 
 
         retornoPilotos = self.__ultimo_retorno_tercerizado()
+        pilotoNRetornada = self.piloto_nao_retornada()
 
         consulta = pd.merge(consulta, retornoPilotos, on='numeroOP', how='left')
+        consulta = pd.merge(consulta, pilotoNRetornada, on='numeroOP', how='left')
+
         consulta.fillna('-',inplace=True)
         consulta['status'] ='-'
 
@@ -91,6 +94,14 @@ class Tag_Csw():
             'Piloto na Unid. 2',
             consulta['status']
         )
+
+        consulta['status'] = np.where(
+            consulta['codBarrasTag_nao_retorno'] == '01000000000-Piloto nao retornada' ,
+            'Piloto nao retornada !',
+            consulta['status']
+        )
+
+
 
         return consulta
 
