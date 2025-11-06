@@ -84,6 +84,7 @@ class Tag_Csw():
 
         consulta = pd.merge(consulta, retornoPilotos, on='numeroOP', how='left')
         consulta.fillna('-',inplace=True)
+        consulta['status'] ='-'
 
         consulta['status'] = np.where(
             # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
