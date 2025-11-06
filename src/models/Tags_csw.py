@@ -240,7 +240,7 @@ class Tag_Csw():
         sql = """
         SELECT
             observacao1 as codBarrasTag_nao_retorno,
-            m.numeroOP,
+            m.numeroOP
         FROM
             tco.RoteiroOP m
         left join tco.MovimentacaoOPFase m2 on m2.codEmpresa = 1 
