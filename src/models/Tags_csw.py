@@ -247,7 +247,7 @@ class Tag_Csw():
             and m2.numeroOP = m.numeroOP  
             and m2.codFase = m.codFase 
         WHERE
-        	and m.observacao1  like '%Piloto na%'
+        	 m.observacao1  like '%Piloto na%'
         	and m.numeroOP like '%-001'
             and m.codEmpresa = 1
             AND m2.dataBaixa > DATEADD(day, -500, CURRENT_DATE)
