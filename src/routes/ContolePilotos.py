@@ -39,3 +39,34 @@ def get_Consula_tags_pilotos():
         OP_data.append(op_dict)
     del dados
     return jsonify(OP_data)
+
+
+
+
+@controle_pilotos.route('/pcp/api/gerarNovoDocumento', methods=['GET'])
+@token_required
+def gerar_novo_documento():
+    """
+    Endpoint para buscar as tags de piloto e gerar um novo documento (ou conjunto de dados).
+    """
+    try:
+        # Instancia a classe e chama o método de negócio.
+        # É mais limpo instanciar a classe APENAS para a chamada do método.
+        # Se a classe for um Singleton ou for cara de inicializar, use um método estático ou a instância existente.
+        novo_doc = ControlePilotos.ControlePilotos().get_tags_piloto()
+
+        if novo_doc is None:
+            # Caso a chamada seja bem-sucedida, mas retorne vazio/nulo (sem dados)
+            return jsonify({"message": "Nenhuma tag de piloto encontrada.", "data": []}), 204 # 204 No Content
+
+        # Retorna o JSON com o status 200 OK
+        return jsonify(novo_doc), 200
+
+    except Exception as e:
+        # Captura qualquer erro inesperado durante o processamento
+        print(f"Erro ao gerar novo documento: {e}") # Loga o erro no console/logs
+        # Retorna um erro 500 (Internal Server Error)
+        return jsonify({
+            "error": "Erro interno do servidor.",
+            "details": str(e) # Opcional: remover 'details' em produção para segurança
+        }), 500
