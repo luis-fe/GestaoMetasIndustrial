@@ -102,6 +102,13 @@ class Tag_Csw():
         )
 
 
+        consulta['numeroOP'] = np.where(
+            consulta['status'] == 'Piloto na Unid. 2' ,
+            '-',
+            consulta['numeroOP']
+        )
+
+
 
         return consulta
 
