@@ -81,7 +81,7 @@ class ControlePilotos():
             novoDoc = '1'
 
         else:
-            novoDoc = str(consulta['codigo'][0] + 1)
+            novoDoc = str(int(consulta['codigo'][0]) + 1)
 
         novoDoc = novoDoc +'/'+ self.dataAtual
 
