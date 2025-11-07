@@ -75,7 +75,7 @@ class ControlePilotos():
         '''
 
         conn = ConexaoPostgre.conexaoEngine()
-        consulta = pd.read_sql(select, conn, params=self.dataAtual)
+        consulta = pd.read_sql(select, conn, params=(self.dataAtual,))
 
         if consulta.empty:
             novoDoc = '1'
