@@ -53,7 +53,7 @@ def gerar_novo_documento():
         # Instancia a classe e chama o método de negócio.
         # É mais limpo instanciar a classe APENAS para a chamada do método.
         # Se a classe for um Singleton ou for cara de inicializar, use um método estático ou a instância existente.
-        novo_doc = ControlePilotos.ControlePilotos().get_tags_piloto()
+        novo_doc = ControlePilotos.ControlePilotos().gerarCodigoDocumento()
 
         if novo_doc is None:
             # Caso a chamada seja bem-sucedida, mas retorne vazio/nulo (sem dados)
