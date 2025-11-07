@@ -71,7 +71,7 @@ class ControlePilotos():
         from 
             pcp."transacaoPilotos" 
         where 
-            "dataHora"::date = %s
+            "dataTransferencia"::date = %s
         '''
 
         conn = ConexaoPostgre.conexaoEngine()
