@@ -1,15 +1,22 @@
 import numpy as np
-
+import pandas as pd
+import pytz
+import datetime
 from src.models import Tags_csw
-
+from src.connection import ConexaoPostgre
 
 
 class ControlePilotos():
 
-    def __init__(self, codEmpresa = '1'):
+    def __init__(self, codEmpresa = '1',codbarrastag = '', matricula = '', documento = ''):
 
         self.codEmpresa = codEmpresa
         self.tags_csw = Tags_csw.Tag_Csw(self.codEmpresa)
+
+        self.codbarrastag = codbarrastag
+        self.matricula = matricula
+        self.dataHora, self.dataAtual = self.__obterHoraAtual()
+        self.documento = documento
 
     def get_tags_piloto(self):
         '''Metodo para levantar as tags das pilotos'''
@@ -19,6 +26,115 @@ class ControlePilotos():
         consulta['EstoquePiloto'] = consulta['codBarrasTag'].count()
 
         return consulta
+
+    def transferir_pilotos(self):
+        '''Metodo para transferir piloto'''
+
+        sql = '''
+        insert into pcp."transacaoPilotos" (codbarrastag, "tipoTransacao", matricula, "dataTransferencia", documento )
+        values ( %s, 'Transferencia', %s, %s, %s ) 
+        '''
+
+        with ConexaoPostgre.conexaoInsercao() as conn:
+            with conn.cursor() as curr:
+
+                curr.execute(sql,(self.codbarrastag, self.matricula, self.dataHora, self.documento))
+                conn.commit()
+
+        return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+
+    def receber_pilotos(self):
+        '''Metodo para transferir piloto'''
+
+        sql = '''
+            update pcp."transacaoPilotos"  
+            set "tipoTransacao" = 'Recebida' , "dataRecebimento" = %s, matricula_receb = %s
+            where 
+            tipoTransacao = 'Transferencia'
+            and codbarrastag = %s
+        '''
+
+        with ConexaoPostgre.conexaoInsercao() as conn:
+            with conn.cursor() as curr:
+                curr.execute(sql, (self.dataHora, self.matricula, self.dataHora))
+                conn.commit()
+
+        return pd.DataFrame([{'Status': True, 'Mensagem': 'tag transferida'}])
+
+
+    def gerarCodigoDocumento(self):
+        '''metodo que gera o codigo de documento '''
+
+        select = '''
+        select 
+            max(SPLIT_PART(documento, '/', 1)::int) AS codigo
+        from 
+            pcp."transacaoPilotos" 
+        where 
+            "dataHora"::date = %s
+        '''
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(select, conn, params=self.dataAtual)
+
+        if consulta.empty:
+            novoDoc = '1'
+
+        else:
+            novoDoc = str(consulta['codigo'][0] + 1)
+
+        novoDoc = novoDoc +'/'+ self.dataAtual
+
+        return novoDoc
+
+    def __obterHoraAtual(self):
+        fuso_horario = pytz.timezone('America/Sao_Paulo')  # Define o fuso horário do Brasil
+        agora = datetime.datetime.now(fuso_horario)
+        hora_str = agora.strftime('%Y-%m-%d %H:%M:%S')
+        dia = agora.strftime('%Y-%m-%d')
+        return hora_str, dia
+
+
+    def get_tags_transferidas_documento_atual(self):
+        '''Metodo que obtem as tags transferiadas no documento atual '''
+
+
+        consulta = '''
+        select 
+            codbarrastag, "dataTransferencia"
+        from
+            pcp."transacaoPilotos" 
+        where 
+            documento = %s
+        '''
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(consulta, conn, params=(self.codbarrastag, self.dataHora, self.documento))
+
+        return consulta
+
+
+    def obter_documentos_transferencia_emaberto(self):
+        '''Metodo que obtem os documento '''
+
+        consulta = '''
+        select 
+            distinct documento
+        from
+            pcp."transacaoPilotos" 
+        where 
+            "tipoTransacao" = 'Transferencia'
+        '''
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(consulta, conn)
+
+        return consulta
+
+
+
+
+
 
 
 
