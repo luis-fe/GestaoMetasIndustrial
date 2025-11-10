@@ -1,5 +1,7 @@
 from src.models import OP_CSW
 import pandas as pd
+from src.connection import ConexaoPostgre
+
 class ControlePartes():
     '''Classe responsavel pelo controle das Partes'''
 
@@ -32,5 +34,31 @@ class ControlePartes():
         ops_partes['numeroOP'] = ops_partes.iloc[:, 1].str.split('/').str[1]
         ops = pd.merge(ops, ops_partes, on= 'numeroOP')
 
+
+        n_pecas = self.__adicionando_numeroPcs()
+
+        ops = pd.merge(ops, n_pecas, on= ['numeroOP','codSortimento','seqTam'], how='left')
+        ops.fillna('-',inplace=True)
+
+
         return ops
+
+
+    def __adicionando_numeroPcs(self):
+
+        sql = """
+        select
+            o.numeroop as "numeroOP",
+            o."codSortimento" as "codSortimento",
+            o."seqTamanho" as "seqTam",
+            o.total_pcs
+        from
+            "PCP".pcp.ordemprod o
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+
+        consulta = pd.read_sql(sql,conn)
+
+        return consulta
 
