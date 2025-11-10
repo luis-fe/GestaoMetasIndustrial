@@ -44,7 +44,13 @@ class ControlePartes():
         ops.fillna('-',inplace=True)
 
         # 2 - adicionando o estoque atual das partes
+        ops_partes_estoque_atual = self.op_csw.sql_estoque_partes()
+        ops = pd.merge(ops, ops_partes_estoque_atual, on= 'CodComponente', how='left')
 
+        # 3 - adicionando o estoque futuro das partes
+        estoque_futuro = self.__adicionando_estoque_futuro_partes()
+        ops = pd.merge(ops, estoque_futuro, on= 'CodComponente', how='left')
+        ops.fillna('-',inplace=True)
 
         return ops
 
@@ -59,6 +65,27 @@ class ControlePartes():
             o.total_pcs
         from
             "PCP".pcp.ordemprod o
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+
+        consulta = pd.read_sql(sql,conn)
+
+        return consulta
+
+
+
+    def __adicionando_estoque_futuro_partes(self):
+
+
+        sql = """
+        select
+            o.codreduzido as "CodComponente",
+            sum(o.total_pcs) as "estoque Futuro"
+        from
+            "PCP".pcp.ordemprod o
+            where o."codProduto" like '6%'
+        groupby codreduzido
         """
 
         conn = ConexaoPostgre.conexaoEngine()

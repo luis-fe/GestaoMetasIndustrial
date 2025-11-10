@@ -508,4 +508,31 @@ class OP_CSW():
 
 
 
+    def sql_estoque_partes(self):
+
+        sql = """
+        select 
+            coditem as CodComponente,
+            estoqueAtual
+        from 
+            est.DadosEstoque d
+        where 
+            d.codempresa = 1 
+            and d.codnatureza = 20
+            and d.estoqueAtual > 0
+        """
+
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        return consulta
+
+
+
+
 
