@@ -492,7 +492,7 @@ class OP_CSW():
                                     and op.situacao =3
                                     and op.numeroop like '%-001'
                                     and op.codfaseatual 
-                                    not in (401, 429, 408, 406)	
+                                    not in (401, 429, 408)	
                         )
         """
 
