@@ -40,8 +40,10 @@ class ControlePartes():
         ops['codSortimento'] = ops['codSortimento'].astype(str)
         ops['seqTam'] = ops['seqTam'].astype(str)
 
-        ops = pd.merge(ops, n_pecas, on= ['numeroOP','codSortimento','seqTam'], how='left')
+        ops = pd.merge(ops, n_pecas, on= ['numeroOP','codSortimento','seqTam'])
         ops.fillna('-',inplace=True)
+
+        # 2 - adicionando o estoque atual das partes
 
 
         return ops
