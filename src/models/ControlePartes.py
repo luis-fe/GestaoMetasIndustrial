@@ -85,7 +85,7 @@ class ControlePartes():
         from
             "PCP".pcp.ordemprod o
             where o."codProduto" like '6%'
-        groupby codreduzido
+        group by codreduzido
         """
 
         conn = ConexaoPostgre.conexaoEngine()
