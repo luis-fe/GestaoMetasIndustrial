@@ -416,3 +416,96 @@ class OP_CSW():
         return realizado, sqlRetornoFaccionista
 
 
+    def ordem_prod_situacao_aberta_mov_separacao(self):
+        '''Metodo que busca as ops em aberto que ja passaram da fase separacao '''
+
+        sql = """
+        SELECT
+            op.numeroOP, 'passou pela separacao' as obs1
+        FROM
+            tco.MovimentacaoOPFase mov
+        inner join tco.OrdemProd op on
+            op.codEmpresa = mov.codEmpresa
+            and op.numeroOP = mov.numeroOP
+        WHERE
+            mov.codEmpresa = 1
+            and op.situacao = 3
+            and mov.codFase = 409
+        """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        return consulta
+
+
+    def ordem_prod_situacao_aberta_mov_montagem(self):
+        '''Metodo que busca as ops em aberto que ja passaram da fase separacao '''
+
+        sql = """
+        SELECT
+            op.numeroOP, 'passou pela montagem' as obs2
+        FROM
+            tco.MovimentacaoOPFase mov
+        inner join tco.OrdemProd op on
+            op.codEmpresa = mov.codEmpresa
+            and op.numeroOP = mov.numeroOP
+        WHERE
+            mov.codEmpresa = 1
+            and op.situacao = 3
+            and mov.codFase = 425
+        """
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        return consulta
+
+
+    def relacao_ops_que_consome_partes(self):
+        '''metodo publico que busca no ERP as Ops, 'em aberto', que possuem partes na sua estrutura '''
+
+        sql = """
+        SELECT
+            c.CodComponente, c.loteOP, c.codSortimento,
+            (select i2.codSeqTamanho  
+            from cgi.Item2 i2 WHERE i2.empresa = 1 
+                and i2.coditem = c.CodComponente 
+            ) as seqTam
+        FROM
+            tcop.ComponentesVariaveis c
+        WHERE
+            c.codEmpresa = 1
+            and c.codfase = 426
+            and codNaturezaOrigem = 20
+            and loteOP in (							select op.codlote||'/'||op.numeroop 
+                            from tco.OrdemProd op 
+                            WHERE op.codempresa = 1
+                                    and op.situacao =3
+                                    and op.numeroop like '%-001'
+                                    and op.codfaseatual 
+                                    not in (401, 429, 408, 406)	
+                        )
+        """
+
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        return consulta
+
+
+
+

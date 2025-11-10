@@ -14,6 +14,7 @@ from src.routes.GastosCentroCusto import  GastosCentroCusto_routes
 from src.routes.AcompanhamentoLeadTime import LeadTime_routes
 from src.routes.CronogramaFasesController import cronograma_routes
 from src.routes.ContolePilotos import controle_pilotos
+from src.routes.ContolePartes import controle_partes
 
 # Importacao das rotas para o blueprint:
 routes_blueprint.register_blueprint(MetasFases_routes)
@@ -23,3 +24,4 @@ routes_blueprint.register_blueprint(GastosCentroCusto_routes)
 routes_blueprint.register_blueprint(cronograma_routes)
 routes_blueprint.register_blueprint(LeadTime_routes)
 routes_blueprint.register_blueprint(controle_pilotos)
+routes_blueprint.register_blueprint(controle_partes)
