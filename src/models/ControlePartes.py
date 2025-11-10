@@ -37,6 +37,9 @@ class ControlePartes():
 
         n_pecas = self.__adicionando_numeroPcs()
 
+        ops['codSortimento'] = ops['codSortimento'].astype(str)
+        ops['seqTam'] = ops['seqTam'].astype(str)
+
         ops = pd.merge(ops, n_pecas, on= ['numeroOP','codSortimento','seqTam'], how='left')
         ops.fillna('-',inplace=True)
 
