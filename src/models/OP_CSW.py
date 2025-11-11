@@ -457,7 +457,7 @@ class OP_CSW():
         WHERE
             mov.codEmpresa = 1
             and op.situacao = 3
-            and mov.codFase = 425
+            and mov.codFase = 426
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
