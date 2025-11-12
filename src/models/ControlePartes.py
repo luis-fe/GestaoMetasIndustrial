@@ -85,7 +85,7 @@ class ControlePartes():
         from
             "PCP".pcp.ordemprod o
             where o."codProduto" like '6%'
-        and "codFaseAtual" not in ('401', '451')
+        and "codFaseAtual" not in ('401', '451','426')
         group by codreduzido
         """
 
