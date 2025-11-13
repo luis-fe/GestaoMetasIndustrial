@@ -90,10 +90,14 @@ def get_tags_transferidas_documento_atual():
 @controle_pilotos.route('/pcp/api/transferir_pilotos', methods=['POST'])
 @token_required
 def post_transferir_pilotos():
-    codEmpresa = request.args.get('codEmpresa','1')
-    documento = request.args.get('documento','1')
-    matricula = request.args.get('matricula','1')
-    codbarras = request.args.get('codbarras','1')
+
+    data = request.get_json()
+    codEmpresa = data.get('codEmpresa','1')
+    documento = data.get('documento','1')
+    matricula = data.get('matricula','1')
+    codbarras = data.get('codbarras','1')
+
+
 
     dados = ControlePilotos.ControlePilotos(codEmpresa,codbarras,matricula,documento).transferir_pilotos()
     #controle.salvarStatus(rotina, ip, datainicio)
