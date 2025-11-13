@@ -65,17 +65,17 @@ class ControlePilotos():
     def gerarCodigoDocumento(self):
         '''metodo que gera o codigo de documento '''
 
-        select = '''
+        select = f'''
         select 
             max(SPLIT_PART(documento, '/', 1)::int) AS codigo
         from 
             pcp."transacaoPilotos" 
         where 
-            "dataTransferencia"::date = %s
+            "dataTransferencia"::date = '{self.dataAtual}'
         '''
-
+        print(select)
         conn = ConexaoPostgre.conexaoEngine()
-        consulta = pd.read_sql(select, conn, params=(self.dataAtual,))
+        consulta = pd.read_sql(select, conn)
 
         if consulta['codigo'][0] != 'null':
             novoDoc = '1'
