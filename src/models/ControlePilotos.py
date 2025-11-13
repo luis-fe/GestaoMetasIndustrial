@@ -109,7 +109,7 @@ class ControlePilotos():
         '''
 
         conn = ConexaoPostgre.conexaoEngine()
-        consulta = pd.read_sql(consulta, conn, params=(self.codbarrastag, self.dataHora, self.documento))
+        consulta = pd.read_sql(consulta, conn, params=(self.documento,))
 
         return consulta
 
