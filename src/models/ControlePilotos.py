@@ -78,7 +78,7 @@ class ControlePilotos():
         consulta = pd.read_sql(select, conn)
         print(consulta['codigo'][0])
 
-        if consulta['codigo'][0] != 'None':
+        if consulta['codigo'][0] == 'None':
             novoDoc = '1'
 
         else:
