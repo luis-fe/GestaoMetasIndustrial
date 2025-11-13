@@ -76,7 +76,7 @@ class ControlePilotos():
         print(select)
         conn = ConexaoPostgre.conexaoEngine()
         consulta = pd.read_sql(select, conn)
-
+        print(consulta['codigo'][0])
         if consulta['codigo'][0] != 'null':
             novoDoc = '1'
 
