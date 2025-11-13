@@ -41,8 +41,6 @@ def get_Consula_tags_pilotos():
     return jsonify(OP_data)
 
 
-
-
 @controle_pilotos.route('/pcp/api/gerarNovoDocumento', methods=['GET'])
 @token_required
 def gerar_novo_documento():
@@ -52,9 +50,15 @@ def gerar_novo_documento():
     novo_doc = ControlePilotos.ControlePilotos().gerarCodigoDocumento()
 
     if novo_doc is None:
-        # Caso a chamada seja bem-sucedida, mas retorne vazio/nulo (sem dados)
-        return jsonify({"message": "Nenhuma tag de piloto encontrada.", "data": []}), 204 # 204 No Content
+        # 204 No Content - Retorna sem corpo
+        return '', 204
+
+        # --- CORREÇÃO AQUI: Retorne um dicionário com um campo ---
+    # O valor da API será acessado no JS como data.codigo
+    resposta_json = {
+        "codigo": novo_doc
+    }
 
     # Retorna o JSON com o status 200 OK
-    return jsonify(novo_doc), 200
+    return jsonify(resposta_json), 200
 
