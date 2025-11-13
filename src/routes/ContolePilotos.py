@@ -62,3 +62,26 @@ def gerar_novo_documento():
     # Retorna o JSON com o status 200 OK
     return jsonify(resposta_json), 200
 
+
+
+@controle_pilotos.route('/pcp/api/tags_transferidas_documento_atual', methods=['GET'])
+@token_required
+def get_tags_transferidas_documento_atual():
+    codEmpresa = request.args.get('codEmpresa','1')
+    documento = request.args.get('documento','1')
+
+    dados = ControlePilotos.ControlePilotos(codEmpresa,'','',documento).get_tags_transferidas_documento_atual()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
