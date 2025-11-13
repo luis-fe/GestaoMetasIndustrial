@@ -85,3 +85,29 @@ def get_tags_transferidas_documento_atual():
     del dados
     return jsonify(OP_data)
 
+
+
+@controle_pilotos.route('/pcp/api/transferir_pilotos', methods=['POST'])
+@token_required
+def post_transferir_pilotos():
+    codEmpresa = request.args.get('codEmpresa','1')
+    documento = request.args.get('documento','1')
+    matricula = request.args.get('matricula','1')
+    codbarras = request.args.get('codbarras','1')
+
+    dados = ControlePilotos.ControlePilotos(codEmpresa,codbarras,matricula,documento).transferir_pilotos()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+
