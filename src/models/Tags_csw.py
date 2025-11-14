@@ -287,7 +287,7 @@ class Tag_Csw():
         from 
             tcr.TagBarrasProduto t
         where 
-            codempresa = 1 and t.codbarrastag = {self.codbarrastag}
+            codempresa = 1 and t.codbarrastag = '{self.codbarrastag}'
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
