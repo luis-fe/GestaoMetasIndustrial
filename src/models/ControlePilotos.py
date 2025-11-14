@@ -35,18 +35,28 @@ class ControlePilotos():
 
         if validacao.empty:
 
-            sql = '''
-            insert into pcp."transacaoPilotos" (codbarrastag, "tipoTransacao", matricula, "dataTransferencia", documento )
-            values ( %s, 'Transferencia', %s, %s, %s ) 
-            '''
+            veriicaTag_no_Doc = self.verificar_se_Tag_esta_no_doc()
 
-            with ConexaoPostgre.conexaoInsercao() as conn:
-                with conn.cursor() as curr:
+            if veriicaTag_no_Doc.empty:
+                self.verificar_se_Tag_esta_EMOUTRO_doc()
 
-                    curr.execute(sql,(self.codbarrastag, self.matricula, self.dataHora, self.documento))
-                    conn.commit()
+                sql = '''
+                insert into pcp."transacaoPilotos" (codbarrastag, "tipoTransacao", matricula, "dataTransferencia", documento )
+                values ( %s, 'Transferencia', %s, %s, %s ) 
+                '''
 
-            return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+                with ConexaoPostgre.conexaoInsercao() as conn:
+                    with conn.cursor() as curr:
+
+                        curr.execute(sql,(self.codbarrastag, self.matricula, self.dataHora, self.documento))
+                        conn.commit()
+
+                return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+
+            else:
+                return pd.DataFrame(
+                    [{'Status': False, 'Mensagem': f'Tag{self.codbarrastag} tag ja bipada nesse documento PILOTOS'}])
+
 
         else:
             return pd.DataFrame([{'Status':False , 'Mensagem': f'Tag{self.codbarrastag} nao esta no estoque de PILOTOS'}])
@@ -147,6 +157,53 @@ class ControlePilotos():
         validar = self.tags_csw.validar_tag_estoque_piloto()
 
         return  validar
+
+
+    def verificar_se_Tag_esta_no_doc(self):
+
+        sql = """
+            select 
+                codbarrastag 
+            from 
+                "PCP".pcp."transacaoPilotos" tp
+            where tp.codbarrastag = %s and tp.documento = %s        
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+
+        consulta = pd.read_sql(sql,conn,params=(self.codbarrastag, self.documento,))
+
+        return consulta
+
+
+    def verificar_se_Tag_esta_EMOUTRO_doc(self):
+
+        sql = """
+            select 
+                codbarrastag 
+            from 
+                "PCP".pcp."transacaoPilotos" tp
+            where tp.codbarrastag = %s        
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+
+        consulta = pd.read_sql(sql,conn,params=(self.codbarrastag, self.documento,))
+
+
+        if not consulta.empty:
+
+            with ConexaoPostgre.conexaoInsercao() as conn:
+                with conn.cursor() as curr:
+
+                    delete = """
+                    delete from "PCP".pcp."transacaoPilotos" t
+                    where t.codbarrastag = %s
+                    """
+
+                    curr.execute(delete,(self.codbarrastag))
+                    conn.commit()
+
 
 
 
