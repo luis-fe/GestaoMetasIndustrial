@@ -9,10 +9,11 @@ class Tag_Csw():
     '''Classe para buscar as tags do Csw '''
 
 
-    def __init__(self, codEmpresa = '1'):
+    def __init__(self, codEmpresa = '1', codbarrastag =''):
 
         self.codEmpresa = codEmpresa
 
+        self.codbarrastag = codbarrastag
     def buscar_tags_csw_estoque_pilotos(self):
 
 
@@ -260,6 +261,34 @@ class Tag_Csw():
             AND m2.dataBaixa > DATEADD(day, -500, CURRENT_DATE)
         """
 
+
+        with ConexaoERP.ConexaoInternoMPL() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                colunas = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                consulta = pd.DataFrame(rows, columns=colunas)
+
+        # Libera memória manualmente
+        del rows
+        gc.collect()
+
+        return consulta
+
+
+
+    def validar_tag_estoque_piloto(self):
+        '''Metodo que valida se a tag existe no estoque de piloto '''
+
+
+        sql = f"""
+        select 
+            codbarrastag 
+        from 
+            tcr.TagBarrasProduto t
+        where 
+            codempresa = 1 and t.codbarrastag = {self.codbarrastag}
+        """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
             with conn.cursor() as cursor:

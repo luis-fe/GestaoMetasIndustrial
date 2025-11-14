@@ -8,12 +8,13 @@ from src.connection import ConexaoPostgre
 
 class ControlePilotos():
 
-    def __init__(self, codEmpresa = '1',codbarrastag = '', matricula = '', documento = ''):
+    def __init__(self, codEmpresa = '1',codbarrastag = '', matricula = '', documento = '', ):
 
         self.codEmpresa = codEmpresa
-        self.tags_csw = Tags_csw.Tag_Csw(self.codEmpresa)
 
         self.codbarrastag = codbarrastag
+        self.tags_csw = Tags_csw.Tag_Csw(self.codEmpresa, self.codbarrastag)
+
         self.matricula = matricula
         self.dataHora, self.dataAtual = self.__obterHoraAtual()
         self.documento = documento
@@ -30,18 +31,25 @@ class ControlePilotos():
     def transferir_pilotos(self):
         '''Metodo para transferir piloto'''
 
-        sql = '''
-        insert into pcp."transacaoPilotos" (codbarrastag, "tipoTransacao", matricula, "dataTransferencia", documento )
-        values ( %s, 'Transferencia', %s, %s, %s ) 
-        '''
+        validacao = self.verificar_tag_estoque()
 
-        with ConexaoPostgre.conexaoInsercao() as conn:
-            with conn.cursor() as curr:
+        if validacao.empty:
 
-                curr.execute(sql,(self.codbarrastag, self.matricula, self.dataHora, self.documento))
-                conn.commit()
+            sql = '''
+            insert into pcp."transacaoPilotos" (codbarrastag, "tipoTransacao", matricula, "dataTransferencia", documento )
+            values ( %s, 'Transferencia', %s, %s, %s ) 
+            '''
 
-        return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+            with ConexaoPostgre.conexaoInsercao() as conn:
+                with conn.cursor() as curr:
+
+                    curr.execute(sql,(self.codbarrastag, self.matricula, self.dataHora, self.documento))
+                    conn.commit()
+
+            return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+
+        else:
+            return pd.DataFrame([{'Status':False , 'Mensagem': f'Tag{self.codbarrastag} nao esta no estoque de PILOTOS'}])
 
     def receber_pilotos(self):
         '''Metodo para transferir piloto'''
@@ -131,6 +139,16 @@ class ControlePilotos():
         consulta = pd.read_sql(consulta, conn)
 
         return consulta
+
+
+
+    def verificar_tag_estoque(self):
+
+        validar = self.tags_csw.validar_tag_estoque_piloto()
+
+        return  validar
+
+
 
 
 
