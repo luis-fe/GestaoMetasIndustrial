@@ -188,7 +188,7 @@ class ControlePilotos():
 
         conn = ConexaoPostgre.conexaoEngine()
 
-        consulta = pd.read_sql(sql,conn,params=(self.codbarrastag, self.documento,))
+        consulta = pd.read_sql(sql,conn,params=(self.codbarrastag,))
 
 
         if not consulta.empty:
