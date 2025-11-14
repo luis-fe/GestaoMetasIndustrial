@@ -288,6 +288,7 @@ class Tag_Csw():
             tcr.TagBarrasProduto t
         where 
             codempresa = 1 and t.codbarrastag = '{self.codbarrastag}'
+            and codnaturezaatual = 24 and situacao in (3)
         """
 
         with ConexaoERP.ConexaoInternoMPL() as conn:
