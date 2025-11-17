@@ -33,7 +33,7 @@ class ControlePilotos():
 
         validacao = self.verificar_tag_estoque()
 
-        if validacao.empty:
+        if not validacao.empty:
 
             veriicaTag_no_Doc = self.verificar_se_Tag_esta_no_doc()
 
