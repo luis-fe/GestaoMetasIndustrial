@@ -156,6 +156,7 @@ class ControlePilotos():
 
         validar = self.tags_csw.validar_tag_estoque_piloto()
 
+
         return  validar
 
 

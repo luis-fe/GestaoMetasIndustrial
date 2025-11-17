@@ -291,6 +291,8 @@ class Tag_Csw():
             and codnaturezaatual = 24 and situacao in (3)
         """
 
+        print(sql)
+
         with ConexaoERP.ConexaoInternoMPL() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(sql)
