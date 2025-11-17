@@ -80,6 +80,24 @@ class ControlePilotos():
         return pd.DataFrame([{'Status': True, 'Mensagem': 'tag transferida'}])
 
 
+    def get_pilotos_em_transito(self):
+        '''Metodo que obtem as pilotos que estao em transito'''
+
+        consulta = '''
+        select 
+            codbarrastag, "dataTransferencia"
+        from
+            pcp."transacaoPilotos" 
+        where 
+            "tipoTransacao" = 'Transferencia'
+        '''
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(consulta, conn, params=(self.documento,))
+
+        return consulta
+
+
     def gerarCodigoDocumento(self):
         '''metodo que gera o codigo de documento '''
 
