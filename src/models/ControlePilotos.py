@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytz
 import datetime
-from src.models import Tags_csw
+from src.models import Tags_csw, Colaboradores_TI_MPL
 from src.connection import ConexaoPostgre
 
 
@@ -95,6 +95,11 @@ class ControlePilotos():
         conn = ConexaoPostgre.conexaoEngine()
         consulta = pd.read_sql(consulta, conn, params=(self.documento,))
 
+        colab = Colaboradores_TI_MPL.Colaboradores().get_colaborador()
+        colab['matrícula'] =  colab['id']
+
+        consulta = pd.merge(consulta, colab , on = 'matrícula' , how = 'left')
+        consulta.fillna('-', inplace=True)
         return consulta
 
 
