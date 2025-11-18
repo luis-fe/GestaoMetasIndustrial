@@ -85,7 +85,7 @@ class ControlePilotos():
 
         consulta = '''
         select 
-            codbarrastag, "dataTransferencia", "matrícula"
+            codbarrastag, "dataTransferencia", "matricula"
         from
             pcp."transacaoPilotos" 
         where 
@@ -96,9 +96,9 @@ class ControlePilotos():
         consulta = pd.read_sql(consulta, conn, params=(self.documento,))
 
         colab = Colaboradores_TI_MPL.Colaboradores().get_colaborador()
-        colab['matrícula'] =  colab['id']
+        colab['matricula'] =  colab['id']
 
-        consulta = pd.merge(consulta, colab , on = 'matrícula' , how = 'left')
+        consulta = pd.merge(consulta, colab , on = 'matricula' , how = 'left')
         consulta.fillna('-', inplace=True)
         return consulta
 
