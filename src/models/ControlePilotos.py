@@ -100,6 +100,16 @@ class ControlePilotos():
 
         consulta = pd.merge(consulta, colab , on = 'matricula' , how = 'left')
         consulta.fillna('-', inplace=True)
+
+        # 1. Divide a string em uma lista de palavras, limitando a 2 divisões (max=2)
+        #    Isso resulta em uma lista de 3 elementos: [primeira palavra, segunda palavra, resto da string]
+        consulta['nome'] = consulta['nome'].str.split(' ', n=2)
+
+        # 2. Seleciona apenas os dois primeiros elementos da lista (índices 0 e 1)
+        #    E os junta novamente com um espaço.
+        consulta['nome'] = consulta['nome'].str[:2].str.join(' ')
+
+
         return consulta
 
 
