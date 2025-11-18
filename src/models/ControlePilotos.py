@@ -85,7 +85,7 @@ class ControlePilotos():
 
         consulta = '''
         select 
-            codbarrastag, "dataTransferencia"
+            codbarrastag, "dataTransferencia", "matrícula"
         from
             pcp."transacaoPilotos" 
         where 
