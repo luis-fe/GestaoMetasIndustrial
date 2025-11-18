@@ -25,6 +25,7 @@ class ControlePilotos():
         consulta = self.tags_csw.buscar_tags_csw_estoque_pilotos()
         consulta['numeroOP'].fillna('-', inplace=True)
         consulta['EstoquePiloto'] = consulta['codBarrasTag'].count()
+        consulta['PilotoUnd2'] = consulta[consulta['status'] =='Piloto na Unid. 2' ].count()
 
         return consulta
 
