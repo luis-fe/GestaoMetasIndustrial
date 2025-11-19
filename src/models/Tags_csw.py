@@ -40,8 +40,8 @@ class Tag_Csw():
 
         # Converter novamente para string formatada
       #  consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%Y-%m-%d %H:%M')
-        consulta['dataFase'] = consulta['dataHoraFase'].str.split(' ').str[0]
-        consulta['horaFase'] = consulta['dataHoraFase'].str.split(' ').str[1]
+        consulta['dataFase'] = consulta['dataHoraFase'].astype(str).str.split(' ').str[0]
+        consulta['horaFase'] = consulta['dataHoraFase'].astype(str).str.split(' ').str[1]
         consulta['dataBaixa'] = consulta['dataBaixa'].dt.strftime('%Y-%m-%d')
 
 
