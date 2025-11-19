@@ -2,7 +2,7 @@ import gc
 
 import numpy as np
 import pandas as pd
-from src.connection import ConexaoERP
+from src.connection import ConexaoERP, ConexaoPostgre
 
 
 class Tag_Csw():
@@ -18,37 +18,15 @@ class Tag_Csw():
 
 
         consulta = f"""
-        SELECT
-            t.codBarrasTag,
-            t.codEngenharia,
-            (select s.corbase from tcp.SortimentosProduto s where s.codempresa = 1 
-            and s.codproduto = t.codEngenharia and t.codSortimento = s.codsortimento)
-            as cor,
-            (select s.descricao from tcp.Tamanhos s where s.codempresa = 1 
-            and s.sequencia = t.seqTamanho)
-            as tamanho,
-            (select s.descricao from tcp.Engenharia s where s.codempresa = 1 
-            and s.codengenharia = t.codEngenharia)
-            as descricao
-        FROM
-            tcr.TagBarrasProduto t
-        WHERE
-            t.codEmpresa = {self.codEmpresa}
-            and t.situacao = 3
-            and t.codNaturezaAtual = 24
+                select * from 
+                "PCP".pcp."tags_piloto_csw" 
         """
 
 
-        with ConexaoERP.ConexaoInternoMPL() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(consulta)
-                colunas = [desc[0] for desc in cursor.description]
-                rows = cursor.fetchall()
-                consulta = pd.DataFrame(rows, columns=colunas)
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(consulta, conn)
 
-        # Libera memória manualmente
-        del rows
-        gc.collect()
+
 
 
         inventario = self.__ultimo_inventario_tag()
