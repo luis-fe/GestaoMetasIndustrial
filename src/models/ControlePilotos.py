@@ -26,6 +26,8 @@ class ControlePilotos():
         consulta['numeroOP'].fillna('-', inplace=True)
         consulta['EstoquePiloto'] = consulta['codBarrasTag'].count()
         consulta['PilotoUnd2'] = (consulta['status'] == 'Piloto na Unid. 2').sum()
+        consulta['em Transito'] = (consulta['status'] == 'em transito').sum()
+
         consulta.fillna('-',inplace=True)
         return consulta
 
