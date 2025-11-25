@@ -50,8 +50,8 @@ class ControlePilotos():
 
                 sql2 = f'''
                 update "PCP".pcp."tags_piloto_csw"
-                set c."dataTransferencia" = '{self.dataHora}' , c."tipoTransacao" = 'Transferencia'
-                where c."codBarrasTag" = '{self.codbarrastag}'
+                set "dataTransferencia" = '{self.dataHora}' , "tipoTransacao" = 'Transferencia'
+                where "codBarrasTag" = '{self.codbarrastag}'
                 '''
 
                 with ConexaoPostgre.conexaoInsercao() as conn:
