@@ -29,10 +29,8 @@ class Tag_Csw():
 
 
 
-        inventario = self.__ultimo_inventario_tag()
         ultimamov = self.__ultima_saida_tercerizado()
 
-        consulta = pd.merge(consulta, inventario, on='codBarrasTag', how='left')
         consulta = pd.merge(consulta, ultimamov, on='codBarrasTag', how='left')
 
 
