@@ -74,16 +74,14 @@ class Tag_Csw():
             consulta['numeroOP']
         )
 
-        consulta['status'] = np.where(
-            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
-            (consulta['dataBaixa'] < consulta['dataTransferencia']) & (consulta['dataTransferencia'].notna()),
-
-            # Se V: Mantém o valor original de 'numeroOP'
-            'em transito',
-
-            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
-            consulta['status']
+        # 1. Defina a condição de forma clara
+        condicao_em_transito = (
+            # A 'dataBaixa' deve ser ANTERIOR à 'dataTransferencia'
+                (consulta['dataBaixa'] < consulta['dataTransferencia']) &
+                # E a 'dataTransferencia' deve ser válida (não nula/NaN)
+                (consulta['dataTransferencia'].notna())
         )
+        consulta.loc[condicao_em_transito, 'status'] = 'em transito'
 
 
 
