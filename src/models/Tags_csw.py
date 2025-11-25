@@ -29,19 +29,6 @@ class Tag_Csw():
 
 
 
-        ultimamov = self.__ultima_saida_tercerizado()
-
-        consulta = pd.merge(consulta, ultimamov, on='codBarrasTag', how='left')
-
-
-
-
-        # Converter novamente para string formatada
-      #  consulta['dataHoraFase'] = consulta['dataHoraFase'].dt.strftime('%Y-%m-%d %H:%M')
-
-
-
-        consulta.fillna('-',inplace=True)
 
         consulta['numeroOP'] = np.where(
             # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
@@ -126,63 +113,7 @@ class Tag_Csw():
 
 
 
-    def __ultima_saida_tercerizado(self):
 
-        sql = """
-        SELECT
-            observacao1 as codBarrasTag,
-            m.numeroOP,
-            observacao10,
-            nomeFase, m2.dataBaixa 
-        FROM
-            tco.RoteiroOP m
-        left join tco.MovimentacaoOPFase m2 on m2.codEmpresa = 1 
-            and m2.numeroOP = m.numeroOP  
-            and m2.codFase = m.codFase 
-        WHERE
-            m.codEmpresa = 1
-            and m.observacao1 like '0%'
-            and m.codFase in (406, 428, 425 )
-            and m2.codFase in (406, 428, 425 )
-            AND m2.dataBaixa > DATEADD(day, -500, CURRENT_DATE)
-        """
-
-
-        with ConexaoERP.ConexaoInternoMPL() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(sql)
-                colunas = [desc[0] for desc in cursor.description]
-                rows = cursor.fetchall()
-                consulta = pd.DataFrame(rows, columns=colunas)
-
-        # Libera memória manualmente
-        del rows
-        gc.collect()
-
-        # --- Extrai data/hora, separa data e hora ---
-        consulta['dataHoraFase'] = consulta['observacao10'].str.extract(r'(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2})')
-        consulta['dataHoraFase'] = pd.to_datetime(consulta['dataHoraFase'], format='%d/%m/%Y %H:%M')
-        consulta['dataFase'] = consulta['dataHoraFase'].dt.date
-        consulta['dataBaixa'] = pd.to_datetime(consulta['dataBaixa'], format='%Y-%m-%d ')
-
-        consulta['horaFase'] = consulta['dataHoraFase'].dt.time
-        consulta['observacao10'] = consulta['observacao10'].str.replace(r'\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}', '',
-                                                            regex=True).str.strip()
-
-        # --- Remove duplicadas, mantendo a última movimentação ---
-        consulta = (
-            consulta
-            .sort_values('dataBaixa')
-            .drop_duplicates(subset='codBarrasTag', keep='last')
-            .reset_index(drop=True)
-        )
-
-
-        consulta['dataFase'] = consulta['dataHoraFase'].astype(str).str.split(' ').str[0]
-        consulta['horaFase'] = consulta['dataHoraFase'].astype(str).str.split(' ').str[1]
-        consulta['dataBaixa'] = consulta['dataBaixa'].dt.strftime('%Y-%m-%d')
-
-        return consulta
 
 
     def __ultimo_retorno_tercerizado(self):
