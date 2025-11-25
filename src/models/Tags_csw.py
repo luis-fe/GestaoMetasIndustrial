@@ -42,16 +42,7 @@ class Tag_Csw():
         )
 
 
-        consulta['status'] = np.where(
-            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
-            (consulta['dataBaixa'] < consulta['dataTransferencia']) & (consulta['dataTransferencia'].notna()),
 
-            # Se V: Mantém o valor original de 'numeroOP'
-            'em transito',
-
-            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
-            consulta['status']
-        )
 
 
 
@@ -81,6 +72,17 @@ class Tag_Csw():
             consulta['status'] == 'Piloto na Unid. 2' ,
             '-',
             consulta['numeroOP']
+        )
+
+        consulta['status'] = np.where(
+            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
+            (consulta['dataBaixa'] < consulta['dataTransferencia']) & (consulta['dataTransferencia'].notna()),
+
+            # Se V: Mantém o valor original de 'numeroOP'
+            'em transito',
+
+            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
+            consulta['status']
         )
 
 
