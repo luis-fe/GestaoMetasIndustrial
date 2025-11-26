@@ -306,7 +306,7 @@ class ControlePilotos():
 
         fases = fases[(fases['codFase'] > 400) & (fases['codFase'] < 499)]
 
-        fases['fase'] = fases['codFase'].astype(str) + fases['fase']
+        fases['fase'] = fases['codFase'].astype(str) +'-' +fases['fase']
 
         return fases
 
