@@ -43,13 +43,8 @@ class Tag_Csw():
 
 
 
-
-
-
-        retornoPilotos = self.__ultimo_retorno_tercerizado()
         pilotoNRetornada = self.piloto_nao_retornada()
 
-        consulta = pd.merge(consulta, retornoPilotos, on='numeroOP', how='left')
         consulta = pd.merge(consulta, pilotoNRetornada, on='numeroOP', how='left')
 
         consulta.fillna('-',inplace=True)
@@ -89,82 +84,9 @@ class Tag_Csw():
 
 
 
-    def __ultimo_inventario_tag(self):
-
-
-        sql = """
-        SELECT 
-            convert(varchar(40),t.codBarrasTag) as codBarrasTag, 
-            ip.dataEncContagem as ultimoInv
-        FROM tci.InventarioProdutosTagLidas t
-        INNER JOIN tci.InventarioProdutos ip 
-            ON ip.Empresa = 1 
-            AND t.inventario = ip.inventario 
-        WHERE t.Empresa = 1 
-          AND ip.codnatureza = 24 
-          AND ip.situacao = 4
-          AND ip.dataEncContagem = (
-                SELECT MAX(ip2.dataEncContagem)
-                FROM tci.InventarioProdutos ip2
-                WHERE ip2.Empresa = ip.Empresa
-                  AND ip2.codnatureza = ip.codnatureza
-            )
-        """
-
-        with ConexaoERP.ConexaoInternoMPL() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(sql)
-                colunas = [desc[0] for desc in cursor.description]
-                rows = cursor.fetchall()
-                consulta = pd.DataFrame(rows, columns=colunas)
-
-        # Libera memória manualmente
-        del rows
-        gc.collect()
-
-        return consulta
 
 
 
-
-
-
-    def __ultimo_retorno_tercerizado(self):
-
-        sql = """
-        SELECT
-            observacao1 as codBarrasTag_retorno,
-            m.numeroOP,
-            observacao10 as ob10 ,
-            nomeFase, m2.dataBaixa as dataEntrega
-        FROM
-            tco.RoteiroOP m
-        left join tco.MovimentacaoOPFase m2 on m2.codEmpresa = 1 
-            and m2.numeroOP = m.numeroOP  
-            and m2.codFase = m.codFase 
-        WHERE
-        	m.observacao1 like '0%'
-        	and m.observacao1 not like '%Piloto na%'
-        	and m.numeroOP like '%-001'
-            and m.codEmpresa = 1
-            and m.codFase in (429, 432, 441 )
-            and m2.codFase in (429, 432, 441 )
-            AND m2.dataBaixa > DATEADD(day, -500, CURRENT_DATE)
-        """
-
-
-        with ConexaoERP.ConexaoInternoMPL() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(sql)
-                colunas = [desc[0] for desc in cursor.description]
-                rows = cursor.fetchall()
-                consulta = pd.DataFrame(rows, columns=colunas)
-
-        # Libera memória manualmente
-        del rows
-        gc.collect()
-
-        return consulta
 
     def piloto_nao_retornada(self):
 
