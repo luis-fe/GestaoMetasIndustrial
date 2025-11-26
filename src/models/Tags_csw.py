@@ -43,10 +43,6 @@ class Tag_Csw():
 
 
 
-        pilotoNRetornada = self.piloto_nao_retornada()
-
-        consulta = pd.merge(consulta, pilotoNRetornada, on='numeroOP', how='left')
-
         consulta.fillna('-',inplace=True)
         consulta['status'] ='-'
 
