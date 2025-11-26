@@ -115,6 +115,32 @@ def post_transferir_pilotos():
     return jsonify(OP_data)
 
 
+@controle_pilotos.route('/pcp/api/receber_pilotos', methods=['POST'])
+@token_required
+def post_receber_pilotos():
+
+    data = request.get_json()
+    codEmpresa = data.get('codEmpresa','1')
+    matricula = data.get('matricula','1')
+    codbarras = data.get('codbarras','1')
+
+
+
+    dados = ControlePilotos.ControlePilotos(codEmpresa,codbarras,matricula).receber_pilotos()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
 
 
 @controle_pilotos.route('/pcp/api/get_pilotos_em_transito', methods=['GET'])

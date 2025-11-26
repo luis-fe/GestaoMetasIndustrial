@@ -41,7 +41,7 @@ class ControlePilotos():
             veriicaTag_no_Doc = self.verificar_se_Tag_esta_no_doc()
 
             if veriicaTag_no_Doc.empty:
-                self.verificar_se_Tag_esta_EMOUTRO_doc()
+                self.__verificar_se_Tag_esta_EMOUTRO_doc()
 
                 sql = '''
                 insert into pcp."transacaoPilotos" (codbarrastag, "tipoTransacao", matricula, "dataTransferencia", documento )
@@ -78,20 +78,47 @@ class ControlePilotos():
     def receber_pilotos(self):
         '''Metodo para transferir piloto'''
 
-        sql = '''
-            update pcp."transacaoPilotos"  
-            set "tipoTransacao" = 'Recebida' , "dataRecebimento" = %s, matricula_receb = %s
-            where 
-            tipoTransacao = 'Transferencia'
-            and codbarrastag = %s
-        '''
 
-        with ConexaoPostgre.conexaoInsercao() as conn:
-            with conn.cursor() as curr:
-                curr.execute(sql, (self.dataHora, self.matricula, self.dataHora))
-                conn.commit()
+        validacao = self.verificar_tag_estoque()
 
-        return pd.DataFrame([{'Status': True, 'Mensagem': 'tag transferida'}])
+
+        if not validacao.empty:
+
+            validacao2 = self.__verificar_tag_existe_recebimento()
+
+            if validacao2.empty:
+                return pd.DataFrame(
+                    [{'Status': False, 'Mensagem': f'Tag{self.codbarrastag} nao foi transferido, deseja receber direto ?'}])
+
+            else:
+
+                if validacao2['tipoTransacao'][0] == 'Recebida':
+
+                    return pd.DataFrame(
+                        [{'Status': False,
+                          'Mensagem': f'Tag{self.codbarrastag}  ja recebida'}])
+
+                else:
+
+                    sql = '''
+                        update pcp."transacaoPilotos"  
+                        set "tipoTransacao" = 'Recebida' , "dataRecebimento" = %s, matricula_receb = %s
+                        where 
+                        tipoTransacao = 'Transferencia'
+                        and codbarrastag = %s
+                    '''
+
+                    with ConexaoPostgre.conexaoInsercao() as conn:
+                        with conn.cursor() as curr:
+                            curr.execute(sql, (self.dataHora, self.matricula, self.dataHora))
+                            conn.commit()
+
+                    return pd.DataFrame([{'Status': True, 'Mensagem': 'tag recebida'}])
+
+        else:
+
+            return pd.DataFrame([{'Status':False , 'Mensagem': f'Tag{self.codbarrastag} nao esta no estoque de PILOTOS'}])
+
 
 
     def get_pilotos_em_transito(self):
@@ -224,7 +251,7 @@ class ControlePilotos():
         return consulta
 
 
-    def verificar_se_Tag_esta_EMOUTRO_doc(self):
+    def __verificar_se_Tag_esta_EMOUTRO_doc(self):
 
         sql = """
             select 
@@ -251,6 +278,26 @@ class ControlePilotos():
 
                     curr.execute(delete,(self.codbarrastag))
                     conn.commit()
+
+    def __verificar_tag_existe_recebimento(self):
+
+
+        sql = """
+            select 
+                codbarrastag, 
+                "tipoTransacao" 
+            from 
+                "PCP".pcp."transacaoPilotos" tp
+            where tp.codbarrastag = %s       
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+
+        consulta = pd.read_sql(sql,conn,params=(self.codbarrastag,))
+
+        return consulta
+
+
 
 
 
