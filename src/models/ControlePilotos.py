@@ -104,7 +104,7 @@ class ControlePilotos():
                         update pcp."transacaoPilotos"  
                         set "tipoTransacao" = 'Recebida' , "dataRecebimento" = %s, matricula_receb = %s
                         where 
-                        tipoTransacao = 'Transferencia'
+                        "tipoTransacao" = 'Transferencia'
                         and codbarrastag = %s
                     '''
 
