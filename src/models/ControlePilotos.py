@@ -250,7 +250,7 @@ class ControlePilotos():
                 codbarrastag 
             from 
                 "PCP".pcp."transacaoPilotos" tp
-            where tp.codbarrastag = %s and tp.documento = %s and tp."tipoTransacao" = "Transferencia"       
+            where tp.codbarrastag = %s and tp.documento = %s and tp."tipoTransacao" = 'Transferencia'       
         """
 
         conn = ConexaoPostgre.conexaoEngine()
