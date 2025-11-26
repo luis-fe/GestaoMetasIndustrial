@@ -110,7 +110,7 @@ class ControlePilotos():
 
                     with ConexaoPostgre.conexaoInsercao() as conn:
                         with conn.cursor() as curr:
-                            curr.execute(sql, (self.dataHora, self.matricula, self.dataHora))
+                            curr.execute(sql, (self.dataHora, self.matricula, self.codbarrastag))
                             conn.commit()
 
                     return pd.DataFrame([{'Status': True, 'Mensagem': 'tag recebida'}])
