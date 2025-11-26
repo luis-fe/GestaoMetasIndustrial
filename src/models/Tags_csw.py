@@ -75,6 +75,15 @@ class Tag_Csw():
         consulta.loc[condicao_em_transito, 'status'] = 'em transito'
 
 
+        condicao_em_montagem = (
+            # A 'dataBaixa' deve ser ANTERIOR à 'dataTransferencia'
+                (consulta['dataBaixa'] < consulta['dataRecebimento']) &
+                # E a 'dataTransferencia' deve ser válida (não nula/NaN)
+                (consulta['dataRecebimento'].notna())
+        )
+        consulta.loc[condicao_em_montagem, 'status'] = 'na Montagem'
+
+
 
         return consulta
 
