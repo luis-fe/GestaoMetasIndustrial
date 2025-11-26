@@ -110,7 +110,7 @@ class ControlePilotos():
 
                     sql2 = f'''
                     update "PCP".pcp."tags_piloto_csw"
-                    set "dataRecebimento" = '{self.dataHora}' , "tipoTransacao" = '-' , 'dataTransferencia' = '-'
+                    set "dataRecebimento" = '{self.dataHora}' , "tipoTransacao" = '-' , "dataTransferencia" = '-'
                     where "codBarrasTag" = '{self.codbarrastag}'
                     '''
 
