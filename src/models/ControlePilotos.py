@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytz
 import datetime
-from src.models import Tags_csw, Colaboradores_TI_MPL
+from src.models import Tags_csw, Colaboradores_TI_MPL, OP_CSW
 from src.connection import ConexaoPostgre
 
 
@@ -296,6 +296,19 @@ class ControlePilotos():
         consulta = pd.read_sql(sql,conn,params=(self.codbarrastag,))
 
         return consulta
+
+
+
+    def fases_destinos(self):
+        '''Metodo que lista as fases de destino da piloto'''
+
+        fases = OP_CSW.OP_CSW().informacoesFasesCsw()
+
+        fases = fases[(fases['codFase'] > 400) & (fases['codFase'] < 499)]
+
+        return fases
+
+
 
 
 
