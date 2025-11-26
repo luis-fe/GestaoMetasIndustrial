@@ -308,6 +308,7 @@ class ControlePilotos():
 
         fases['fase'] = fases['codFase'].astype(str) +'-' +fases['fase']
 
+        fases = fases[~fases['fase'].str.contains('INAT', case=False, na=False)]
         return fases
 
 
