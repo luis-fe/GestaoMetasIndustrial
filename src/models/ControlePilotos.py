@@ -108,9 +108,18 @@ class ControlePilotos():
                         and codbarrastag = %s
                     '''
 
+                    sql2 = f'''
+                    update "PCP".pcp."tags_piloto_csw"
+                    set "dataRecebimento" = '{self.dataHora}' , "tipoTransacao" = 'Recebida'
+                    where "codBarrasTag" = '{self.codbarrastag}'
+                    '''
+
                     with ConexaoPostgre.conexaoInsercao() as conn:
                         with conn.cursor() as curr:
                             curr.execute(sql, (self.dataHora, self.matricula, self.codbarrastag))
+                            conn.commit()
+
+                            curr.execute(sql2,)
                             conn.commit()
 
                     return pd.DataFrame([{'Status': True, 'Mensagem': 'tag recebida'}])
