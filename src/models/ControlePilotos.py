@@ -285,7 +285,7 @@ class ControlePilotos():
                     where t.codbarrastag = %s
                     """
 
-                    curr.execute(delete,(self.codbarrastag))
+                    curr.execute(delete,(self.codbarrastag,))
                     conn.commit()
 
     def __verificar_tag_existe_recebimento(self):
