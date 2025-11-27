@@ -21,7 +21,7 @@ class Tag_Csw():
                 select 
                     * 
                 from 
-                    "PCP".pcp."tags_piloto" 
+                    "PCP".pcp."tags_pilotos" 
         """
 
 
