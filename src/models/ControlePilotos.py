@@ -139,11 +139,20 @@ class ControlePilotos():
         where "codBarrasTag" = '{self.codbarrastag}'
         """
 
+        update = f"""
+                            update "PCP".pcp."tags_piloto_csw"
+                    set "dataRecebimento" = '-' , "tipoTransacao" = '-' , "dataTransferencia" = '-'
+                    where "codBarrasTag" = '{self.codbarrastag}'
+        """
+
         with ConexaoPostgre.conexaoInsercao() as conn:
             with conn.cursor() as curr:
 
 
                 curr.execute(delete, )
+                conn.commit()
+
+                curr.execute(update, )
                 conn.commit()
 
 
