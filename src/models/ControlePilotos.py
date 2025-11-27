@@ -343,7 +343,7 @@ class ControlePilotos():
                 insert into pcp."InventarioLocalPiloto" (
                     "codBarrasTag",
                     "matricula_invLocal"  ,
-                    "DataHoraInvLocal" 
+                    "DataHoraInvLocal", 
                     "local"
                 )
                 values (%s, %s, %s, %s)
