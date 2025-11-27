@@ -132,6 +132,21 @@ class ControlePilotos():
 
 
 
+    def __deletar_tag_transferencia_no_inv(self):
+        ''''Metodo que exclyi a tag transferiada no inventario'''
+
+        delete = f"""delete from pcp."transacaoPilotos"
+        where "codBarrasTag" = '{self.codbarrastag}'
+        """
+
+        with ConexaoPostgre.conexaoInsercao() as conn:
+            with conn.cursor() as curr:
+
+
+                curr.execute(delete, )
+                conn.commit()
+
+
     def get_pilotos_em_transito(self):
         '''Metodo que obtem as pilotos que estao em transito'''
 
@@ -337,7 +352,7 @@ class ControlePilotos():
             verifica_existe_inv = self.__get_codbarras_localInventario()
 
             if verifica_existe_inv.empty:
-
+                self.__deletar_tag_transferencia_no_inv()
 
                 sql = """
                 insert into pcp."InventarioLocalPiloto" (
@@ -358,6 +373,7 @@ class ControlePilotos():
 
 
             else:
+                self.__deletar_tag_transferencia_no_inv()
 
                 sql = """
                 update pcp."InventarioLocalPiloto"
