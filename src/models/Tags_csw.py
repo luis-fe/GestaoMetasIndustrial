@@ -18,8 +18,10 @@ class Tag_Csw():
 
 
         consulta = f"""
-                select * from 
-                pcp."tags_piloto" 
+                select 
+                    * 
+                from 
+                    "PCP".pcp."tags_piloto" 
         """
 
 
