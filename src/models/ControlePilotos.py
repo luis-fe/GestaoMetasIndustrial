@@ -8,7 +8,7 @@ from src.connection import ConexaoPostgre
 
 class ControlePilotos():
 
-    def __init__(self, codEmpresa = '1',codbarrastag = '', matricula = '', documento = '', ):
+    def __init__(self, codEmpresa = '1',codbarrastag = '', matricula = '', documento = '', localDestino = '' ):
 
         self.codEmpresa = codEmpresa
 
@@ -18,6 +18,7 @@ class ControlePilotos():
         self.matricula = matricula
         self.dataHora, self.dataAtual = self.__obterHoraAtual()
         self.documento = documento
+        self.localDestino = localDestino
 
     def get_tags_piloto(self):
         '''Metodo para levantar as tags das pilotos'''
@@ -320,6 +321,98 @@ class ControlePilotos():
 
         fases = fases[~fases['fase'].str.contains('INAT', case=False, na=False)]
         return fases
+
+
+
+    def inventariar_local_piloto(self):
+        '''Metodo publico responsavel por inventariar o local da piloto'''
+
+
+        validacao = self.verificar_tag_estoque()
+
+
+        if not validacao.empty:
+
+
+            verifica_existe_inv = self.__get_codbarras_localInventario()
+
+            if verifica_existe_inv.empty:
+
+
+                sql = """
+                insert into pcp."InventarioLocalPiloto" (
+                    "codBarrasTag",
+                    "matricula_invLocal"  ,
+                    "DataHoraInvLocal" 
+                    "local"
+                )
+                values (%s, %s, %s, %s)
+                """
+
+                with ConexaoPostgre.conexaoInsercao() as conn:
+                    with conn.cursor() as curr:
+                        curr.execute(sql, (self.codbarrastag, self.matricula, self.dataHora, self.localDestino))
+                        conn.commit()
+
+                return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+
+
+            else:
+
+                sql = """
+                update pcp."InventarioLocalPiloto"
+                    set
+                        "matricula_invLocal" = %s ,
+                        "DataHoraInvLocal" = %s ,
+                        "local" = %s
+                where 
+                    "codBarrasTag" = %s
+                """
+
+                with ConexaoPostgre.conexaoInsercao() as conn:
+                    with conn.cursor() as curr:
+                        curr.execute(sql, (self.matricula, self.dataHora, self.localDestino, self.codbarrastag))
+                        conn.commit()
+
+                return pd.DataFrame([{'Status':True , 'Mensagem': 'tag transferida'}])
+
+        else:
+            return pd.DataFrame([{'Status':False , 'Mensagem': f'Tag{self.codbarrastag} nao esta no estoque de PILOTOS'}])
+
+
+
+
+
+    def __get_codbarras_localInventario(self):
+
+
+        sql = """
+        select * from pcp."InventarioLocalPiloto"
+        where "codBarrasTag" = %s
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(sql, conn, params=(self.codbarrastag,))
+
+        return consulta
+
+
+    def _get_inventario_dia(self):
+        '''Metodo que busca as pilotos inventariadas no dia '''
+
+
+        sql = """
+        select "codBarrasTag" , "local"  from pcp."InventarioLocalPiloto" as t
+        where t."DataHoraInvLocal"::date = now()
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+        consulta = pd.read_sql(sql, conn)
+
+        return consulta
+
+
+
 
 
 

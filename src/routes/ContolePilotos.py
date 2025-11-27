@@ -143,11 +143,59 @@ def post_receber_pilotos():
 
 
 
+@controle_pilotos.route('/pcp/api/inventariar_local_pilotos', methods=['POST'])
+@token_required
+def post_inventariar_local_pilotos():
+
+    data = request.get_json()
+    codEmpresa = data.get('codEmpresa','1')
+    matricula = data.get('matricula','1')
+    codbarras = data.get('codbarras','1')
+    local = data.get('local','')
+
+
+    dados = ControlePilotos.ControlePilotos(codEmpresa,codbarras,matricula,'',local).inventariar_local_piloto()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+
+
 @controle_pilotos.route('/pcp/api/get_pilotos_em_transito', methods=['GET'])
 @token_required
 def get_pilotos_em_transito_():
 
     dados = ControlePilotos.ControlePilotos().get_pilotos_em_transito()
+    #controle.salvarStatus(rotina, ip, datainicio)
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+
+@controle_pilotos.route('/pcp/api/get_pilotos_inv_dia', methods=['GET'])
+@token_required
+def get_pilotos_inv_dia_():
+
+    dados = ControlePilotos.ControlePilotos()._get_inventario_dia()
     #controle.salvarStatus(rotina, ip, datainicio)
 
     # Obtém os nomes das colunas
