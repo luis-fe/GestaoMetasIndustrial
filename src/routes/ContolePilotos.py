@@ -145,7 +145,7 @@ def post_receber_pilotos():
 
 @controle_pilotos.route('/pcp/api/inventariar_local_pilotos', methods=['POST'])
 @token_required
-def post_inventariar_local_pilotos():
+def post_inventariar_local_pilotos_():
 
     data = request.get_json()
     codEmpresa = data.get('codEmpresa','1')
