@@ -403,7 +403,7 @@ class ControlePilotos():
 
         sql = """
         select "codBarrasTag" , "local"  from pcp."InventarioLocalPiloto" as t
-        where t."DataHoraInvLocal"::date = now()
+        where t."DataHoraInvLocal"::date = now()::Date
         """
 
         conn = ConexaoPostgre.conexaoEngine()
