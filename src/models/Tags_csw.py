@@ -67,6 +67,11 @@ class Tag_Csw():
             consulta['numeroOP']
         )
 
+
+
+        # --------- CONDICAO PARA ACERTAR O QUE FOI TRANSFERIDO APOS A DATA DE SAIDA PARA A FACCAO
+
+
         # 1. Defina a condição de forma clara
         condicao_em_transito = (
             # A 'dataBaixa' deve ser ANTERIOR à 'dataTransferencia'
@@ -74,6 +79,18 @@ class Tag_Csw():
                 # E a 'dataTransferencia' deve ser válida (não nula/NaN)
                 (consulta['dataTransferencia'].notna())
         )
+
+
+        condicao_nova = (
+            # dataBaixa é igual a '-'
+                (consulta['dataBaixa'] == '-') &
+                # DataHoraInvLocal é diferente de '-'
+                (consulta['DataHoraInvLocal'] != '-')
+        )
+
+        condicao_em_transito = condicao_em_transito | condicao_nova
+
+
         consulta.loc[condicao_em_transito, 'status'] = 'em transito'
 
 
@@ -82,7 +99,12 @@ class Tag_Csw():
                 (consulta['dataBaixa'] < consulta['dataRecebimento']) &
                 # E a 'dataTransferencia' deve ser válida (não nula/NaN)
                 (consulta['dataRecebimento'].notna())
+
         )
+
+
+
+        # --------- CONDICAO PARA ACERTAR O QUE FOI INVENTARIADO APOS A DATA DE SAIDA PARA A FACCAO
         consulta.loc[condicao_em_montagem, 'status'] = 'na Montagem'
 
         # 1. Condição Anterior (dataBaixa ANTERIOR à DataHoraInvLocal, e DataHoraInvLocal válida)
