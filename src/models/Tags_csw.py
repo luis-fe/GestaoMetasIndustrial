@@ -28,34 +28,47 @@ class Tag_Csw():
         conn = ConexaoPostgre.conexaoEngine()
         consulta = pd.read_sql(consulta, conn)
 
+        consulta = consulta.replace('-', np.nan)
+        colunas_datas = ['dataBaixa', 'dataRecebimento', 'dataTransferencia', 'DataHoraInvLocal']
+
+        for col in colunas_datas:
+            consulta[col] = pd.to_datetime(consulta[col], errors='coerce')
+
+        consulta['tipo considerar'] = consulta[colunas_datas].idxmax(axis=1)
+        consulta.loc[consulta[colunas_datas].isna().sum(axis=1) == len(colunas_datas), 'tipo considerar'] = np.nan
 
 
-
-
-        consulta['numeroOP'] = np.where(
-            # Condição: dataBaixa > ultimoInventario E ultimoInventario NÃO é nulo (caso do '-')
-            (consulta['dataBaixa'] > consulta['ultimoInv']) & (consulta['ultimoInv'].notna()),
-
-            # Se V: Mantém o valor original de 'numeroOP'
-            consulta['numeroOP'],
-
-            # Se F: Substitui por '-' (engloba as outras duas condições: menor ou igual E ultimoInventario é '-')
-            '-'
+        # Regra para obter a OP atrelada na Tag
+        # 1. Defina a condição de forma clara
+        condicao_avaliativa = (
+            # A 'dataBaixa' deve ser ANTERIOR à 'dataTransferencia'
+                (consulta['dataBaixa'] < consulta['ultimoInv']) &
+                # E a 'dataTransferencia' deve ser válida (não nula/NaN)
+                (consulta['ultimoInv'].notna())
         )
+
+
+        consulta.loc[condicao_avaliativa, 'numeroOP'] = '-'
 
 
 
         consulta.fillna('-',inplace=True)
+
+
+        # Atribuindo a coluna Status
         consulta['status'] ='-'
 
+
+
+    # Verificando se o Status está na Unidade 2
         consulta['status'] = np.where(
-            consulta['dataEntrega'] != '-' ,
+            (consulta['dataEntrega'] != '-') & (consulta['dataBaixa'] < consulta['dataEntrega']) ,
             'Piloto na Unid. 2',
             consulta['status']
         )
 
         consulta['status'] = np.where(
-            consulta['codBarrasTag_nao_retorno'] == '01000000000-Piloto nao retornada' ,
+            (consulta['codBarrasTag_nao_retorno'] == '01000000000-Piloto nao retornada')&(consulta['dataBaixa'] < consulta['dataEntrega']) ,
             'Piloto nao retornada !',
             consulta['status']
         )
