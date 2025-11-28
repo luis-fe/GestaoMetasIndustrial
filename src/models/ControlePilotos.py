@@ -136,7 +136,7 @@ class ControlePilotos():
         ''''Metodo que exclyi a tag transferiada no inventario'''
 
         delete = f"""delete from pcp."transacaoPilotos"
-        where "codBarrasTag" = '{self.codbarrastag}'
+        where "codbarrastag" = '{self.codbarrastag}'
         """
 
         update = f"""
