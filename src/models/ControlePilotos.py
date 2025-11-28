@@ -29,6 +29,7 @@ class ControlePilotos():
         consulta['PilotoUnd2'] = (consulta['status'] == 'Piloto na Unid. 2').sum()
         consulta['em Transito'] = (consulta['status'] == 'em transito').sum()
         consulta['na Montagem'] = (consulta['status'] == 'na Montagem').sum()
+        consulta['Sala EAT'] = (consulta['status'] == 'Sala EAT').sum()
 
         consulta.fillna('-',inplace=True)
         return consulta
