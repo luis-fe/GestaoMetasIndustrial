@@ -85,6 +85,14 @@ class Tag_Csw():
         )
         consulta.loc[condicao_em_montagem, 'status'] = 'na Montagem'
 
+        condicao_em_montagem2 = (
+            # A 'dataBaixa' deve ser ANTERIOR à 'dataTransferencia'
+                (consulta['dataBaixa'] < consulta['DataHoraInvLocal']) &
+                # E a 'dataTransferencia' deve ser válida (não nula/NaN)
+                (consulta['DataHoraInvLocal'].notna())
+        )
+        consulta.loc[condicao_em_montagem2, 'status'] = consulta['localInv']
+        consulta['status'] =  consulta['status'].replace('Montagem','na Montagem')
 
 
         return consulta
