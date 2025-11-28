@@ -51,7 +51,7 @@ class ControlePilotos():
                 '''
 
                 sql2 = f'''
-                update "PCP".pcp."tags_piloto_csw_2"
+                update "PCP".pcp."tags_pilotos"
                 set "dataTransferencia" = '{self.dataHora}' , "tipoTransacao" = 'Transferencia', "dataRecebimento" = '-'
                 where "codBarrasTag" = '{self.codbarrastag}'
                 '''
@@ -111,7 +111,7 @@ class ControlePilotos():
                     '''
 
                     sql2 = f'''
-                    update "PCP".pcp."tags_piloto_csw_2"
+                    update "PCP".pcp."tags_pilotos"
                     set "dataRecebimento" = '{self.dataHora}' , "tipoTransacao" = '-' , "dataTransferencia" = '-'
                     where "codBarrasTag" = '{self.codbarrastag}'
                     '''
@@ -140,7 +140,7 @@ class ControlePilotos():
         """
 
         update = f"""
-                            update "PCP".pcp."tags_piloto_csw_2"
+                            update "PCP".pcp."tags_pilotos"
                     set "dataRecebimento" = '-' , "tipoTransacao" = '-' , "dataTransferencia" = '-'
                     where "codBarrasTag" = '{self.codbarrastag}'
         """
