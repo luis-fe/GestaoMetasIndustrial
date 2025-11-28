@@ -37,6 +37,17 @@ class Tag_Csw():
         consulta['tipo considerar'] = consulta[colunas_datas].idxmax(axis=1)
         consulta.loc[consulta[colunas_datas].isna().sum(axis=1) == len(colunas_datas), 'tipo considerar'] = np.nan
 
+        # Lista das colunas que queremos converter de volta para string
+        colunas_para_formatar = ['dataBaixa', 'dataRecebimento', 'dataTransferencia', 'DataHoraInvLocal']
+
+        for col in colunas_para_formatar:
+            # 1. Converte o objeto datetime para string no formato desejado
+            consulta[col] = consulta[col].dt.strftime('%Y-%m-%d')
+
+            # 2. Substitui os valores 'NaT' (Not a Time) resultantes da conversão
+            # NaT é o valor que o pandas usou para representar o '-' original
+            consulta[col] = consulta[col].replace('NaT', '-')
+
 
         # Regra para obter a OP atrelada na Tag
         # 1. Defina a condição de forma clara
