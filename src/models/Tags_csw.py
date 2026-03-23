@@ -29,7 +29,7 @@ class Tag_Csw():
         consulta = pd.read_sql(consulta, conn)
 
         consulta = consulta.replace('-', np.nan)
-        colunas_datas = ['dataBaixa', 'dataRecebimento', 'dataTransferencia', 'DataHoraInvLocal']
+        colunas_datas = ['dataBaixa', 'dataRecebimento', 'dataTransferencia', 'DataHoraInvLocal',"ultimoInv"]
 
         for col in colunas_datas:
             consulta[col] = pd.to_datetime(consulta[col], errors='coerce')
@@ -38,7 +38,7 @@ class Tag_Csw():
         consulta.loc[consulta[colunas_datas].isna().sum(axis=1) == len(colunas_datas), 'tipo considerar'] = np.nan
 
         # Lista das colunas que queremos converter de volta para string
-        colunas_para_formatar = ['dataBaixa', 'dataRecebimento', 'dataTransferencia', 'DataHoraInvLocal']
+        colunas_para_formatar = ['dataBaixa', 'dataRecebimento', 'dataTransferencia', 'DataHoraInvLocal',"ultimoInv"]
 
         for col in colunas_para_formatar:
             # 1. Converte o objeto datetime para string no formato desejado
