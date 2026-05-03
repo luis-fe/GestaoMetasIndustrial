@@ -104,7 +104,7 @@ class ProducaoFases():
     	    rf."dataBaixa"::date >= %s 
     	    and rf."dataBaixa"::date <= %s ;
         """
-        conn = ConexaoPostgre.conexaoEngineWMSSrv()
+        conn = ConexaoPostgre.conexaoEngine()
         realizado = pd.read_sql(sql, conn, params=(self.periodoInicio, self.periodoFinal,))
 
 
@@ -121,7 +121,7 @@ class ProducaoFases():
                 rf."dataBaixa"::DATE BETWEEN %s AND %s
                 AND rf.descricaolote NOT LIKE '%%LOTO%%';
         """
-        conn = ConexaoPostgre.conexaoEngineWMSSrv()
+        conn = ConexaoPostgre.conexaoEngine()
         realizado = pd.read_sql(sql, conn, params=(self.periodoInicio, self.periodoFinal,))
 
 
