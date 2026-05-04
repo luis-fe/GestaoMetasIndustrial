@@ -124,7 +124,7 @@ class LeadTimeCalculator:
 
         # Consulta SQL para obter os dados de entrada NO CSW (maior velocidade de processamento))
         # Conectar ao banco de dados
-        conn = ConexaoPostgre.conexaoEngineWMSSrv()
+        conn = ConexaoPostgre.conexaoEngine()
 
         # Executar as consultas
         saida = pd.read_sql(sql, conn, params=(self.data_inicio, self.data_final))
