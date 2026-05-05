@@ -76,3 +76,26 @@ def get_realizadoFasePeriodoFase_detalhaDia():
         OP_data.append(op_dict)
     del dados
     return jsonify(OP_data)
+
+
+
+@ProducaoFases_routes.route('/pcp/api/realizado_teste', methods=['GET'])
+@token_required
+def get_realizado_teste():
+
+
+    realizado = ProducaoFases.ProducaoFases()
+    dados = realizado.teste_sql_realizado()
+
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
