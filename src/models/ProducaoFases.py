@@ -90,6 +90,23 @@ class ProducaoFases():
         realizado['diasUteis'] = diasUteis
         return realizado
 
+	def teste_sql_realizado(self):
+
+		sql = """
+        select 
+            *
+        from
+    	    pcp.realizado_fase rf 
+        """
+        conn = ConexaoPostgre.conexaoEngine()
+        realizado = pd.read_sql(sql, conn)
+
+
+        return realizado
+
+
+		
+
     def __sqlRealizadoPeriodo(self):
         '''Metodo privado que consulta via sql o realizado no banco de dados Postgre '''
         sql = """
