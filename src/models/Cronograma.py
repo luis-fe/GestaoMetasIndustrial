@@ -128,6 +128,66 @@ class Cronograma():
 
         return feriados
 
+    def listarCronogramaFasesPlano(self):
+        '''Metodo que lista, sem calculo de dias uteis, o cronograma de fases cadastrado para o plano'''
+
+        sql = """
+            select
+                plano,
+                codfase as "codFase",
+                datainico as "dataInicio",
+                datafim as "dataFim"
+            from
+                pcp.calendario_plano_fases
+            where
+                plano = %s
+            order by
+                codfase
+        """
+
+        conn = ConexaoPostgre.conexaoEngine()
+        cronograma = pd.read_sql(sql, conn, params=(self.codPlano,))
+
+        return cronograma
+
+    def salvarCronogramaFasesPlano(self, arrayDeFases, dataInicio, dataFim):
+        '''Metodo que grava o cronograma de fases (datainicio/datafim) para um array de fases do plano'''
+
+        linhas = pd.DataFrame({
+            'plano': [self.codPlano] * len(arrayDeFases),
+            'codfase': arrayDeFases,
+            'datainico': [dataInicio] * len(arrayDeFases),
+            'datafim': [dataFim] * len(arrayDeFases),
+        })
+
+        conn = ConexaoPostgre.conexaoEngine()
+        linhas.to_sql('calendario_plano_fases', conn, schema='pcp', if_exists='append', index=False)
+
+        return linhas
+
+    def atualizarCronogramaFasesPlano(self, arrayDeFases, dataInicio, dataFim):
+        '''Metodo que atualiza o datainicio/datafim das fases informadas para o plano'''
+
+        sql = """
+            update
+                pcp.calendario_plano_fases
+            set
+                datainico = %s,
+                datafim = %s
+            where
+                plano = %s
+                and codfase = %s
+        """
+
+        conn = ConexaoPostgre.conexaoInsercao()
+        try:
+            with conn.cursor() as cursor:
+                for codFase in arrayDeFases:
+                    cursor.execute(sql, (dataInicio, dataFim, self.codPlano, codFase))
+            conn.commit()
+        finally:
+            conn.close()
+
     def inserirFeriado(self):
         '''Metodo para inserir um feriado'''
 

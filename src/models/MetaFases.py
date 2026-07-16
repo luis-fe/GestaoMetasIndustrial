@@ -297,7 +297,7 @@ class MetaFases():
                 sqlMetas['FaltaProgramar'] = sqlMetas['carga2']
 
 
-            # 8 - Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku
+            # 8 - Salvando os dados para csv que é o retrato da previsao x falta programar a nivel sku
             data = self.__obterdiaAtual()
 
             if self.modeloAnalise == 'LoteProducao':
@@ -310,7 +310,7 @@ class MetaFases():
                 self.backupsCsv(sqlMetas, f'analise_{self.codPlano}_{"Vendido"}')
 
 
-            print('excutando a etata 8:Salvando os dados para csv que é o retrado da previsao x falta programar a nivel sku')
+            print('excutando a etata 8:Salvando os dados para csv que é o retrato da previsao x falta programar a nivel sku')
             # __________________________________________________________________________________________________________________
 
 

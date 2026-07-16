@@ -42,3 +42,59 @@ def get_ConsultaCronogramaFasePlanoFase():
         OP_data.append(op_dict)
     del dados
     return jsonify(OP_data)
+
+
+@cronograma_routes.route('/pcp/api/CronogramaFasesPlano', methods=['GET'])
+@token_required
+def get_CronogramaFasesPlano():
+    codigoPlano = request.args.get('codigoPlano')
+
+    dados = Cronograma.Cronograma(codigoPlano).listarCronogramaFasesPlano()
+
+    # Obtém os nomes das colunas
+    column_names = dados.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in dados.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    del dados
+    return jsonify(OP_data)
+
+
+@cronograma_routes.route('/pcp/api/CronogramaFasesPlano', methods=['POST'])
+@token_required
+def post_CronogramaFasesPlano():
+    data = request.get_json()
+
+    codigoPlano = data.get('codigoPlano')
+    arrayDeFases = data.get('arrayDeFases', [])
+    dataInicio = data.get('dataInicio')
+    dataFinal = data.get('dataFinal')
+
+    if not codigoPlano or not arrayDeFases or not dataInicio or not dataFinal:
+        return jsonify({'message': 'codigoPlano, arrayDeFases, dataInicio e dataFinal são obrigatórios'}), 400
+
+    Cronograma.Cronograma(codigoPlano).salvarCronogramaFasesPlano(arrayDeFases, dataInicio, dataFinal)
+
+    return jsonify({'message': 'Cronograma de fases gravado com sucesso'}), 201
+
+
+@cronograma_routes.route('/pcp/api/CronogramaFasesPlano', methods=['PUT'])
+@token_required
+def put_CronogramaFasesPlano():
+    data = request.get_json()
+
+    codigoPlano = data.get('codigoPlano')
+    arrayDeFases = data.get('arrayDeFases', [])
+    dataInicio = data.get('dataInicio')
+    dataFinal = data.get('dataFinal')
+
+    if not codigoPlano or not arrayDeFases or not dataInicio or not dataFinal:
+        return jsonify({'message': 'codigoPlano, arrayDeFases, dataInicio e dataFinal são obrigatórios'}), 400
+
+    Cronograma.Cronograma(codigoPlano).atualizarCronogramaFasesPlano(arrayDeFases, dataInicio, dataFinal)
+
+    return jsonify({'message': 'Cronograma de fases atualizado com sucesso'}), 200
