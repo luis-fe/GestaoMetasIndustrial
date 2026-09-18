@@ -1,0 +1,37 @@
+# Unit do systemd para o microservico Gestao de Metas Industriais (Gunicorn).
+#
+# Instalacao no servidor:
+#   sudo cp deploy/gestaometas.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now gestaometas
+#   sudo systemctl status gestaometas
+#   journalctl -u gestaometas -f
+#
+# Ajuste User, WorkingDirectory e o caminho do gunicorn (venv) conforme o servidor.
+
+[Unit]
+Description=Gestao de Metas Industriais - Flask/Gunicorn
+After=network.target
+
+[Service]
+User=grupompl
+Group=grupompl
+WorkingDirectory=/home/grupompl/GestaoMetasIndustrial
+# Se usar venv: /home/grupompl/GestaoMetasIndustrial/venv/bin/gunicorn
+ExecStart=/home/grupompl/GestaoMetasIndustrial/venv/bin/gunicorn -c gunicorn.conf.py app_run:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+# Reinicio programado: apos 6h o systemd encerra o servico (SIGTERM) e o
+# Restart=always sobe de novo, liberando toda a memoria retida.
+RuntimeMaxSec=6h
+KillMode=mixed
+TimeoutStopSec=90
+
+# Trava de seguranca contra estouro de memoria: se o conjunto de processos
+# ultrapassar o limite, o systemd derruba e o Restart=always sobe de novo.
+# Ajuste conforme a RAM disponivel no servidor.
+MemoryMax=3G
+
+[Install]
+WantedBy=multi-user.target

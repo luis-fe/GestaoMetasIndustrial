@@ -70,11 +70,32 @@
     
     
         
-    2 - Deploy da Aplicacao: 
-        requeriments.txt
-        app_run.py ("class main do projeto")
-    
-    2.1 - Alternativa via Docker: Dockerfile 
+    2 - Deploy automatico em Ubuntu Server (recomendado):
+        chmod +x deploy/*.sh
+        deploy/instalar_ubuntu.sh                 # systemd: reinicia se cair e a cada 6h
+        deploy/instalar_ubuntu.sh --modo script   # alternativa: supervisor bash + crontab @reboot
+
+        O instalador cria o venv, instala dependencias (inclusive Java para o
+        JDBC), ajusta configApp.localProjeto e registra o servico no boot.
+
+    2 - Deploy manual (producao, via Gunicorn): 
+        pip install -r requirements.txt
+        gunicorn -c gunicorn.conf.py app_run:app
+
+        O arquivo gunicorn.conf.py define porta (PORT / PORTA_APLICACAO),
+        qtd de workers (GUNICORN_WORKERS, padrao 2), timeout (GUNICORN_TIMEOUT,
+        padrao 900s) e reciclagem de workers (GUNICORN_MAX_REQUESTS, padrao 200),
+        que devolve ao SO a memoria retida pelo pandas/JVM entre requisicoes.
+        Nao usar --preload: a JVM do JPype nao sobrevive ao fork.
+
+    2.1 - Servico systemd: deploy/gestaometas.service
+        sudo cp deploy/gestaometas.service /etc/systemd/system/
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now gestaometas
+        journalctl -u gestaometas -f
+
+    2.2 - Desenvolvimento local (servidor Flask embutido, sem Gunicorn):
+        python app_run.py
     
 
 ## 3 Detalhamento do Diagrama de Classes
