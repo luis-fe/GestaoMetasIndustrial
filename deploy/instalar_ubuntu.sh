@@ -29,6 +29,12 @@
 #   --usuario NOME          usuario que roda a aplicacao (padrao: dono da pasta)
 #   --python CAMINHO        interpretador Python >= 3.10 a usar no venv
 #                           (padrao: o python3.X mais novo encontrado no PATH)
+#
+# Servidor sem Python >= 3.10 (ex.: Ubuntu 18.04 / Python 3.6): se ja existir
+# um venv funcional em $APP_DIR/venv (com Flask e pandas), o instalador o
+# REAPROVEITA como esta', sem tocar nos pacotes, e instala apenas o Gunicorn
+# na versao compativel. O pip freeze desse venv e' salvo em
+# logs/requirements-servidor.txt para referencia.
 #   --modo systemd|script   forma de inicializacao automatica (padrao systemd)
 #   --sem-apt               nao instalar pacotes do sistema
 #   --memoria-max 3G        limite de memoria do servico systemd (padrao 3G)
@@ -118,7 +124,15 @@ detectar_python() {
 }
 
 passo "Detectando Python >= $PYTHON_MIN"
+REUSAR_VENV=0
 PYBIN="$(detectar_python)"
+if [ -z "$PYBIN" ] && [ -x "$VENV/bin/python" ] && "$VENV/bin/python" -c "import flask, pandas, sqlalchemy" >/dev/null 2>&1; then
+    REUSAR_VENV=1
+    PYBIN="$VENV/bin/python"
+    echo "Nenhum Python >= $PYTHON_MIN no PATH, mas existe um venv funcional em $VENV"
+    echo "($("$PYBIN" --version 2>&1)). Ele sera' REAPROVEITADO sem alterar os pacotes;"
+    echo "apenas o Gunicorn sera' instalado."
+fi
 if [ -z "$PYBIN" ]; then
     echo "Nenhum Python >= $PYTHON_MIN encontrado no PATH (python3 atual: $(python3 --version 2>&1))."
     echo "Instale um e rode de novo, por exemplo:"
@@ -141,10 +155,12 @@ if [ "$USAR_APT" -eq 1 ]; then
     # libpq-dev/build-essential: compilar psycopg2
     # default-jre-headless: JVM usada pelo JPype/JayDeBeApi (driver Cache JDBC)
     $SUDO apt-get install -y libpq-dev build-essential default-jre-headless
-    # venv/dev da versao de Python escolhida (ex.: python3.10-venv). Pode nao
-    # existir como pacote se o Python veio de outra fonte; nesse caso so avisa.
-    $SUDO apt-get install -y "${PYNOME}-venv" "${PYNOME}-dev" \
-        || echo "AVISO: pacotes ${PYNOME}-venv/${PYNOME}-dev nao encontrados no apt; seguindo."
+    if [ "$REUSAR_VENV" -eq 0 ]; then
+        # venv/dev da versao de Python escolhida (ex.: python3.10-venv). Pode nao
+        # existir como pacote se o Python veio de outra fonte; nesse caso so avisa.
+        $SUDO apt-get install -y "${PYNOME}-venv" "${PYNOME}-dev" \
+            || echo "AVISO: pacotes ${PYNOME}-venv/${PYNOME}-dev nao encontrados no apt; seguindo."
+    fi
 else
     passo "Pulando instalacao de pacotes do sistema (--sem-apt)"
 fi
@@ -155,22 +171,39 @@ if ! command -v java >/dev/null 2>&1; then
 fi
 
 # ---------------------------------------------------------------- 2. venv
-passo "Criando/atualizando virtualenv em $VENV (como $APP_USER)"
-if [ -d "$VENV" ] && [ "$SOU_ROOT" -eq 1 ]; then
-    # venv pode ter sido criado por root antes; garante que o usuario da app consiga usar
-    chown -R "$APP_USER:$APP_GROUP" "$VENV"
+if [ "$REUSAR_VENV" -eq 1 ]; then
+    passo "Reaproveitando venv existente em $VENV (como $APP_USER)"
+    if [ "$SOU_ROOT" -eq 1 ]; then
+        chown -R "$APP_USER:$APP_GROUP" "$VENV"
+    fi
+    # gunicorn 22+ exige Python >= 3.7; para 3.6 a ultima versao e' a 21.2.0
+    if "$PYBIN" -c "import sys; sys.exit(0 if sys.version_info >= (3,7) else 1)"; then
+        GUNICORN_VER="23.0.0"
+    else
+        GUNICORN_VER="21.2.0"
+    fi
+    como_app "'$VENV/bin/pip' install 'gunicorn==$GUNICORN_VER'"
+    mkdir -p "$APP_DIR/logs"
+    como_app "'$VENV/bin/pip' freeze > '$APP_DIR/logs/requirements-servidor.txt'" || true
+    echo "Pacotes do venv salvos em logs/requirements-servidor.txt"
+else
+    passo "Criando/atualizando virtualenv em $VENV (como $APP_USER)"
+    if [ -d "$VENV" ] && [ "$SOU_ROOT" -eq 1 ]; then
+        # venv pode ter sido criado por root antes; garante que o usuario da app consiga usar
+        chown -R "$APP_USER:$APP_GROUP" "$VENV"
+    fi
+    # Se ja existe um venv com Python antigo, guarda de lado e recria.
+    if [ -f "$VENV/bin/python" ] && ! versao_ok "$VENV/bin/python"; then
+        echo "venv existente usa $("$VENV/bin/python" --version 2>&1) (< $PYTHON_MIN); movendo para venv_antigo e recriando."
+        rm -rf "$APP_DIR/venv_antigo"
+        mv "$VENV" "$APP_DIR/venv_antigo"
+    fi
+    if [ ! -f "$VENV/bin/activate" ]; then
+        como_app "'$PYBIN' -m venv '$VENV'"
+    fi
+    como_app "'$VENV/bin/pip' install --upgrade pip wheel"
+    como_app "'$VENV/bin/pip' install -r '$APP_DIR/requirements.txt'"
 fi
-# Se ja existe um venv com Python antigo, guarda de lado e recria.
-if [ -f "$VENV/bin/python" ] && ! versao_ok "$VENV/bin/python"; then
-    echo "venv existente usa $("$VENV/bin/python" --version 2>&1) (< $PYTHON_MIN); movendo para venv_antigo e recriando."
-    rm -rf "$APP_DIR/venv_antigo"
-    mv "$VENV" "$APP_DIR/venv_antigo"
-fi
-if [ ! -f "$VENV/bin/activate" ]; then
-    como_app "'$PYBIN' -m venv '$VENV'"
-fi
-como_app "'$VENV/bin/pip' install --upgrade pip wheel"
-como_app "'$VENV/bin/pip' install -r '$APP_DIR/requirements.txt'"
 
 # ---------------------------------------------------------------- 3. config
 passo "Conferindo configuracao"
