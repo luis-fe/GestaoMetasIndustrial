@@ -1,5 +1,6 @@
 _ambiente.env
 logs/
 venv/
+venv_antigo/
 __pycache__/
 *.bak
