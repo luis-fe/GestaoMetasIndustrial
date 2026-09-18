@@ -102,34 +102,62 @@ class Faturamento():
 
             return pedidos
 
-    def consultaArquivoFastVendas(self):
-        '''Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame '''
+    # Colunas realmente usadas pelos calculos de faturamento/vendas. Ler so elas
+    # (em vez do arquivo inteiro) e' o que evita o MemoryError no servidor.
+    COLUNAS_PEDIDOS = ['codPedido', 'codProduto', 'qtdePedida', 'qtdeFaturada', 'qtdeCancelada',
+                       'qtdeSugerida', 'PrecoLiquido', 'codTipoNota', 'dataPrevFat']
 
-        env_path = configApp.localProjeto
-        # Carregar variáveis de ambiente do arquivo .env
-        load_dotenv(env_path)
+    def _caminhoParquetPedidos(self):
+        """Caminho absoluto do arquivo pedidos.parquet (CAMINHO_PARQUET_FAT no _ambiente.env)"""
+        load_dotenv(f'{configApp.localProjeto}/_ambiente.env')
         caminho_absoluto = os.getenv('CAMINHO_PARQUET_FAT')
+        return f'{caminho_absoluto}/pedidos.parquet'
 
-        parquet_file = fp.ParquetFile(f'{caminho_absoluto}/pedidos.parquet')
+    def _lerPedidosPorPeriodo(self, dataIni, dataFim, colunas=None, codProduto=None):
+        """Le o pedidos.parquet um row group por vez, mantendo apenas as colunas pedidas e as
+        linhas cuja dataPrevFat esta' entre dataIni e dataFim (e, se informado, o codProduto).
 
-        # Converter para DataFrame do Pandas
-        df_loaded = parquet_file.to_pandas()
-        # Converter 'dataEmissao' para datetime
-        df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
+        Antes o arquivo inteiro era carregado em memoria (todas as colunas, todas as linhas) a
+        cada requisicao, o que derrubava o processo por falta de memoria. Aqui o pico de memoria
+        fica limitado a um row group com as colunas selecionadas.
 
-        # Convertendo a string para datetime
-        dataFatIni = pd.to_datetime(self.dataInicial)
-        dataFatFinal = pd.to_datetime(self.dataFinal)
+        return: DataFrame filtrado, com 'dataPrevFat' ja convertida para datetime.
+        """
+        parquet_file = fp.ParquetFile(self._caminhoParquetPedidos())
 
-        # Filtrar as datas
-        df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
+        if colunas is not None:
+            colunas = list(colunas)
+            if 'dataPrevFat' not in colunas:
+                colunas.append('dataPrevFat')
+            if codProduto is not None and 'codProduto' not in colunas:
+                colunas.append('codProduto')
 
+        partes = []
+        for bloco in parquet_file.iter_row_groups(columns=colunas):
+            if codProduto is not None:
+                bloco = bloco[bloco['codProduto'] == str(codProduto)]
+                if bloco.empty:
+                    continue
 
+            datas = pd.to_datetime(bloco['dataPrevFat'], errors='coerce')
+            mascara = (datas >= dataIni) & (datas <= dataFim)
+            if not mascara.any():
+                continue
 
+            bloco = bloco.loc[mascara].copy()
+            bloco['dataPrevFat'] = datas[mascara]
+            partes.append(bloco)
 
+        if partes:
+            return pd.concat(partes, ignore_index=True)
 
-        # Aplicar o filtro
-        df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
+        return pd.DataFrame(columns=colunas if colunas is not None else parquet_file.columns)
+
+    def _pedidosFiltradosPeriodo(self, dataIni, dataFim):
+        """Pedidos do periodo com as colunas padrao, quantidades numericas, codItem e saldoPedido"""
+
+        df_filtered = self._lerPedidosPorPeriodo(dataIni, dataFim, colunas=self.COLUNAS_PEDIDOS)
+
         # Selecionar colunas relevantes
         df_filtered = df_filtered.loc[:,
                       ['codPedido', 'codProduto', 'qtdePedida', 'qtdeFaturada', 'qtdeCancelada', 'qtdeSugerida',
@@ -149,6 +177,15 @@ class Faturamento():
             "qtdeCancelada"]
 
         return df_filtered
+
+    def consultaArquivoFastVendas(self):
+        """Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame """
+
+        # Convertendo a string para datetime
+        dataFatIni = pd.to_datetime(self.dataInicial)
+        dataFatFinal = pd.to_datetime(self.dataFinal)
+
+        return self._pedidosFiltradosPeriodo(dataFatIni, dataFatFinal)
 
     def faturamentoPeriodo_Plano_PartesPeca(self):
         '''Metodo para obter o faturamento no periodo do plano , convertido em partes de peças (SEMIACABADOS)'''
@@ -189,19 +226,7 @@ class Faturamento():
         return vendasPartes
 
     def consultaArquivoFastVendasSku(self):
-        '''Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame '''
-
-        env_path = configApp.localProjeto
-        # Carregar variáveis de ambiente do arquivo .env
-        load_dotenv(env_path)
-        caminho_absoluto = os.getenv('CAMINHO_PARQUET_FAT')
-
-        parquet_file = fp.ParquetFile(f'{caminho_absoluto}/pedidos.parquet')
-
-        # Converter para DataFrame do Pandas
-        df_loaded = parquet_file.to_pandas()
-        # Converter 'dataEmissao' para datetime
-        df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
+        """Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame """
 
         plano = PlanoClass.Plano(self.codigoPlano)
 
@@ -212,12 +237,9 @@ class Faturamento():
         dataFatIni = pd.to_datetime(self.dataInicial)
         dataFatFinal = pd.to_datetime(self.dataFinal)
 
-        # Filtrar as datas
-        df_loaded = df_loaded[df_loaded['codProduto']==str(self.codsku)].reset_index()
-
-        df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
-        # Aplicar o filtro
-        df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
+        # Le so as linhas do sku e do periodo (todas as colunas, pois o retorno e' detalhado)
+        df_filtered = self._lerPedidosPorPeriodo(dataFatIni, dataFatFinal, colunas=None, codProduto=self.codsku)
+        df_filtered = df_filtered.reset_index(drop=True)
         df_filtered.fillna(0,inplace=True)
 
         pedidos = pd.merge(df_filtered, tipoNotas, on='codTipoNota')
@@ -239,8 +261,8 @@ class Faturamento():
         return consulta
 
     def consultaArquivoFastVendasAnteriores(self):
-        '''Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame, retornando um DataFrame com as vendas
-         nos 300 dias anteriores ao periodo de faturamento do plano atual'''
+        """Metodo utilizado para ler um arquivo do tipo parquet e converter em um DataFrame, retornando um DataFrame com as vendas
+         nos 300 dias anteriores ao periodo de faturamento do plano atual"""
 
 
         if self.codigoPlano == None:
@@ -250,48 +272,11 @@ class Faturamento():
             #Obtendo a dataInicial e dataFinal do Plano
             self.dataInicial = plano.obterDataInicioFatPlano()
 
-            env_path = configApp.localProjeto
-            # Carregar variáveis de ambiente do arquivo .env
-            load_dotenv(env_path)
-            caminho_absoluto = os.getenv('CAMINHO_PARQUET_FAT')
-
-            parquet_file = fp.ParquetFile(f'{caminho_absoluto}/pedidos.parquet')
-
-            # Converter para DataFrame do Pandas
-            df_loaded = parquet_file.to_pandas()
-            # Converter 'dataEmissao' para datetime
-            df_loaded['dataPrevFat'] = pd.to_datetime(df_loaded['dataPrevFat'], errors='coerce', infer_datetime_format=True)
-
             # Convertendo a string para datetime
             dataFatIni = pd.to_datetime(self.dataInicial) - pd.Timedelta(days=200)
             dataFatFinal = pd.to_datetime(self.dataInicial)- pd.Timedelta(days=10)
 
-            # Filtrar as datas
-            df_loaded['filtro'] = (df_loaded['dataPrevFat'] >= dataFatIni) & (df_loaded['dataPrevFat'] <= dataFatFinal)
-
-
-
-
-            # Aplicar o filtro
-            df_filtered = df_loaded[df_loaded['filtro']].reset_index(drop=True)
-            # Selecionar colunas relevantes
-            df_filtered = df_filtered.loc[:,
-                          ['codPedido', 'codProduto', 'qtdePedida', 'qtdeFaturada', 'qtdeCancelada', 'qtdeSugerida',
-                           'PrecoLiquido', 'codTipoNota']]
-
-            # Convertendo colunas para numérico
-            df_filtered['qtdeSugerida'] = pd.to_numeric(df_filtered['qtdeSugerida'], errors='coerce').fillna(0)
-            df_filtered['qtdePedida'] = pd.to_numeric(df_filtered['qtdePedida'], errors='coerce').fillna(0)
-            df_filtered['qtdeFaturada'] = pd.to_numeric(df_filtered['qtdeFaturada'], errors='coerce').fillna(0)
-            df_filtered['qtdeCancelada'] = pd.to_numeric(df_filtered['qtdeCancelada'], errors='coerce').fillna(0)
-
-            # Adicionando coluna 'codItem'
-            df_filtered['codItem'] = df_filtered['codProduto']
-
-            # Calculando saldo
-            df_filtered['saldoPedido'] = df_filtered["qtdePedida"] - df_filtered["qtdeFaturada"] - df_filtered[
-                "qtdeCancelada"]
-            pedidos = df_filtered
+            pedidos = self._pedidosFiltradosPeriodo(dataFatIni, dataFatFinal)
             pedidos['status'] = True
             # 3 - Filtrando os pedidos aprovados
             pedidos = pd.merge(pedidos, self._pedidosBloqueados, on='codPedido', how='left')
@@ -320,6 +305,3 @@ class Faturamento():
             pedidos = pd.concat([pedidos, pedidosPartes], ignore_index=True)
 
             return pedidos
-
-
-
