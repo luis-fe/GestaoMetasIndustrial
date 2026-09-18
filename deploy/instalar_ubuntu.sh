@@ -27,6 +27,8 @@
 #
 # Opcoes:
 #   --usuario NOME          usuario que roda a aplicacao (padrao: dono da pasta)
+#   --python CAMINHO        interpretador Python >= 3.10 a usar no venv
+#                           (padrao: o python3.X mais novo encontrado no PATH)
 #   --modo systemd|script   forma de inicializacao automatica (padrao systemd)
 #   --sem-apt               nao instalar pacotes do sistema
 #   --memoria-max 3G        limite de memoria do servico systemd (padrao 3G)
@@ -36,16 +38,19 @@ set -euo pipefail
 MODO="systemd"
 USAR_APT=1
 APP_USER_OPT=""
+PYTHON_OPT=""
+PYTHON_MIN="3.10"   # numpy 2.2 / pandas 2.2 / MarkupSafe 3.0 exigem >= 3.10
 MEMORIA_MAX="3G"
 NOME_SERVICO="gestaometas"
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --usuario) APP_USER_OPT="$2"; shift 2 ;;
+        --python) PYTHON_OPT="$2"; shift 2 ;;
         --modo) MODO="$2"; shift 2 ;;
         --sem-apt) USAR_APT=0; shift ;;
         --memoria-max) MEMORIA_MAX="$2"; shift 2 ;;
-        -h|--help) sed -n '2,36p' "$0"; exit 0 ;;
+        -h|--help) sed -n '2,38p' "$0"; exit 0 ;;
         *) echo "Opcao desconhecida: $1"; exit 1 ;;
     esac
 done
@@ -94,14 +99,52 @@ echo "Projeto : $APP_DIR"
 echo "Usuario : $APP_USER"
 echo "Modo    : $MODO"
 
+# ---------------------------------------------------------------- 0. python
+versao_ok() {  # versao_ok <interpretador> -> 0 se >= PYTHON_MIN
+    "$1" -c "import sys; sys.exit(0 if sys.version_info >= tuple(map(int, '$PYTHON_MIN'.split('.'))) else 1)" 2>/dev/null
+}
+
+detectar_python() {
+    if [ -n "$PYTHON_OPT" ]; then
+        command -v "$PYTHON_OPT" >/dev/null 2>&1 || { echo "Python '$PYTHON_OPT' nao encontrado." >&2; exit 1; }
+        versao_ok "$PYTHON_OPT" || { echo "Python '$PYTHON_OPT' e' mais antigo que $PYTHON_MIN." >&2; exit 1; }
+        echo "$PYTHON_OPT"; return
+    fi
+    for v in 3.13 3.12 3.11 3.10; do
+        if command -v "python$v" >/dev/null 2>&1; then echo "python$v"; return; fi
+    done
+    if command -v python3 >/dev/null 2>&1 && versao_ok python3; then echo "python3"; return; fi
+    echo ""
+}
+
+passo "Detectando Python >= $PYTHON_MIN"
+PYBIN="$(detectar_python)"
+if [ -z "$PYBIN" ]; then
+    echo "Nenhum Python >= $PYTHON_MIN encontrado no PATH (python3 atual: $(python3 --version 2>&1))."
+    echo "Instale um e rode de novo, por exemplo:"
+    echo "  $SUDO apt-get install -y python3.10 python3.10-venv python3.10-dev"
+    echo "Se o apt nao tiver essa versao (Ubuntu 18.04/20.04), adicione o PPA deadsnakes:"
+    echo "  $SUDO apt-get install -y software-properties-common"
+    echo "  $SUDO add-apt-repository -y ppa:deadsnakes/ppa && $SUDO apt-get update"
+    echo "  $SUDO apt-get install -y python3.10 python3.10-venv python3.10-dev"
+    echo "Ou aponte para um ja existente: $0 --python /usr/bin/python3.10"
+    exit 1
+fi
+PYBIN="$(command -v "$PYBIN")"
+echo "Usando: $PYBIN ($("$PYBIN" --version 2>&1))"
+PYNOME="$(basename "$PYBIN")"   # ex.: python3.10
+
 # ---------------------------------------------------------------- 1. apt
 if [ "$USAR_APT" -eq 1 ]; then
-    passo "Instalando pacotes do sistema (sudo)"
+    passo "Instalando pacotes do sistema"
     $SUDO apt-get update -y
-    # python3-dev/libpq-dev/build-essential: compilar psycopg2
+    # libpq-dev/build-essential: compilar psycopg2
     # default-jre-headless: JVM usada pelo JPype/JayDeBeApi (driver Cache JDBC)
-    $SUDO apt-get install -y python3 python3-venv python3-dev python3-pip \
-        libpq-dev build-essential default-jre-headless
+    $SUDO apt-get install -y libpq-dev build-essential default-jre-headless
+    # venv/dev da versao de Python escolhida (ex.: python3.10-venv). Pode nao
+    # existir como pacote se o Python veio de outra fonte; nesse caso so avisa.
+    $SUDO apt-get install -y "${PYNOME}-venv" "${PYNOME}-dev" \
+        || echo "AVISO: pacotes ${PYNOME}-venv/${PYNOME}-dev nao encontrados no apt; seguindo."
 else
     passo "Pulando instalacao de pacotes do sistema (--sem-apt)"
 fi
@@ -117,8 +160,14 @@ if [ -d "$VENV" ] && [ "$SOU_ROOT" -eq 1 ]; then
     # venv pode ter sido criado por root antes; garante que o usuario da app consiga usar
     chown -R "$APP_USER:$APP_GROUP" "$VENV"
 fi
+# Se ja existe um venv com Python antigo, guarda de lado e recria.
+if [ -f "$VENV/bin/python" ] && ! versao_ok "$VENV/bin/python"; then
+    echo "venv existente usa $("$VENV/bin/python" --version 2>&1) (< $PYTHON_MIN); movendo para venv_antigo e recriando."
+    rm -rf "$APP_DIR/venv_antigo"
+    mv "$VENV" "$APP_DIR/venv_antigo"
+fi
 if [ ! -f "$VENV/bin/activate" ]; then
-    como_app "python3 -m venv '$VENV'"
+    como_app "'$PYBIN' -m venv '$VENV'"
 fi
 como_app "'$VENV/bin/pip' install --upgrade pip wheel"
 como_app "'$VENV/bin/pip' install -r '$APP_DIR/requirements.txt'"
